@@ -72,9 +72,9 @@ namespace dot
         return object::class_name;
     }
 
-    const class_id& object::get_class_id() const
+    class_id&& object::get_class_id() const
     {
-        return is_class<object>();
+        return std::move(is_class<object>());
     }
 
     object::data::data()
@@ -90,9 +90,9 @@ namespace dot
         return object::data::class_name;
     }
 
-    const class_id& object::data::get_class_id() const
+    class_id&& object::data::get_class_id() const
     {
-        return is_class<object::data>();
+        return std::move(is_class<object::data>());
     }
 }
 

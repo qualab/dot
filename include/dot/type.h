@@ -49,7 +49,7 @@ namespace dot
         virtual ~basement() { }
 
         virtual class_name_type get_class_name() const = 0;
-        virtual const class_id& get_class_id() const = 0;
+        virtual class_id&& get_class_id() const = 0;
 
         template <typename derived_type>
         bool is() const
@@ -85,6 +85,7 @@ namespace dot
     };
 }
 
+/*
 // forward declarations of std::string
 // without include of <string>
 // to improve compilation speed
@@ -97,8 +98,8 @@ namespace std
     class allocator;
 
     template <typename char_type,
-              typename traits_type=char_traits<char_type>,
-              typename allocator_type=allocator<char_type>>
+              typename traits_type = char_traits<char_type>,
+              typename allocator_type = allocator<char_type>>
     class basic_string;
 
     typedef basic_string<char>     string;
@@ -106,5 +107,6 @@ namespace std
     typedef basic_string<char16_t> u16string;
     typedef basic_string<char32_t> u32string;
 }
+*/
 
 // Unicode signature: Владимир Керимов

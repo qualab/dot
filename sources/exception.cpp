@@ -14,26 +14,21 @@ namespace dot
     {
     public:
         instance(const char* message, const char* file, int line)
-            : m_message(message), m_stack(trace::stack::thread_stack())
+            : m_message(message), m_backtrace(trace::stack::thread_stack())
         {
-            m_stack.push(message, file, line);
+            m_backtrace.push(message, file, line);
         }
 
-        const std::string& get_message() const { return m_message; }
-        const trace::stack& get_stack() const { return m_stack; }
+        const char* what() const { return m_message.c_str(); }
+        const trace::stack& backtrace() const { return m_backtrace; }
 
     private:
         std::string m_message;
-        trace::stack m_stack;
+        trace::stack m_backtrace;
     };
 
     exception::exception(const char* message, const char* file, int line)
         : m_instance(new instance(message, file, line))
-    {
-    }
-
-    exception::exception(const std::string& message, const char* file, int line)
-        : m_instance(new instance(message.c_str(), file, line))
     {
     }
 
@@ -52,24 +47,19 @@ namespace dot
         delete m_instance;
     }
 
-    const char* exception::what() const
+    const char* exception::what() const noexcept
     {
-        return m_instance->get_message().c_str();
+        return m_instance->what();
     }
 
-    const std::string& exception::get_message() const
+    const trace::stack& exception::backtrace() const
     {
-        return m_instance->get_message();
+        return m_instance->backtrace();
     }
 
-    const trace::stack& exception::get_stack() const
+    class_id&& exception::get_class_id() const
     {
-        return m_instance->get_stack();
-    }
-
-    const class_id& exception::get_class_id() const
-    {
-        return is_class<exception>();
+        return std::move(is_class<exception>());
     }
 
     class_name_type exception::get_class_name() const

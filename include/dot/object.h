@@ -36,7 +36,7 @@ namespace dot
         typedef basement base;
         static class_name_type class_name;
         virtual class_name_type get_class_name() const override;
-        virtual const class_id& get_class_id() const override;
+        virtual class_id&& get_class_id() const override;
 
     protected:
         template <typename derived_data, typename... argument_types>
@@ -70,7 +70,7 @@ namespace dot
         typedef basement base;
         static class_name_type class_name;
         virtual class_name_type get_class_name() const override;
-        virtual const class_id& get_class_id() const override;
+        virtual class_id&& get_class_id() const override;
     };
 }
 

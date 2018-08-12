@@ -12,7 +12,6 @@ namespace dot
     {
     public:
         explicit exception(const char* message, const char* file, int line);
-        explicit exception(const std::string& message, const char* file, int line);
 
         exception(const exception& another);
         exception(exception&& temporary);
@@ -20,12 +19,11 @@ namespace dot
         virtual ~exception();
 
         virtual const char* what() const noexcept override;
-        virtual const std::string& get_message() const;
-        virtual const trace::stack& get_stack() const;
+        virtual const trace::stack& backtrace() const;
 
         typedef basement base;
         static class_name_type class_name;
-        virtual const class_id& get_class_id() const override;
+        virtual class_id&& get_class_id() const override;
         virtual class_name_type get_class_name() const override;
 
     private:
