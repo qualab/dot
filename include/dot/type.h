@@ -24,12 +24,9 @@ namespace dot
 
     // -- to avoid case when no RTTI allowed --
 
-    // base structure for runtime class identification
-    struct class_id { };
-
     // is class derived from another check
     template <typename derived_type>
-    struct is_class : class_id
+    struct is_class
     {
         template <typename base_type>
         static bool of()
@@ -43,18 +40,18 @@ namespace dot
     DOT_PUBLIC void invalid_typecast(class_name_type to_type_name, class_name_type from_type_name);
 
     // base class for any hierarchy with runtime up-casts
-    class DOT_PUBLIC basement
+    class DOT_PUBLIC hierarchic
     {
     public:
-        virtual ~basement() { }
+        virtual ~hierarchic() { }
 
         virtual class_name_type get_class_name() const = 0;
-        virtual class_id&& get_class_id() const = 0;
 
         template <typename derived_type>
         bool is() const
         {
-            return get_class_id().of<derived_type>();
+            return derived_type::class_name == get_class_name() ||
+                is<derived_type::base>();
         }
 
         template <typename derived_type>
@@ -73,9 +70,9 @@ namespace dot
         }
     };
 
-    // basement ends hierarchy search
+    // hierarchicy base class ends class hierarchy search
     template<>
-    struct is_class<basement>
+    struct is_class<hierarchic>
     {
         template <typename base_type>
         static bool of()
@@ -83,30 +80,13 @@ namespace dot
             return false;
         }
     };
+
+    // hierarchy base class ends instance hierarchy search
+    template<>
+    inline bool hierarchic::is<hierarchic>() const
+    {
+        return false;
+    }
 }
-
-/*
-// forward declarations of std::string
-// without include of <string>
-// to improve compilation speed
-namespace std
-{
-    template <typename char_type>
-    struct char_traits;
-
-    template <typename char_type>
-    class allocator;
-
-    template <typename char_type,
-              typename traits_type = char_traits<char_type>,
-              typename allocator_type = allocator<char_type>>
-    class basic_string;
-
-    typedef basic_string<char>     string;
-    typedef basic_string<wchar_t>  wstring;
-    typedef basic_string<char16_t> u16string;
-    typedef basic_string<char32_t> u32string;
-}
-*/
 
 // Unicode signature: Владимир Керимов

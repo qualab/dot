@@ -7,7 +7,7 @@
 namespace dot
 {
     // base class for any object with dynamic typification
-    class DOT_PUBLIC object : public basement
+    class DOT_PUBLIC object : public hierarchic
     {
     public:
         object();
@@ -33,10 +33,9 @@ namespace dot
         static constexpr size_t max_data_size = 3 * sizeof(int64);
 
         // class identification
-        typedef basement base;
+        typedef hierarchic base;
         static class_name_type class_name;
         virtual class_name_type get_class_name() const override;
-        virtual class_id&& get_class_id() const override;
 
     protected:
         template <typename derived_data, typename... argument_types>
@@ -56,7 +55,7 @@ namespace dot
     };
 
     // base class for any object data which is dynamically typified
-    class DOT_PUBLIC object::data : public basement
+    class DOT_PUBLIC object::data : public hierarchic
     {
     public:
         data();
@@ -67,10 +66,9 @@ namespace dot
         virtual data* copy_to(void* buffer) = 0;
 
         // class identification
-        typedef basement base;
+        typedef hierarchic base;
         static class_name_type class_name;
         virtual class_name_type get_class_name() const override;
-        virtual class_id&& get_class_id() const override;
     };
 }
 

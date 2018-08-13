@@ -5,18 +5,19 @@
 #include <dot/exception.h>
 #include <utility>
 #include <string>
+#include <sstream>
 
 namespace dot
 {
     class_name_type exception::class_name = "exception";
+    class_name_type typecast_exception::class_name = "typecast_exception";
 
     class exception::instance
     {
     public:
-        instance(const char* message, const char* file, int line)
+        explicit instance(const char* message)
             : m_message(message), m_backtrace(trace::stack::thread_stack())
         {
-            m_backtrace.push(message, file, line);
         }
 
         const char* what() const { return m_message.c_str(); }
@@ -27,8 +28,8 @@ namespace dot
         trace::stack m_backtrace;
     };
 
-    exception::exception(const char* message, const char* file, int line)
-        : m_instance(new instance(message, file, line))
+    exception::exception(const char* message)
+        : m_instance(new instance(message))
     {
     }
 
@@ -57,14 +58,29 @@ namespace dot
         return m_instance->backtrace();
     }
 
-    class_id&& exception::get_class_id() const
-    {
-        return std::move(is_class<exception>());
-    }
-
     class_name_type exception::get_class_name() const
     {
         return exception::class_name;
+    }
+
+    namespace
+    {
+        std::string generate_typecast_exception_message(class_name_type to_type, class_name_type from_type)
+        {
+            std::stringstream message_stream;
+            message_stream << "Unable to cast type '" << from_type << "' to type '" << to_type << "'.";
+            return message_stream.str();
+        }
+    }
+
+    typecast_exception::typecast_exception(class_name_type to_type, class_name_type from_type)
+        : base(generate_typecast_exception_message(to_type, from_type).c_str())
+    {
+    }
+
+    class_name_type typecast_exception::get_class_name() const
+    {
+        return typecast_exception::class_name;
     }
 }
 

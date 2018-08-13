@@ -72,11 +72,6 @@ namespace dot
         return object::class_name;
     }
 
-    class_id&& object::get_class_id() const
-    {
-        return std::move(is_class<object>());
-    }
-
     object::data::data()
     {
     }
@@ -88,11 +83,6 @@ namespace dot
     class_name_type object::data::get_class_name() const
     {
         return object::data::class_name;
-    }
-
-    class_id&& object::data::get_class_id() const
-    {
-        return std::move(is_class<object::data>());
     }
 }
 
