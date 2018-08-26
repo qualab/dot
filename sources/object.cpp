@@ -1,8 +1,7 @@
 // DOT public declaration
 
-#pragma once
-
 #include <dot/object.h>
+#include <iostream>
 #include <utility>
 
 namespace dot
@@ -49,7 +48,7 @@ namespace dot
     {
         reset();
         if (another.m_data)
-            m_data = another.m_data->copy_to(m_buffer);
+            m_data = another.m_data->copy_to(m_buffer); 
         return *this;
     }
 
@@ -67,9 +66,29 @@ namespace dot
         return *this;
     }
 
-    class_name_type object::get_class_name() const
+    class_name_type object::who() const
     {
         return object::class_name;
+    }
+
+    std::ostream& operator << (std::ostream& stream, const object& value)
+    {
+        stream << value.who() << ": {";
+        if (value.m_data)
+        {
+            stream << value.m_data->who() << ": " << *value.m_data;
+        }
+        else
+        {
+            stream << "null";
+        }
+        return stream << '}';
+    }
+
+    std::istream& operator >> (std::istream& stream, object&)
+    {
+        // TODO: reading from stream any type of data
+        return stream;
     }
 
     object::data::data()
@@ -80,9 +99,21 @@ namespace dot
     {
     }
 
-    class_name_type object::data::get_class_name() const
+    class_name_type object::data::who() const
     {
         return object::data::class_name;
+    }
+
+    std::ostream& operator << (std::ostream& stream, const object::data& value)
+    {
+        value.write(stream);
+        return stream;
+    }
+
+    std::istream& operator >> (std::istream& stream, object::data& value)
+    {
+        value.read(stream);
+        return stream;
     }
 }
 

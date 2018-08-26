@@ -28,12 +28,21 @@ namespace dot
         stack();
         ~stack();
 
+        stack(const stack& another);
+        stack& operator = (const stack& another);
+
+        stack(stack&& temporary);
+        stack& operator = (stack&& temporary);
+
         void push(const char* name, const char* file, int line);
         void pop();
 
         const char* top_name() const;
         const char* top_file() const;
         int top_line() const;
+
+        bool empty() const;
+        bool not_empty() const;
 
         static stack& thread_stack();
 

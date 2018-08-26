@@ -27,6 +27,12 @@
     <ClInclude Include="..\..\..\include\dot\trace.h">
       <Filter>include\dot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\copyable.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\test.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\sources\object.cpp">
@@ -39,6 +45,9 @@
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\sources\trace.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sources\test.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>

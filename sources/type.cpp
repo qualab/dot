@@ -1,7 +1,5 @@
 // DOT public declaration
 
-#pragma once
-
 #include <dot/type.h>
 #include <dot/exception.h>
 

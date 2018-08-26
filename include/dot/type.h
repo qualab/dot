@@ -45,20 +45,19 @@ namespace dot
     public:
         virtual ~hierarchic() { }
 
-        virtual class_name_type get_class_name() const = 0;
+        virtual class_name_type who() const = 0;
 
         template <typename derived_type>
         bool is() const
         {
-            return derived_type::class_name == get_class_name() ||
-                is<derived_type::base>();
+            return derived_type::class_name == who() || is<derived_type::base>();
         }
 
         template <typename derived_type>
         const derived_type& as() const
         {
             if (!is<derived_type>())
-                invalid_typecast(derived_type::class_name, get_class_name());
+                invalid_typecast(derived_type::class_name, who());
             return static_cast<const derived_type&>(*this);
         }
 

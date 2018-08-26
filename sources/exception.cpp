@@ -1,7 +1,5 @@
 // DOT exception base class
 
-#pragma once
-
 #include <dot/exception.h>
 #include <utility>
 #include <string>
@@ -58,7 +56,7 @@ namespace dot
         return m_instance->backtrace();
     }
 
-    class_name_type exception::get_class_name() const
+    class_name_type exception::who() const
     {
         return exception::class_name;
     }
@@ -78,7 +76,7 @@ namespace dot
     {
     }
 
-    class_name_type typecast_exception::get_class_name() const
+    class_name_type typecast_exception::who() const
     {
         return typecast_exception::class_name;
     }

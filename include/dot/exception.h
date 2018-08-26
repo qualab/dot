@@ -21,7 +21,7 @@ namespace dot
 
         typedef hierarchic base;
         static class_name_type class_name;
-        virtual class_name_type get_class_name() const override;
+        virtual class_name_type who() const override;
 
     private:
         class instance;
@@ -35,7 +35,7 @@ namespace dot
 
         typedef exception base;
         static class_name_type class_name;
-        virtual class_name_type get_class_name() const override;
+        virtual class_name_type who() const override;
     };
 }
 
