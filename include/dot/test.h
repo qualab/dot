@@ -71,7 +71,7 @@ public: \
     } \
 private: \
     void body(); \
-}; \
+} g_##suite_name; \
 void test_suite_##suite_name::body()
 
     template <typename fail_type, typename argument_type>
