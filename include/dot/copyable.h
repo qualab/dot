@@ -27,6 +27,9 @@ namespace dot
         const instance_type& operator * () const;
         instance_type& operator * ();
 
+        uint64 ref_counter() const;
+        bool unique_ref() const;
+
         typedef object base;
         static const class_id& id();
         virtual const class_id& who() const override;
@@ -84,6 +87,12 @@ namespace dot
             template <typename... argument_types>
             memory_block(argument_types... arguments)
                 : counter(1), instance(arguments...) { }
+
+            void dec_counter()
+            {
+                if (!--counter)
+                    delete this;
+            }
         };
 
         memory_block* m_block;
@@ -146,6 +155,18 @@ namespace dot
     }
 
     template <typename instance_type>
+    uint64 copyable<instance_type>::ref_counter() const
+    {
+        return m_data->ref_counter();
+    }
+
+    template <typename instance_type>
+    bool copyable<instance_type>::unique_ref() const
+    {
+        return ref_counter() == 1;
+    }
+
+    template <typename instance_type>
     const class_id& copyable<instance_type>::id()
     {
         static const class_id copyable_id("copyable");
@@ -168,8 +189,7 @@ namespace dot
     template <typename instance_type>
     copyable<instance_type>::data::~data()
     {
-        if (!--m_block->counter)
-            delete m_block;
+        m_block->dec_counter();
     }
 
     template <typename instance_type>
@@ -199,7 +219,7 @@ namespace dot
         memory_block* old_block = m_block;
         m_block = another.m_block;
         ++m_block->counter;
-        --old_block->counter;
+        old_block->dec_counter();
         return *this;
     }
 
@@ -225,7 +245,9 @@ namespace dot
     {
         if (m_block->counter > 1)
         {
+            memory_block* old_block = m_block;
             m_block = new memory_block(m_block->instance);
+            old_block->dec_counter();
         }
         return m_block->instance;
     }
