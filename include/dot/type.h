@@ -54,6 +54,12 @@ namespace dot
         }
 
         template <typename derived_type>
+        bool is_not() const
+        {
+            return !is<derived_type>();
+        }
+
+        template <typename derived_type>
         const derived_type& as() const
         {
             if (!is<derived_type>())

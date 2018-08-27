@@ -2,6 +2,7 @@
 
 #include <dot/test.h>
 #include <dot/object.h>
+#include <iostream>
 
 namespace dot
 {
@@ -9,6 +10,7 @@ namespace dot
     {
         object obj;
         DOT_TEST_CHECK(obj).is_null();
+        DOT_TEST_CHECK(obj).is<object>();
     }
 }
 

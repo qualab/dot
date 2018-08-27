@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <memory>
 #include <deque>
 
 namespace dot
@@ -16,39 +17,27 @@ namespace dot
     namespace
     {
         std::deque<test::suite*> run_suites;
-        thread_local std::deque<test::check_fail> test_fails;
+        thread_local std::deque<std::unique_ptr<const test::check_fail>> test_fails;
+
+        template <typename fail_type, typename... argument_types>
+        void register_fail(const argument_types&... arguments)
+        {
+            test_fails.push_back(std::make_unique<const fail_type>(arguments...));
+        }
     }
 
     class test::output::instance
     {
     public:
-        template <typename value_type>
-        const char* format(const char* description, const value_type& value)
+        std::ostream& stream()
         {
-            for (const char* place = strchr(description, format_begin);
-                             place; 
-                             place = strchr(place + 1, format_begin))
-            {
-                if (place[1] == format_any)
-                {
-                    m_stream << std::string(description, place) << value;
-                    return place + 2;
-                }
-            }
-            m_stream << description;
-            return nullptr;
+            return m_stream;
         }
 
-        const char* print(const char* description)
-        {
-            m_stream << description;
-            return nullptr;
-        }
-
-        const char* message()
+        std::string& message()
         {
             m_message = m_stream.str();
-            return m_message.c_str();
+            return m_message;
         }
 
     private:
@@ -83,18 +72,18 @@ namespace dot
                     output out;
                     out.print("Test suite interruption by exception %$: %$.",
                         unhandled.who(), unhandled.what());
-                    test_fails.push_back(test::suite_fail(out.message()));
+                    register_fail<test::suite_fail>(out.message());
                 }
                 catch (std::exception& unhandled)
                 {
                     output out;
                     out.print("Test suite interruption by exception: %$.", unhandled.what());
-                    test_fails.push_back(test::suite_fail(out.message()));
+                    register_fail<test::suite_fail>(out.message());
                 }
                 catch (...)
                 {
-                    test_fails.push_back(test::suite_fail(
-                        "Test suite interrupred by non-standard exception."));
+                    register_fail<test::suite_fail>(
+                        "Test suite interrupred by non-standard exception.");
                 }
                 if (test_fails.empty())
                 {
@@ -104,16 +93,16 @@ namespace dot
                 else
                 {
                     ++suite_failed;
-                    std::cout << test_fails.back().who() << std::endl;
+                    std::cout << test_fails.back()->who() << std::endl;
                     std::for_each(test_fails.begin(), test_fails.end(),
-                        [](const test::check_fail& fail)
+                        [](const std::unique_ptr<const test::check_fail>& fail)
                         {
-                            std::cout << fail.who() << ": " << fail.what() << std::endl;
-                            for (trace::stack backtrace = fail.backtrace();
+                            std::cout << " !!!> " << fail->who() << ": " << fail->what() << std::endl;
+                            for (trace::stack backtrace = fail->backtrace();
                                               backtrace.not_empty();
                                               backtrace.pop())
                             {
-                                std::cout << " > "
+                                std::cout << " ! -> "
                                     << backtrace.top_name() << " at "
                                     << backtrace.top_file() << '('
                                     << backtrace.top_line() << ')'
@@ -145,7 +134,7 @@ namespace dot
 
     void test::check_fail::handle()
     {
-        test_fails.push_back(*this);
+        register_fail<check_fail>(*this);
     }
 
     class_name_type test::check_fail::who() const
@@ -160,7 +149,7 @@ namespace dot
 
     void test::suite_fail::handle()
     {
-        base::handle();
+        register_fail<suite_fail>(*this);
         throw *this;
     }
 
@@ -172,6 +161,12 @@ namespace dot
     test::run_fail::run_fail(const char* message)
         : base(message)
     {
+    }
+
+    void test::run_fail::handle()
+    {
+        register_fail<run_fail>(*this);
+        throw *this;
     }
 
     class_name_type test::run_fail::who() const
@@ -189,35 +184,36 @@ namespace dot
         delete m_instance;
     }
 
-    const char* test::output::print(const char* description)
+    std::ostream& test::output::stream()
     {
-        return m_instance->print(description);
+        return m_instance->stream();
+    }
+
+    void test::output::print(const char* description)
+    {
+        m_instance->stream() << description;
     }
 
     const char* test::output::message()
     {
-        return m_instance->message();
+        return m_instance->message().c_str();
     }
 
-    template<> const char* test::output::format(const char* description, const object& value) { return m_instance->format(description, value); }
+    bool test::output::find_placement(const char* description, const char*& before_end, const char*& after_begin)
+    {
+        static const size_t placement_length = std::strlen(DOT_TEST_OUTPUT_ANY);
+        const char* placement = std::strstr(description, DOT_TEST_OUTPUT_ANY);
+        if (!placement)
+            return false;
+        before_end = placement;
+        after_begin = placement + placement_length;
+        return true;
+    }
 
-    template<> const char* test::output::format(const char* description, const int64& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const int32& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const int16& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const int8& value) { return m_instance->format(description, value); }
-
-    template<> const char* test::output::format(const char* description, const uint64& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const uint32& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const uint16& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const uint8& value) { return m_instance->format(description, value); }
-
-    template<> const char* test::output::format(const char* description, const double& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const float& value) { return m_instance->format(description, value); }
-
-    template<> const char* test::output::format(const char* description, const bool& value) { return m_instance->format(description, value); }
-    template<> const char* test::output::format(const char* description, const char& value) { return m_instance->format(description, value); }
-
-    template<> const char* test::output::format(const char* description, const char* const& value) { return m_instance->format(description, value); }
+    void test::output::print_range(const char* range_begin, const char* range_end)
+    {
+        m_instance->stream() << std::string(range_begin, range_end);
+    }
 }
 
 // Unicode signature: Владимир Керимов

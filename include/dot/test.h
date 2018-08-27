@@ -3,6 +3,7 @@
 #pragma once
 
 #include <dot/exception.h>
+#include <iosfwd>
 
 namespace dot
 {
@@ -117,13 +118,13 @@ void test_suite_##suite_name::body()
 #define DOT_TEST_ASSERT_NO_EXCEPTION(operation) DOT_TEST_ASSERT([&]() { operation; }).no_exception()
 #define DOT_TEST_ASSERT_EXPECT_EXCEPTION(exception_class, operation) DOT_TEST_ASSERT([&]() { operation; }).expect_exception<exception_class>()
 
-    class DOT_PUBLIC test::check_fail : public dot::exception
+    class DOT_PUBLIC test::check_fail : public exception
     {
     public:
         check_fail(const char* message);
         virtual void handle();
 
-        typedef dot::exception base;
+        typedef exception base;
         static class_name_type class_name;
         virtual class_name_type who() const override;
     };
@@ -143,39 +144,52 @@ void test_suite_##suite_name::body()
     {
     public:
         run_fail(const char* message);
+        virtual void handle() override;
 
         typedef test::suite_fail base;
         static class_name_type class_name;
         virtual class_name_type who() const override;
     };
 
+#define DOT_TEST_OUTPUT_ANY "%$"
+
     class DOT_PUBLIC test::output
     {
     public:
-        static const char format_begin = '%';
-        static const char format_any = '$';
-
         class instance;
 
         output();
         ~output();
 
+        std::ostream& stream();
+
         template <typename value_type>
         const char* format(const char* description, const value_type& value)
         {
-            static_assert(false, "Method template test::output::format must be specialized for this type.");
+            const char *before_end, *after_begin;
+            if (find_placement(description, before_end, after_begin))
+            {
+                print_range(description, before_end);
+                stream() << value;
+                return after_begin;
+            }
+            else
+            {
+                print(description);
+                return nullptr;
+            }
         }
 
-        const char* print(const char* description);
+        void print(const char* description);
 
         template <typename value_type, typename... argument_types>
-        const char* print(
+        void print(
             const char* description,
             const value_type& value,
             const argument_types&... arguments)
         {
-            const char* next = format(description, value);
-            return next ? print(next, arguments...) : nullptr;
+            if (const char* next = format(description, value))
+                print(next, arguments...);
         }
 
         const char* message();
@@ -188,8 +202,10 @@ void test_suite_##suite_name::body()
 
         output(output&& temporary) = delete;
         output& operator = (output&& temporary) = delete;
-    };
 
+        bool find_placement(const char* description, const char*& before_end, const char*& after_begin);
+        void print_range(const char* range_begin, const char* range_end);
+    };
 
     template <typename fail_type, typename condition_type, typename... argument_types>
     void test::ensure(
@@ -205,13 +221,14 @@ void test_suite_##suite_name::body()
         catch (dot::exception& unhandled)
         {
             output out;
-            out.print("Unhandled exception %$: %$.", unhandled.who(), unhandled.what());
+            out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+                unhandled.who(), unhandled.what());
             handle_fail<suite_fail>(out.message());
         }
         catch (std::exception& unhandled)
         {
             output out;
-            out.print("Unhandled exception: %$.", unhandled.what());
+            out.print("Unhandled exception: " DOT_TEST_OUTPUT_ANY, unhandled.what());
             handle_fail<suite_fail>(out.message());
         }
         catch (...)
@@ -239,7 +256,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return static_cast<bool>(m_argument);
             },
-            "%$ is true",
+            DOT_TEST_OUTPUT_ANY " is true",
             m_argument
         );
     }
@@ -251,7 +268,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return !static_cast<bool>(m_argument);
             },
-            "%$ is false",
+            DOT_TEST_OUTPUT_ANY " is false",
             m_argument
         );
     }
@@ -263,7 +280,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is_null();
             },
-            "%$ is null",
+            DOT_TEST_OUTPUT_ANY " is null",
             m_argument
         );
     }
@@ -275,7 +292,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is_not_null();
             },
-            "%$ is not null",
+            DOT_TEST_OUTPUT_ANY " is not null",
             m_argument
         );
     }
@@ -288,7 +305,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is<another_type>();
             },
-            "%$ is %$",
+            DOT_TEST_OUTPUT_ANY " is " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another_type::class_name
         );
@@ -302,7 +319,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is_not<another_type>();
             },
-            "%$ is not %$",
+            DOT_TEST_OUTPUT_ANY " is not " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another_type::class_name
         );
@@ -316,7 +333,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return m_argument == another;
             },
-            "%$ == %$",
+            DOT_TEST_OUTPUT_ANY " == " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another
         );
@@ -330,7 +347,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return m_argument != another;
             },
-            "%$ != %$",
+            DOT_TEST_OUTPUT_ANY " != " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another
         );
@@ -344,7 +361,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return m_argument <= another;
             },
-            "%$ <= %$",
+            DOT_TEST_OUTPUT_ANY " <= " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another
         );
@@ -358,7 +375,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return m_argument >= another;
             },
-            "%$ >= %$",
+            DOT_TEST_OUTPUT_ANY " >= " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another
         );
@@ -372,7 +389,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return m_argument < another;
             },
-            "%$ < %$",
+            DOT_TEST_OUTPUT_ANY " < " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another
         );
@@ -386,7 +403,7 @@ void test_suite_##suite_name::body()
             [=]() -> bool {
                 return m_argument > another;
             },
-            "%$ > %$",
+            DOT_TEST_OUTPUT_ANY " > " DOT_TEST_OUTPUT_ANY,
             m_argument,
             another
         );
@@ -402,13 +419,14 @@ void test_suite_##suite_name::body()
         catch (exception& unexpected)
         {
             test::output out;
-            out.print("Unexpected exception %$: %$.", unexpected.who(), unexpected.what());
+            out.print("Unexpected exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+                unexpected.who(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (std::exception& unexpected)
         {
             test::output out;
-            out.print("Unexpected exception: %$.", unexpected.what());
+            out.print("Unexpected exception: " DOT_TEST_OUTPUT_ANY, unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (...)
@@ -432,51 +450,29 @@ void test_suite_##suite_name::body()
         catch (dot::exception& unexpected)
         {
             test::output out;
-            out.print("Expected exception %$ but caught exception %$: %$.",
+            out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but caught exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
                 exception_type::class_name, unexpected.who(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (std::exception& unexpected)
         {
             test::output out;
-            out.print("Expected exception %$ but caught exception: %$.",
+            out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but caught exception: " DOT_TEST_OUTPUT_ANY,
                 exception_type::class_name, unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (...)
         {
             test::output out;
-            out.print("Expected exception %$ but catch non-standard exception.",
+            out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but catch non-standard exception.",
                 exception_type::class_name);
             handle_fail<fail_type>(out.message());
         }
         test::output out;
-        out.print("Expected exception %$ but no exception was thrown.",
+        out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but no exception was thrown.",
             exception_type::class_name);
         handle_fail<fail_type>(out.message());
     }
-
-    class object;
-
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const object& value);
-
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const int64& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const int32& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const int16& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const int8& value);
-
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const uint64& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const uint32& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const uint16& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const uint8& value);
-
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const double& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const float& value);
-
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const bool& value);
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const char& value);
-
-    template<> DOT_PUBLIC const char* test::output::format(const char* description, const char* const& value);
 }
 
 // Unicode signature: Владимир Керимов
