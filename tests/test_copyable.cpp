@@ -29,8 +29,8 @@ namespace dot
         DOT_TEST_ENSURE(copy.unique_ref()).is_true();
         DOT_TEST_ENSURE(str.ref_counter()) == 1;
         DOT_TEST_ENSURE(copy.ref_counter()) == 1;
-        DOT_TEST_CHECK(*copy) == "check me";
-        DOT_TEST_CHECK(*str) == "copy me";
+        DOT_TEST_CHECK(*str) == test_string;
+        DOT_TEST_CHECK(*copy) == string("check me");
     }
 }
 

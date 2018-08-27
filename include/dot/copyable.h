@@ -214,7 +214,7 @@ namespace dot
     template <typename instance_type>
     typename copyable<instance_type>::data&
         copyable<instance_type>::data::operator = (
-            const copyable<instance_type>::data& another)
+            const typename copyable<instance_type>::data& another)
     {
         memory_block* old_block = m_block;
         m_block = another.m_block;
@@ -234,7 +234,7 @@ namespace dot
     template <typename instance_type>
     typename copyable<instance_type>::data&
         copyable<instance_type>::data::operator = (
-            copyable<instance_type>::data&& temporary)
+            typename copyable<instance_type>::data&& temporary)
     {
         std::swap(m_block, temporary.m_block);
         return *this;
