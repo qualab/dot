@@ -35,8 +35,8 @@ namespace dot
 
         // class identification
         typedef hierarchic base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
 
     protected:
         template <typename derived_data, typename... argument_types>
@@ -59,8 +59,8 @@ namespace dot
 
         // class identification
         typedef hierarchic base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
 
     protected:
         // placement into object internal buffer

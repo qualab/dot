@@ -6,9 +6,6 @@
 
 namespace dot
 {
-    class_name_type object::class_name = "object";
-    class_name_type object::data::class_name = "object::data";
-
     object::object()
         : m_data(nullptr)
     {
@@ -66,17 +63,23 @@ namespace dot
         return *this;
     }
 
-    class_name_type object::who() const
+    const class_id& object::id()
     {
-        return object::class_name;
+        static const class_id object_id("object");
+        return object_id;
+    }
+
+    const class_id& object::who() const
+    {
+        return object::id();
     }
 
     std::ostream& operator << (std::ostream& stream, const object& value)
     {
-        stream << value.who() << ": {";
+        stream << value.who().name() << ": {";
         if (value.m_data)
         {
-            stream << value.m_data->who() << ": " << *value.m_data;
+            stream << value.m_data->who().name() << ": " << *value.m_data;
         }
         else
         {
@@ -99,9 +102,15 @@ namespace dot
     {
     }
 
-    class_name_type object::data::who() const
+    const class_id& object::data::id()
     {
-        return object::data::class_name;
+        static const class_id object_data_id("object::data");
+        return object_data_id;
+    }
+
+    const class_id& object::data::who() const
+    {
+        return object::data::id();
     }
 
     std::ostream& operator << (std::ostream& stream, const object::data& value)

@@ -20,8 +20,8 @@ namespace dot
         virtual const trace::stack& backtrace() const;
 
         typedef hierarchic base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
 
     private:
         class instance;
@@ -31,11 +31,11 @@ namespace dot
     class DOT_PUBLIC typecast_exception : public exception
     {
     public:
-        explicit typecast_exception(class_name_type to_type, class_name_type from_type);
+        explicit typecast_exception(const char* to_type, const char* from_type);
 
         typedef exception base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
     };
 }
 

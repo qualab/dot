@@ -28,8 +28,8 @@ namespace dot
         instance_type& operator * ();
 
         typedef object base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
 
         class data;
 
@@ -46,9 +46,6 @@ namespace dot
 
         virtual ~data();
 
-        virtual object::data* copy_to(void* buffer) const override;
-        virtual object::data* move_to(void* buffer) override;
-
         data(const data& another);
         data& operator = (const data& another);
 
@@ -57,12 +54,26 @@ namespace dot
 
         uint64 ref_counter() const { return m_block->counter; }
 
-        const instance_type& shared_instance() const { return *m_instance; }
+        const instance_type& shared_instance() const { return m_block->instance; }
         instance_type& unique_instance();
 
         typedef object::data base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
+
+    protected:
+        virtual object::data* copy_to(void* buffer) const override;
+        virtual object::data* move_to(void* buffer) override;
+
+        virtual void write(std::ostream& stream) const override
+        {
+            stream << m_block->instance;
+        }
+
+        virtual void read(std::istream& stream) override
+        {
+            stream >> m_block->instance;
+        }
 
     private:
         struct memory_block
@@ -135,9 +146,16 @@ namespace dot
     }
 
     template <typename instance_type>
-    inline class_name_type copyable<instance_type>::who() const
+    const class_id& copyable<instance_type>::id()
     {
-        return copyable<instance_type>::class_name;
+        static const class_id copyable_id("copyable");
+        return copyable_id;
+    }
+
+    template <typename instance_type>
+    const class_id& copyable<instance_type>::who() const
+    {
+        return copyable<instance_type>::id();
     }
 
     template <typename instance_type>
@@ -150,7 +168,7 @@ namespace dot
     template <typename instance_type>
     copyable<instance_type>::data::~data()
     {
-        if (--m_block->counter)
+        if (!--m_block->counter)
             delete m_block;
     }
 
@@ -213,9 +231,16 @@ namespace dot
     }
 
     template <typename instance_type>
-    class_name_type copyable<instance_type>::data::who() const
+    const class_id& copyable<instance_type>::data::id()
     {
-        return copyable<instance_type>::data::class_name;
+        static const class_id copyable_data_id("copyable::data");
+        return copyable_data_id;
+    }
+
+    template <typename instance_type>
+    const class_id& copyable<instance_type>::data::who() const
+    {
+        return copyable<instance_type>::data::id();
     }
 }
 

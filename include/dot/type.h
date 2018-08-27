@@ -20,7 +20,21 @@ namespace dot
     typedef std::uint8_t  uint8;
 
     // class identificator type
-    typedef const char* const class_name_type;
+    class DOT_PUBLIC class_id
+    {
+    public:
+        class_id(const char* const name);
+
+        const char* const name() const;
+        const uint64 index() const;
+
+        bool operator == (const class_id& another) const;
+        bool operator != (const class_id& another) const;
+
+    private:
+        const char* const my_name;
+        const uint64 my_index;
+    };
 
     // -- to avoid case when no RTTI allowed --
 
@@ -31,13 +45,13 @@ namespace dot
         template <typename base_type>
         static bool of()
         {
-            return derived_type::class_name == base_type::class_name ||
+            return derived_type::id() == base_type::id() ||
                 is_class<derived_type::base>::of<base_type>();
         }
     };
 
     // invalid_typecast() throws invalid type cast exception by implementation
-    DOT_PUBLIC void invalid_typecast(class_name_type to_type_name, class_name_type from_type_name);
+    DOT_PUBLIC void invalid_typecast(const class_id& to_class, const class_id& from_class);
 
     // base class for any hierarchy with runtime up-casts
     class DOT_PUBLIC hierarchic
@@ -45,12 +59,12 @@ namespace dot
     public:
         virtual ~hierarchic() { }
 
-        virtual class_name_type who() const = 0;
+        virtual const class_id& who() const = 0;
 
         template <typename derived_type>
         bool is() const
         {
-            return derived_type::class_name == who() || is<derived_type::base>();
+            return derived_type::id() == who() || is<derived_type::base>();
         }
 
         template <typename derived_type>

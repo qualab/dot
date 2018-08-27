@@ -125,8 +125,8 @@ void test_suite_##suite_name::body()
         virtual void handle();
 
         typedef exception base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
     };
 
     class DOT_PUBLIC test::suite_fail : public test::check_fail
@@ -136,8 +136,8 @@ void test_suite_##suite_name::body()
         virtual void handle() override;
 
         typedef test::check_fail base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
     };
 
     class DOT_PUBLIC test::run_fail : public test::suite_fail
@@ -147,8 +147,8 @@ void test_suite_##suite_name::body()
         virtual void handle() override;
 
         typedef test::suite_fail base;
-        static class_name_type class_name;
-        virtual class_name_type who() const override;
+        static const class_id& id();
+        virtual const class_id& who() const override;
     };
 
 #define DOT_TEST_OUTPUT_ANY "%$"
@@ -222,7 +222,7 @@ void test_suite_##suite_name::body()
         {
             output out;
             out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                unhandled.who(), unhandled.what());
+                unhandled.who().name(), unhandled.what());
             handle_fail<suite_fail>(out.message());
         }
         catch (std::exception& unhandled)
@@ -307,7 +307,7 @@ void test_suite_##suite_name::body()
             },
             DOT_TEST_OUTPUT_ANY " is " DOT_TEST_OUTPUT_ANY,
             m_argument,
-            another_type::class_name
+            another_type::id().name()
         );
     }
 
@@ -321,7 +321,7 @@ void test_suite_##suite_name::body()
             },
             DOT_TEST_OUTPUT_ANY " is not " DOT_TEST_OUTPUT_ANY,
             m_argument,
-            another_type::class_name
+            another_type::id().name()
         );
     }
 
@@ -420,7 +420,7 @@ void test_suite_##suite_name::body()
         {
             test::output out;
             out.print("Unexpected exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                unexpected.who(), unexpected.what());
+                unexpected.who().name(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (std::exception& unexpected)
@@ -451,26 +451,26 @@ void test_suite_##suite_name::body()
         {
             test::output out;
             out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but caught exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                exception_type::class_name, unexpected.who(), unexpected.what());
+                exception_type::id().name(), unexpected.who().name(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (std::exception& unexpected)
         {
             test::output out;
             out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but caught exception: " DOT_TEST_OUTPUT_ANY,
-                exception_type::class_name, unexpected.what());
+                exception_type::id().name(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (...)
         {
             test::output out;
             out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but catch non-standard exception.",
-                exception_type::class_name);
+                exception_type::id().name());
             handle_fail<fail_type>(out.message());
         }
         test::output out;
         out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but no exception was thrown.",
-            exception_type::class_name);
+            exception_type::id().name());
         handle_fail<fail_type>(out.message());
     }
 }

@@ -10,10 +10,6 @@
 
 namespace dot
 {
-    class_name_type test::check_fail::class_name = "FAIL";
-    class_name_type test::suite_fail::class_name = "ERROR";
-    class_name_type test::run_fail::class_name = "FATAL ERROR";
-
     namespace
     {
         std::deque<test::suite*> run_suites;
@@ -47,7 +43,7 @@ namespace dot
 
     void test::run()
     {
-        std::cout << "Dynamic Object Typification test run..." << std::endl;
+        std::cout << "Dynamic Object Typification test run...\n" << std::endl;
         size_t suite_number = run_suites.size();
         size_t suite_passed = 0;
         size_t suite_failed = 0;
@@ -57,7 +53,7 @@ namespace dot
                 bool interrupt = false;
                 try
                 {
-                    std::cout << "\n -> Run test suite \"" << test_suite->name() << "\" ... ";
+                    std::cout << " -> Run test suite \"" << test_suite->name() << "\" ... ";
                     test_suite->run();
                 }
                 catch (test::run_fail&)
@@ -70,14 +66,15 @@ namespace dot
                 catch (dot::exception& unhandled)
                 {
                     output out;
-                    out.print("Test suite interruption by exception %$: %$.",
-                        unhandled.who(), unhandled.what());
+                    out.print("Test suite interruption by exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+                        unhandled.who().name(), unhandled.what());
                     register_fail<test::suite_fail>(out.message());
                 }
                 catch (std::exception& unhandled)
                 {
                     output out;
-                    out.print("Test suite interruption by exception: %$.", unhandled.what());
+                    out.print("Test suite interruption by exception: " DOT_TEST_OUTPUT_ANY,
+                        unhandled.what());
                     register_fail<test::suite_fail>(out.message());
                 }
                 catch (...)
@@ -93,11 +90,11 @@ namespace dot
                 else
                 {
                     ++suite_failed;
-                    std::cout << test_fails.back()->who() << std::endl;
+                    std::cout << test_fails.back()->who().name() << std::endl;
                     std::for_each(test_fails.begin(), test_fails.end(),
                         [](const std::unique_ptr<const test::check_fail>& fail)
                         {
-                            std::cout << " !!!> " << fail->who() << ": " << fail->what() << std::endl;
+                            std::cout << " !!!> " << fail->who().name() << ": " << fail->what() << std::endl;
                             for (trace::stack backtrace = fail->backtrace();
                                               backtrace.not_empty();
                                               backtrace.pop())
@@ -115,7 +112,7 @@ namespace dot
                 return interrupt;
             }
         );
-        std::cout << "Tests: " << (suite_failed ? "FAIL" : "OK");
+        std::cout << "\n -- Tests: " << (suite_failed ? "FAIL" : "OK");
         std::cout << " (Total: " << suite_number
             << "; Passed: " << suite_passed
             << "; Failed: " << suite_failed
@@ -137,9 +134,15 @@ namespace dot
         register_fail<check_fail>(*this);
     }
 
-    class_name_type test::check_fail::who() const
+    const class_id& test::check_fail::id()
     {
-        return check_fail::class_name;
+        static const class_id check_fail_id("FAIL");
+        return check_fail_id;
+    }
+
+    const class_id& test::check_fail::who() const
+    {
+        return check_fail::id();
     }
 
     test::suite_fail::suite_fail(const char* message)
@@ -153,9 +156,15 @@ namespace dot
         throw *this;
     }
 
-    class_name_type test::suite_fail::who() const
+    const class_id& test::suite_fail::id()
     {
-        return suite_fail::class_name;
+        static const class_id suite_fail_id("ERROR");
+        return suite_fail_id;
+    }
+
+    const class_id& test::suite_fail::who() const
+    {
+        return suite_fail::id();
     }
 
     test::run_fail::run_fail(const char* message)
@@ -169,9 +178,15 @@ namespace dot
         throw *this;
     }
 
-    class_name_type test::run_fail::who() const
+    const class_id& test::run_fail::id()
     {
-        return run_fail::class_name;
+        static const class_id run_fail_id("FATAL ERROR");
+        return run_fail_id;
+    }
+
+    const class_id& test::run_fail::who() const
+    {
+        return run_fail::id();
     }
 
     test::output::output()

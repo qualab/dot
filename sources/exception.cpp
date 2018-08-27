@@ -7,9 +7,6 @@
 
 namespace dot
 {
-    class_name_type exception::class_name = "exception";
-    class_name_type typecast_exception::class_name = "typecast_exception";
-
     class exception::instance
     {
     public:
@@ -56,14 +53,20 @@ namespace dot
         return m_instance->backtrace();
     }
 
-    class_name_type exception::who() const
+    const class_id& exception::id()
     {
-        return exception::class_name;
+        static const class_id exception_id("exception");
+        return exception_id;
+    }
+
+    const class_id& exception::who() const
+    {
+        return exception::id();
     }
 
     namespace
     {
-        std::string generate_typecast_exception_message(class_name_type to_type, class_name_type from_type)
+        std::string generate_typecast_exception_message(const char* to_type, const char* from_type)
         {
             std::stringstream message_stream;
             message_stream << "Unable to cast type '" << from_type << "' to type '" << to_type << "'.";
@@ -71,14 +74,20 @@ namespace dot
         }
     }
 
-    typecast_exception::typecast_exception(class_name_type to_type, class_name_type from_type)
+    typecast_exception::typecast_exception(const char* to_type, const char* from_type)
         : base(generate_typecast_exception_message(to_type, from_type).c_str())
     {
     }
 
-    class_name_type typecast_exception::who() const
+    const class_id& typecast_exception::id()
     {
-        return typecast_exception::class_name;
+        static const class_id typecast_exception_id("typecast_exception");
+        return typecast_exception_id;
+    }
+
+    const class_id& typecast_exception::who() const
+    {
+        return typecast_exception::id();
     }
 }
 

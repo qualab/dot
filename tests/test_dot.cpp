@@ -7,8 +7,8 @@
 int main()
 {
     dot::test::run();
-    std::cout << "\n > Press any key... " << std::flush;
-    _getch();
+    std::cout << "\n >> Press any key ... " << std::flush;
+    getch();
     return 0;
 }
 
