@@ -106,17 +106,17 @@ void test_suite_##suite_name::body()
         const argument_type& m_argument;
     };
 
-#define DOT_TEST_CHECK(argument) test::make_check<test::check_fail>(argument, "check", __FILE__, __LINE__)
-#define DOT_TEST_CHECK_NO_EXCEPTION(operation) DOT_TEST_CHECK([&]() { operation; }).no_exception()
-#define DOT_TEST_CHECK_EXPECT_EXCEPTION(exception_class, operation) DOT_TEST_CHECK([&]() { operation; }).expect_exception<exception_class>()
+#define DOT_CHECK(argument) test::make_check<test::check_fail>(argument, "check", __FILE__, __LINE__)
+#define DOT_CHECK_NO_EXCEPTION(operation) DOT_CHECK([&]() { operation; }).no_exception()
+#define DOT_CHECK_EXPECT_EXCEPTION(exception_class, operation) DOT_CHECK([&]() { operation; }).expect_exception<exception_class>()
 
-#define DOT_TEST_ENSURE(argument) test::make_check<test::suite_fail>(argument, "ensure", __FILE__, __LINE__)
-#define DOT_TEST_ENSURE_NO_EXCEPTION(operation) DOT_TEST_ENSURE([&]() { operation; }).no_exception()
-#define DOT_TEST_ENSURE_EXPECT_EXCEPTION(exception_class, operation) DOT_TEST_ENSURE([&]() { operation; }).expect_exception<exception_class>()
+#define DOT_ENSURE(argument) test::make_check<test::suite_fail>(argument, "ensure", __FILE__, __LINE__)
+#define DOT_ENSURE_NO_EXCEPTION(operation) DOT_ENSURE([&]() { operation; }).no_exception()
+#define DOT_ENSURE_EXPECT_EXCEPTION(exception_class, operation) DOT_ENSURE([&]() { operation; }).expect_exception<exception_class>()
 
-#define DOT_TEST_ASSERT(argument) test::make_check<test::run_fail>(argument, "assert", __FILE__, __LINE__)
-#define DOT_TEST_ASSERT_NO_EXCEPTION(operation) DOT_TEST_ASSERT([&]() { operation; }).no_exception()
-#define DOT_TEST_ASSERT_EXPECT_EXCEPTION(exception_class, operation) DOT_TEST_ASSERT([&]() { operation; }).expect_exception<exception_class>()
+#define DOT_ASSERT(argument) test::make_check<test::run_fail>(argument, "assert", __FILE__, __LINE__)
+#define DOT_ASSERT_NO_EXCEPTION(operation) DOT_ASSERT([&]() { operation; }).no_exception()
+#define DOT_ASSERT_EXPECT_EXCEPTION(exception_class, operation) DOT_ASSERT([&]() { operation; }).expect_exception<exception_class>()
 
     class DOT_PUBLIC test::check_fail : public exception
     {

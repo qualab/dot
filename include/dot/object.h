@@ -27,6 +27,12 @@ namespace dot
         object(object&& temporary);
         object& operator = (object&& temporary);
 
+        template <typename value_type>
+        object(const value_type& value);
+
+        template <typename value_type>
+        object& operator = (const value_type& value);
+
         // base data class for all objects
         class data;
 
@@ -44,7 +50,7 @@ namespace dot
 
     private:
         data* m_data;
-        uint8 m_buffer[max_data_size];
+        byte m_buffer[max_data_size];
 
         friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object& value);
         friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object& value);
@@ -75,6 +81,20 @@ namespace dot
         friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object::data& value);
         friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object::data& value);
     };
+
+    template <typename value_type>
+    object::object(const value_type& value)
+        : m_data(nullptr)
+    {
+        *this = value;
+    }
+
+    template <typename value_type>
+    object& object::operator = (const value_type& value)
+    {
+        static_assert(false,
+            "Template object::operator = (const value_type&) is not specialized for this type.");
+    }
 
     template <typename derived_data, typename... argument_types>
     derived_data* object::initialize(argument_types... arguments)

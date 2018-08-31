@@ -9,8 +9,8 @@ namespace dot
     DOT_TEST_SUITE(object_null)
     {
         object obj;
-        DOT_TEST_CHECK(obj).is_null();
-        DOT_TEST_CHECK(obj).is<object>();
+        DOT_CHECK(obj).is_null();
+        DOT_CHECK(obj).is<object>();
     }
 }
 

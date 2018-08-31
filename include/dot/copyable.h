@@ -88,6 +88,12 @@ namespace dot
             memory_block(argument_types... arguments)
                 : counter(1), instance(arguments...) { }
 
+            memory_block* inc_counter()
+            {
+                ++counter;
+                return this;
+            }
+
             void dec_counter()
             {
                 if (!--counter)
@@ -120,13 +126,14 @@ namespace dot
 
     template <typename instance_type>
     copyable<instance_type>::copyable(copyable&& temporary)
-        : m_data(initialize<data>(std::forward(temporary)))
+        : m_data(initialize<data>(std::move(*temporary.m_data)))
     {
     }
 
     template <typename instance_type>
     copyable<instance_type>& copyable<instance_type>::operator = (copyable&& temporary)
     {
+        m_data = initialize<data>(std::move(*temporary.m_data));
         return *this;
     }
 
@@ -206,9 +213,8 @@ namespace dot
 
     template <typename instance_type>
     copyable<instance_type>::data::data(const data& another)
-        : m_block(another.m_block)
+        : m_block(another.m_block->inc_counter())
     {
-        ++m_block->counter;
     }
 
     template <typename instance_type>
@@ -217,18 +223,18 @@ namespace dot
             const typename copyable<instance_type>::data& another)
     {
         memory_block* old_block = m_block;
-        m_block = another.m_block;
-        ++m_block->counter;
+        m_block = another.m_block->inc_counter();
         old_block->dec_counter();
         return *this;
     }
 
     template <typename instance_type>
     copyable<instance_type>::data::data(data&& temporary)
-        : m_block(temporary.m_block)
+        : m_block(temporary.m_block->inc_counter())
     {
-        // to avoid unitialized temporary.m_block instead
-        ++m_block->counter;
+        // to avoid unitialized or nullptr temporary.m_block instead
+        // atomic increment and decrement are very light operations
+        // instead of heavy comparisons to nullptr for each method
     }
 
     template <typename instance_type>

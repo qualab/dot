@@ -19,6 +19,10 @@ namespace dot
     typedef std::uint16_t uint16;
     typedef std::uint8_t  uint8;
 
+    // unsigned integers
+    typedef unsigned uint;
+    typedef uint8 byte;
+
     // class identificator type
     class DOT_PUBLIC class_id
     {
