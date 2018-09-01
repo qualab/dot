@@ -1,8 +1,11 @@
 // DOT public declaration
 
 #include <dot/object.h>
+#include <dot/scalar.h>
+#include <dot/copyable.h>
 #include <iostream>
 #include <utility>
+#include <string>
 
 namespace dot
 {
@@ -124,6 +127,25 @@ namespace dot
         value.read(stream);
         return stream;
     }
+
+    template<> void object::set_as(const int64& value) { initialize<scalar<int64>::data>(value); }
+    template<> void object::set_as(const int32& value) { initialize<scalar<int32>::data>(value); }
+    template<> void object::set_as(const int16& value) { initialize<scalar<int16>::data>(value); }
+    template<> void object::set_as(const int8&  value) { initialize<scalar<int8 >::data>(value); }
+
+    template<> void object::set_as(const uint64& value) { initialize<scalar<uint64>::data>(value); }
+    template<> void object::set_as(const uint32& value) { initialize<scalar<uint32>::data>(value); }
+    template<> void object::set_as(const uint16& value) { initialize<scalar<uint16>::data>(value); }
+    template<> void object::set_as(const uint8&  value) { initialize<scalar<uint8 >::data>(value); }
+
+    template<> void object::set_as(const double& value) { initialize<scalar<double>::data>(value); }
+    template<> void object::set_as(const float&  value) { initialize<scalar<float >::data>(value); }
+
+    template<> void object::set_as(const bool& value) { initialize<scalar<bool>::data>(value); }
+    template<> void object::set_as(const char& value) { initialize<scalar<char>::data>(value); }
+
+    template<> void object::set_as(const char* const& value) { initialize<copyable<std::string>::data>(value); }
+    template<> void object::set_as(const std::string& value) { initialize<copyable<std::string>::data>(value); }
 }
 
 // Unicode signature: Владимир Керимов

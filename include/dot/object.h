@@ -3,7 +3,7 @@
 #pragma once
 
 #include <dot/type.h>
-#include <iosfwd>
+#include <dot/stdfwd.h>
 
 namespace dot
 {
@@ -28,10 +28,19 @@ namespace dot
         object& operator = (object&& temporary);
 
         template <typename value_type>
-        object(const value_type& value);
+        explicit object(const value_type& value);
 
         template <typename value_type>
         object& operator = (const value_type& value);
+
+        template <typename value_type>
+        void set_as(const value_type& value);
+
+        template <typename value_type>
+        const value_type& get_as() const;
+
+        template <typename value_type>
+        value_type& get_as();
 
         // base data class for all objects
         class data;
@@ -92,8 +101,15 @@ namespace dot
     template <typename value_type>
     object& object::operator = (const value_type& value)
     {
+        set_as(value);
+        return *this;
+    }
+
+    template <typename value_type>
+    void object::set_as(const value_type& value)
+    {
         static_assert(false,
-            "Template object::operator = (const value_type&) is not specialized for this type.");
+            "Template object::set_as(const value_type&) is not specialized for this type.");
     }
 
     template <typename derived_data, typename... argument_types>
@@ -106,6 +122,25 @@ namespace dot
         m_data = result = new(m_buffer) derived_data(arguments...);
         return result;
     }
+
+    template<> DOT_PUBLIC void object::set_as(const int64& value);
+    template<> DOT_PUBLIC void object::set_as(const int32& value);
+    template<> DOT_PUBLIC void object::set_as(const int16& value);
+    template<> DOT_PUBLIC void object::set_as(const int8& value);
+
+    template<> DOT_PUBLIC void object::set_as(const uint64& value);
+    template<> DOT_PUBLIC void object::set_as(const uint32& value);
+    template<> DOT_PUBLIC void object::set_as(const uint16& value);
+    template<> DOT_PUBLIC void object::set_as(const uint8& value);
+
+    template<> DOT_PUBLIC void object::set_as(const double& value);
+    template<> DOT_PUBLIC void object::set_as(const float& value);
+
+    template<> DOT_PUBLIC void object::set_as(const bool& value);
+    template<> DOT_PUBLIC void object::set_as(const char& value);
+
+    template<> DOT_PUBLIC void object::set_as(const char* const& value);
+    template<> DOT_PUBLIC void object::set_as(const std::string& value);
 }
 
 // Unicode signature: Владимир Керимов

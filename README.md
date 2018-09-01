@@ -12,6 +12,6 @@ Data is strictly limited by size to place into internal buffer inside object cla
 This library will grow up step by step and goes richer by classes, documentation and tests.
 Feel free for any requests, usage or forks and good luck to us.
 
-Each file with source code contains ending line with Unicode signature to ensure your code editor support Unicode and all you see is correct. The ening line is same for each file and contain author of source code in native language and always looks like the ending line in this README. You may check how it's shown in your browser for example and compare with your source code editor representation.
+Each file which contains source code also contains the ending line with Unicode signature to ensure that your code editor supports correct Unicode representation and all you see is correct. The ending line is the same for each source code file and contains author name of source code in native language using Cyrillic and always looks like the ending line in this README.md. You may check how it's shown in your browser for example and compare it with your source code editor representation.
 
 // Unicode signature: Владимир Керимов

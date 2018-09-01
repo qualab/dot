@@ -33,6 +33,12 @@
     <ClInclude Include="..\..\..\include\dot\test.h">
       <Filter>include\dot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\scalar.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\stdfwd.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\sources\object.cpp">

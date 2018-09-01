@@ -27,8 +27,17 @@ namespace dot
         const instance_type& operator * () const;
         instance_type& operator * ();
 
-        uint64 ref_counter() const;
-        bool unique_ref() const;
+        uint64 reference_counter() const;
+        bool has_unique_instance() const;
+
+        const instance_type& shared_instance() const;
+        instance_type& unique_instance();
+
+        template <typename another_type>
+        bool operator == (another_type&& another) const;
+
+        template <typename another_type>
+        bool operator != (another_type&& another) const;
 
         typedef object base;
         static const class_id& id();
@@ -55,7 +64,7 @@ namespace dot
         data(data&& temporary);
         data& operator = (data&& temporary);
 
-        uint64 ref_counter() const { return m_block->counter; }
+        uint64 reference_counter() const { return m_block->counter; }
 
         const instance_type& shared_instance() const { return m_block->instance; }
         instance_type& unique_instance();
@@ -67,16 +76,8 @@ namespace dot
     protected:
         virtual object::data* copy_to(void* buffer) const override;
         virtual object::data* move_to(void* buffer) override;
-
-        virtual void write(std::ostream& stream) const override
-        {
-            stream << m_block->instance;
-        }
-
-        virtual void read(std::istream& stream) override
-        {
-            stream >> m_block->instance;
-        }
+        virtual void write(std::ostream& stream) const override;
+        virtual void read(std::istream& stream) override;
 
     private:
         struct memory_block
@@ -162,15 +163,41 @@ namespace dot
     }
 
     template <typename instance_type>
-    uint64 copyable<instance_type>::ref_counter() const
+    uint64 copyable<instance_type>::reference_counter() const
     {
-        return m_data->ref_counter();
+        return m_data->reference_counter();
     }
 
     template <typename instance_type>
-    bool copyable<instance_type>::unique_ref() const
+    bool copyable<instance_type>::has_unique_instance() const
     {
-        return ref_counter() == 1;
+        return m_data->reference_counter() == 1;
+    }
+
+    template <typename instance_type>
+    const instance_type& copyable<instance_type>::shared_instance() const
+    {
+        return m_data->shared_instance();
+    }
+
+    template <typename instance_type>
+    instance_type& copyable<instance_type>::unique_instance()
+    {
+        return m_data->unique_instance();
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable<instance_type>::operator == (another_type&& another) const
+    {
+        return m_data->shared_instance() == another;
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable<instance_type>::operator != (another_type&& another) const
+    {
+        return !(*this == another);
     }
 
     template <typename instance_type>
@@ -209,6 +236,18 @@ namespace dot
     object::data* copyable<instance_type>::data::move_to(void* buffer)
     {
         return new(buffer) data(std::move(*this));
+    }
+
+    template <typename instance_type>
+    void copyable<instance_type>::data::write(std::ostream& stream) const
+    {
+        stream << m_block->instance;
+    }
+
+    template <typename instance_type>
+    void copyable<instance_type>::data::read(std::istream& stream)
+    {
+        stream >> m_block->instance;
     }
 
     template <typename instance_type>

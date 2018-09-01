@@ -18,21 +18,21 @@ namespace dot
         static const char* const test_string = "copy me";
         const copyable<string> str(test_string);
         DOT_ENSURE(str).is_not_null();
-        DOT_ENSURE(str.unique_ref()).is_true();
-        DOT_ENSURE(str.ref_counter()) == 1;
+        DOT_ENSURE(str.has_unique_instance()).is_true();
+        DOT_ENSURE(str.reference_counter()) == 1;
         DOT_CHECK(*str) == test_string;
         DOT_CHECK(str->size()) == std::strlen(test_string);
         copyable<string> copy = str;
-        DOT_ENSURE(str.unique_ref()).is_false();
-        DOT_ENSURE(copy.unique_ref()).is_false();
-        DOT_ENSURE(str.ref_counter()) == 2;
-        DOT_ENSURE(copy.ref_counter()) == 2;
+        DOT_ENSURE(str.has_unique_instance()).is_false();
+        DOT_ENSURE(copy.has_unique_instance()).is_false();
+        DOT_ENSURE(str.reference_counter()) == 2;
+        DOT_ENSURE(copy.reference_counter()) == 2;
         DOT_CHECK(*copy) == test_string;
         DOT_CHECK_NO_EXCEPTION(copy->replace(0, 4, "check"));
-        DOT_ENSURE(str.unique_ref()).is_true();
-        DOT_ENSURE(copy.unique_ref()).is_true();
-        DOT_ENSURE(str.ref_counter()) == 1;
-        DOT_ENSURE(copy.ref_counter()) == 1;
+        DOT_ENSURE(str.has_unique_instance()).is_true();
+        DOT_ENSURE(copy.has_unique_instance()).is_true();
+        DOT_ENSURE(str.reference_counter()) == 1;
+        DOT_ENSURE(copy.reference_counter()) == 1;
         DOT_CHECK(*str) == test_string;
         DOT_CHECK(*copy) == string("check me");
     }
@@ -76,8 +76,8 @@ namespace dot
             }
         }
         DOT_ENSURE(creations_OK) == copy_count;
-        DOT_CHECK(original.ref_counter()) == copy_count + 1;
-        DOT_CHECK(original.unique_ref()).is_false();
+        DOT_CHECK(original.reference_counter()) == copy_count + 1;
+        DOT_CHECK(original.has_unique_instance()).is_false();
         // copy via operator of assignment
         auto assignment_thread_action = [&](uint id)
         {
@@ -104,10 +104,10 @@ namespace dot
             }
         }
         DOT_ENSURE(assignments_OK) == copy_count;
-        DOT_CHECK(original.ref_counter()) == 1;
-        DOT_CHECK(original.unique_ref()).is_true();
-        DOT_CHECK(another.ref_counter()) == copy_count + 1;
-        DOT_CHECK(another.unique_ref()).is_false();
+        DOT_CHECK(original.reference_counter()) == 1;
+        DOT_CHECK(original.has_unique_instance()).is_true();
+        DOT_CHECK(another.reference_counter()) == copy_count + 1;
+        DOT_CHECK(another.has_unique_instance()).is_false();
     }
 }
 
