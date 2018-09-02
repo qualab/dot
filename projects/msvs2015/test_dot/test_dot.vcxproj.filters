@@ -15,5 +15,8 @@
     <ClCompile Include="..\..\..\tests\test_copyable.cpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\tests\test_scalar.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

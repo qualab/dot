@@ -56,7 +56,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>DOT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <DisableSpecificWarnings>4275;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4275;4505;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
   </ItemDefinitionGroup>
@@ -70,7 +70,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>DOT_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <DisableSpecificWarnings>4275;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;4275;4505;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -80,15 +80,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\dot\copyable.h" />
-    <ClInclude Include="..\..\..\include\dot\exception.h" />
+    <ClInclude Include="..\..\..\include\dot\fail.h" />
     <ClInclude Include="..\..\..\include\dot\object.h" />
     <ClInclude Include="..\..\..\include\dot\public.h" />
+    <ClInclude Include="..\..\..\include\dot\scalar.h" />
+    <ClInclude Include="..\..\..\include\dot\stdfwd.h" />
     <ClInclude Include="..\..\..\include\dot\test.h" />
     <ClInclude Include="..\..\..\include\dot\trace.h" />
     <ClInclude Include="..\..\..\include\dot\type.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\sources\exception.cpp" />
+    <ClCompile Include="..\..\..\sources\fail.cpp" />
     <ClCompile Include="..\..\..\sources\object.cpp" />
     <ClCompile Include="..\..\..\sources\test.cpp" />
     <ClCompile Include="..\..\..\sources\trace.cpp" />

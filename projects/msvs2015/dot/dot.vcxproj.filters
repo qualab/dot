@@ -21,9 +21,6 @@
     <ClInclude Include="..\..\..\include\dot\type.h">
       <Filter>include\dot</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\dot\exception.h">
-      <Filter>include\dot</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\dot\trace.h">
       <Filter>include\dot</Filter>
     </ClInclude>
@@ -33,12 +30,18 @@
     <ClInclude Include="..\..\..\include\dot\test.h">
       <Filter>include\dot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\fail.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\stdfwd.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\scalar.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\sources\object.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\sources\exception.cpp">
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\sources\type.cpp">
@@ -48,6 +51,9 @@
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\sources\test.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sources\fail.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>
