@@ -27,13 +27,13 @@ namespace dot
     class DOT_PUBLIC class_id
     {
     public:
-        class_id(const char* const name);
+        class_id(const char* const name) noexcept;
 
-        const char* const name() const;
-        const uint64 index() const;
+        const char* const name() const noexcept;
+        const uint64 index() const noexcept;
 
-        bool operator == (const class_id& another) const;
-        bool operator != (const class_id& another) const;
+        bool operator == (const class_id& another) const noexcept;
+        bool operator != (const class_id& another) const noexcept;
 
     private:
         const char* const my_name;
@@ -47,7 +47,7 @@ namespace dot
     struct is_class
     {
         template <typename base_type>
-        static bool of()
+        static bool of() noexcept
         {
             return derived_type::id() == base_type::id() ||
                 is_class<derived_type::base>::of<base_type>();
@@ -61,18 +61,18 @@ namespace dot
     class DOT_PUBLIC hierarchic
     {
     public:
-        virtual ~hierarchic() { }
+        virtual ~hierarchic() noexcept { }
 
-        virtual const class_id& who() const = 0;
+        virtual const class_id& who() const noexcept = 0;
 
         template <typename derived_type>
-        bool is() const
+        bool is() const noexcept
         {
             return derived_type::id() == who() || is<derived_type::base>();
         }
 
         template <typename derived_type>
-        bool is_not() const
+        bool is_not() const noexcept
         {
             return !is<derived_type>();
         }
@@ -81,7 +81,7 @@ namespace dot
         const derived_type& as() const
         {
             if (!is<derived_type>())
-                invalid_typecast(derived_type::class_name, who());
+                invalid_typecast(derived_type::id(), who());
             return static_cast<const derived_type&>(*this);
         }
 

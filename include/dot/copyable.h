@@ -21,17 +21,17 @@ namespace dot
         copyable(copyable&& temporary);
         copyable& operator = (copyable&& temporary);
 
-        const instance_type* operator -> () const;
+        const instance_type* operator -> () const noexcept;
         instance_type* operator -> ();
 
-        const instance_type& operator * () const;
+        const instance_type& operator * () const noexcept;
         instance_type& operator * ();
 
-        uint64 reference_counter() const;
-        bool has_unique_instance() const;
+        uint64 ref_count() const noexcept;
+        bool unique_ref() const noexcept;
 
-        const instance_type& shared_instance() const;
-        instance_type& unique_instance();
+        const instance_type& get() const noexcept;
+        instance_type& ref();
 
         template <typename another_type>
         bool operator == (another_type&& another) const;
@@ -40,8 +40,8 @@ namespace dot
         bool operator != (another_type&& another) const;
 
         typedef object base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
 
         class data;
 
@@ -56,7 +56,7 @@ namespace dot
         template <typename... argument_types>
         data(argument_types... arguments);
 
-        virtual ~data();
+        virtual ~data() noexcept;
 
         data(const data& another);
         data& operator = (const data& another);
@@ -64,18 +64,18 @@ namespace dot
         data(data&& temporary);
         data& operator = (data&& temporary);
 
-        uint64 reference_counter() const { return m_block->counter; }
+        uint64 ref_count() const noexcept;
 
-        const instance_type& shared_instance() const { return m_block->instance; }
-        instance_type& unique_instance();
+        const instance_type& get() const noexcept;
+        instance_type& ref();
 
         typedef object::data base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
 
     protected:
-        virtual object::data* copy_to(void* buffer) const override;
-        virtual object::data* move_to(void* buffer) override;
+        virtual object::data* copy_to(void* buffer) const noexcept override;
+        virtual object::data* move_to(void* buffer) noexcept override;
         virtual void write(std::ostream& stream) const override;
         virtual void read(std::istream& stream) override;
 
@@ -139,58 +139,58 @@ namespace dot
     }
 
     template <typename instance_type>
-    const instance_type* copyable<instance_type>::operator -> () const
+    const instance_type* copyable<instance_type>::operator -> () const noexcept
     {
-        return &m_data->shared_instance();
+        return &m_data->get();
     }
 
     template <typename instance_type>
     instance_type* copyable<instance_type>::operator -> ()
     {
-        return &m_data->unique_instance();
+        return &m_data->ref();
     }
 
     template <typename instance_type>
-    const instance_type& copyable<instance_type>::operator * () const
+    const instance_type& copyable<instance_type>::operator * () const noexcept
     {
-        return m_data->shared_instance();
+        return m_data->get();
     }
 
     template <typename instance_type>
     instance_type& copyable<instance_type>::operator * ()
     {
-        return m_data->unique_instance();
+        return m_data->ref();
     }
 
     template <typename instance_type>
-    uint64 copyable<instance_type>::reference_counter() const
+    uint64 copyable<instance_type>::ref_count() const noexcept
     {
-        return m_data->reference_counter();
+        return m_data->ref_count();
     }
 
     template <typename instance_type>
-    bool copyable<instance_type>::has_unique_instance() const
+    bool copyable<instance_type>::unique_ref() const noexcept
     {
-        return m_data->reference_counter() == 1;
+        return m_data->ref_count() == 1;
     }
 
     template <typename instance_type>
-    const instance_type& copyable<instance_type>::shared_instance() const
+    const instance_type& copyable<instance_type>::get() const noexcept
     {
-        return m_data->shared_instance();
+        return m_data->get();
     }
 
     template <typename instance_type>
-    instance_type& copyable<instance_type>::unique_instance()
+    instance_type& copyable<instance_type>::ref()
     {
-        return m_data->unique_instance();
+        return m_data->ref();
     }
 
     template <typename instance_type>
     template <typename another_type>
     bool copyable<instance_type>::operator == (another_type&& another) const
     {
-        return m_data->shared_instance() == another;
+        return m_data->get() == another;
     }
 
     template <typename instance_type>
@@ -201,14 +201,14 @@ namespace dot
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::id()
+    const class_id& copyable<instance_type>::id() noexcept
     {
         static const class_id copyable_id("copyable");
         return copyable_id;
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::who() const
+    const class_id& copyable<instance_type>::who() const noexcept
     {
         return copyable<instance_type>::id();
     }
@@ -221,19 +221,19 @@ namespace dot
     }
 
     template <typename instance_type>
-    copyable<instance_type>::data::~data()
+    copyable<instance_type>::data::~data() noexcept
     {
         m_block->dec_counter();
     }
 
     template <typename instance_type>
-    object::data* copyable<instance_type>::data::copy_to(void* buffer) const
+    object::data* copyable<instance_type>::data::copy_to(void* buffer) const noexcept
     {
         return new(buffer) data(*this);
     }
 
     template <typename instance_type>
-    object::data* copyable<instance_type>::data::move_to(void* buffer)
+    object::data* copyable<instance_type>::data::move_to(void* buffer) noexcept
     {
         return new(buffer) data(std::move(*this));
     }
@@ -286,7 +286,19 @@ namespace dot
     }
 
     template <typename instance_type>
-    instance_type& copyable<instance_type>::data::unique_instance()
+    uint64 copyable<instance_type>::data::ref_count() const noexcept
+    {
+        return m_block->counter;
+    }
+
+    template <typename instance_type>
+    const instance_type& copyable<instance_type>::data::get() const noexcept
+    {
+        return m_block->instance;
+    }
+
+    template <typename instance_type>
+    instance_type& copyable<instance_type>::data::ref()
     {
         if (m_block->counter > 1)
         {
@@ -298,14 +310,14 @@ namespace dot
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::data::id()
+    const class_id& copyable<instance_type>::data::id() noexcept
     {
         static const class_id copyable_data_id("copyable::data");
         return copyable_data_id;
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::data::who() const
+    const class_id& copyable<instance_type>::data::who() const noexcept
     {
         return copyable<instance_type>::data::id();
     }

@@ -11,105 +11,141 @@ namespace dot
     class DOT_PUBLIC object : public hierarchic
     {
     public:
-        object();
-        virtual ~object();
+        object() noexcept;
+        virtual ~object() noexcept;
 
         // work with null object
-        virtual void reset();
-        virtual bool is_null() const;
-        virtual bool is_not_null() const;
+        virtual void reset() noexcept;
+        virtual bool is_null() const noexcept;
+        virtual bool is_not_null() const noexcept;
 
         // copy object override
-        object(const object& another);
-        object& operator = (const object& another);
+        object(const object& another) noexcept;
+        object& operator = (const object& another) noexcept;
 
         // move object override
-        object(object&& temporary);
-        object& operator = (object&& temporary);
+        object(object&& temporary) noexcept;
+        object& operator = (object&& temporary) noexcept;
 
+        // create object with value
         template <typename value_type>
-        explicit object(const value_type& value);
+        explicit object(value_type value);
 
+        // assign value to object
         template <typename value_type>
-        object& operator = (const value_type& value);
+        object& operator = (value_type value);
 
+        // cast object to value type
         template <typename value_type>
-        void set_as(const value_type& value);
+        explicit operator value_type() const;
 
+        // set value to object
         template <typename value_type>
-        const value_type& get_as() const;
+        void set_as(value_type value);
 
+        // get value of object
         template <typename value_type>
-        value_type& get_as();
+        value_type get_as() const;
 
         // base data class for all objects
         class data;
+
+        const data& get_data() const;
+
+        template <typename data_type>
+        const data_type& data_as() const;
 
         // enough for two 64-bit fields and virtual table pointer
         static const size_t max_data_size = 3 * sizeof(int64);
 
         // class identification
         typedef hierarchic base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
 
     protected:
+        // initialize internal object data by derived data type
         template <typename derived_data, typename... argument_types>
         derived_data* initialize(argument_types... arguments);
 
     private:
+        // internal object data
         data* m_data;
+
+        // internal object buffer to place data
         byte m_buffer[max_data_size];
 
-        friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object& value);
-        friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object& value);
+        // object output and input using byte characters
+        friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object& source);
+        friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object& destination);
     };
 
     // base class for any object data which is dynamically typified
     class DOT_PUBLIC object::data : public hierarchic
     {
     public:
-        data();
-        virtual ~data();
+        data() noexcept;
+        virtual ~data() noexcept;
 
         // class identification
         typedef hierarchic base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
 
     protected:
         // placement into object internal buffer
-        virtual data* copy_to(void* buffer) const = 0;
-        virtual data* move_to(void* buffer) = 0;
+        virtual data* copy_to(void* buffer) const noexcept = 0;
+        virtual data* move_to(void* buffer) noexcept = 0;
 
         // stream input and output
         virtual void write(std::ostream& stream) const = 0;
         virtual void read(std::istream& stream) = 0;
 
         friend class object;
-        friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object::data& value);
-        friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object::data& value);
+
+        // data output and input using byte characters
+        friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object::data& source);
+        friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object::data& destination);
     };
 
     template <typename value_type>
-    object::object(const value_type& value)
+    object::object(value_type value)
         : m_data(nullptr)
     {
-        *this = value;
+        set_as(value);
     }
 
     template <typename value_type>
-    object& object::operator = (const value_type& value)
+    object& object::operator = (value_type value)
     {
         set_as(value);
         return *this;
     }
 
     template <typename value_type>
-    void object::set_as(const value_type& value)
+    object::operator value_type() const
+    {
+        return get_as<value_type>();
+    }
+
+    template <typename value_type>
+    void object::set_as(value_type value)
     {
         static_assert(false,
-            "Template object::set_as(const value_type&) is not specialized for this type.");
+            "Template object::set_as<type> is not specialized for this type.");
+    }
+
+    template <typename value_type>
+    value_type object::get_as() const
+    {
+        static_assert(false,
+            "Template object::get_as<type> is not specialized for this type.");
+    }
+
+    template <typename data_type>
+    const data_type& object::data_as() const
+    {
+        return get_data().as<data_type>();
     }
 
     template <typename derived_data, typename... argument_types>
@@ -123,24 +159,45 @@ namespace dot
         return result;
     }
 
-    template<> DOT_PUBLIC void object::set_as(const int64& value);
-    template<> DOT_PUBLIC void object::set_as(const int32& value);
-    template<> DOT_PUBLIC void object::set_as(const int16& value);
-    template<> DOT_PUBLIC void object::set_as(const int8& value);
+    template<> DOT_PUBLIC void object::set_as(int64 value);
+    template<> DOT_PUBLIC void object::set_as(int32 value);
+    template<> DOT_PUBLIC void object::set_as(int16 value);
+    template<> DOT_PUBLIC void object::set_as(int8  value);
 
-    template<> DOT_PUBLIC void object::set_as(const uint64& value);
-    template<> DOT_PUBLIC void object::set_as(const uint32& value);
-    template<> DOT_PUBLIC void object::set_as(const uint16& value);
-    template<> DOT_PUBLIC void object::set_as(const uint8& value);
+    template<> DOT_PUBLIC void object::set_as(uint64 value);
+    template<> DOT_PUBLIC void object::set_as(uint32 value);
+    template<> DOT_PUBLIC void object::set_as(uint16 value);
+    template<> DOT_PUBLIC void object::set_as(uint8  value);
 
-    template<> DOT_PUBLIC void object::set_as(const double& value);
-    template<> DOT_PUBLIC void object::set_as(const float& value);
+    template<> DOT_PUBLIC void object::set_as(double value);
+    template<> DOT_PUBLIC void object::set_as(float  value);
 
-    template<> DOT_PUBLIC void object::set_as(const bool& value);
-    template<> DOT_PUBLIC void object::set_as(const char& value);
+    template<> DOT_PUBLIC void object::set_as(bool value);
+    template<> DOT_PUBLIC void object::set_as(char value);
 
-    template<> DOT_PUBLIC void object::set_as(const char* const& value);
-    template<> DOT_PUBLIC void object::set_as(const std::string& value);
+    template<> DOT_PUBLIC void object::set_as(const char* value);
+    template<> DOT_PUBLIC void object::set_as(std::string value);
+
+    template<> DOT_PUBLIC void object::set_as(std::nullptr_t);
+
+    template<> DOT_PUBLIC int64 object::get_as() const;
+    template<> DOT_PUBLIC int32 object::get_as() const;
+    template<> DOT_PUBLIC int16 object::get_as() const;
+    template<> DOT_PUBLIC int8  object::get_as() const;
+
+    template<> DOT_PUBLIC uint64 object::get_as() const;
+    template<> DOT_PUBLIC uint32 object::get_as() const;
+    template<> DOT_PUBLIC uint16 object::get_as() const;
+    template<> DOT_PUBLIC uint8  object::get_as() const;
+
+    template<> DOT_PUBLIC double object::get_as() const;
+    template<> DOT_PUBLIC float  object::get_as() const;
+
+    template<> DOT_PUBLIC bool object::get_as() const;
+    template<> DOT_PUBLIC char object::get_as() const;
+
+    template<> DOT_PUBLIC const char* object::get_as() const;
+    template<> DOT_PUBLIC std::string object::get_as() const;
 }
 
 // Unicode signature: Владимир Керимов

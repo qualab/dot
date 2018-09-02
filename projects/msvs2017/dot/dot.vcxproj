@@ -80,7 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\include\dot\copyable.h" />
-    <ClInclude Include="..\..\..\include\dot\exception.h" />
+    <ClInclude Include="..\..\..\include\dot\fail.h" />
     <ClInclude Include="..\..\..\include\dot\object.h" />
     <ClInclude Include="..\..\..\include\dot\public.h" />
     <ClInclude Include="..\..\..\include\dot\scalar.h" />
@@ -90,7 +90,7 @@
     <ClInclude Include="..\..\..\include\dot\type.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\sources\exception.cpp" />
+    <ClCompile Include="..\..\..\sources\fail.cpp" />
     <ClCompile Include="..\..\..\sources\object.cpp" />
     <ClCompile Include="..\..\..\sources\test.cpp" />
     <ClCompile Include="..\..\..\sources\trace.cpp" />

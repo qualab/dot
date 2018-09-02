@@ -41,7 +41,7 @@ namespace dot
         std::string m_message;
     };
 
-    void test::run()
+    void test::run() noexcept
     {
         std::cout << "Dynamic Object Typification test run...\n" << std::endl;
         size_t suite_number = run_suites.size();
@@ -63,7 +63,7 @@ namespace dot
                 catch (test::suite_fail&)
                 {
                 }
-                catch (dot::exception& unhandled)
+                catch (fail::error& unhandled)
                 {
                     output out;
                     out.print("Test suite interruption by exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
@@ -119,12 +119,12 @@ namespace dot
             << ")" << std::endl;
     }
 
-    test::suite::suite()
+    test::suite::suite() noexcept
     {
         run_suites.push_back(this);
     }
 
-    test::check_fail::check_fail(const char* message)
+    test::check_fail::check_fail(const char* message) noexcept
         : base(message)
     {
     }
@@ -134,18 +134,18 @@ namespace dot
         register_fail<check_fail>(*this);
     }
 
-    const class_id& test::check_fail::id()
+    const class_id& test::check_fail::id() noexcept
     {
-        static const class_id check_fail_id("FAIL");
+        static const class_id check_fail_id("CHECK FAIL");
         return check_fail_id;
     }
 
-    const class_id& test::check_fail::who() const
+    const class_id& test::check_fail::who() const noexcept
     {
         return check_fail::id();
     }
 
-    test::suite_fail::suite_fail(const char* message)
+    test::suite_fail::suite_fail(const char* message) noexcept
         : base(message)
     {
     }
@@ -156,18 +156,18 @@ namespace dot
         throw *this;
     }
 
-    const class_id& test::suite_fail::id()
+    const class_id& test::suite_fail::id() noexcept
     {
-        static const class_id suite_fail_id("ERROR");
+        static const class_id suite_fail_id("SUITE FAIL");
         return suite_fail_id;
     }
 
-    const class_id& test::suite_fail::who() const
+    const class_id& test::suite_fail::who() const noexcept
     {
         return suite_fail::id();
     }
 
-    test::run_fail::run_fail(const char* message)
+    test::run_fail::run_fail(const char* message) noexcept
         : base(message)
     {
     }
@@ -178,13 +178,13 @@ namespace dot
         throw *this;
     }
 
-    const class_id& test::run_fail::id()
+    const class_id& test::run_fail::id() noexcept
     {
-        static const class_id run_fail_id("FATAL ERROR");
+        static const class_id run_fail_id("RUN FAIL");
         return run_fail_id;
     }
 
-    const class_id& test::run_fail::who() const
+    const class_id& test::run_fail::who() const noexcept
     {
         return run_fail::id();
     }

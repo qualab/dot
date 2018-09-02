@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <dot/exception.h>
+#include <dot/fail.h>
 #include <iosfwd>
 
 namespace dot
@@ -27,7 +27,7 @@ namespace dot
 
         class output;
 
-        static void run();
+        static void run() noexcept;
 
         template <typename fail_type, typename argument_type>
         static check<fail_type, argument_type>
@@ -56,8 +56,8 @@ namespace dot
     class DOT_PUBLIC test::suite
     {
     public:
-        suite();
-        virtual const char* name() const = 0;
+        suite() noexcept;
+        virtual const char* name() const noexcept = 0;
         virtual void run() = 0;
     };
 
@@ -65,7 +65,7 @@ namespace dot
 class test_suite_##suite_name : public test::suite \
 { \
 public: \
-    virtual const char* name() const override { return #suite_name; } \
+    virtual const char* name() const noexcept override { return #suite_name; } \
     virtual void run() override { \
         trace::scope run_scope(#suite_name, __FILE__, __LINE__); \
         body(); \
@@ -118,37 +118,37 @@ void test_suite_##suite_name::body()
 #define DOT_ASSERT_NO_EXCEPTION(operation) DOT_ASSERT([&]() { operation; }).no_exception()
 #define DOT_ASSERT_EXPECT_EXCEPTION(exception_class, operation) DOT_ASSERT([&]() { operation; }).expect_exception<exception_class>()
 
-    class DOT_PUBLIC test::check_fail : public exception
+    class DOT_PUBLIC test::check_fail : public fail::error
     {
     public:
-        check_fail(const char* message);
+        check_fail(const char* message) noexcept;
         virtual void handle();
 
-        typedef exception base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        typedef fail::error base;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
     };
 
     class DOT_PUBLIC test::suite_fail : public test::check_fail
     {
     public:
-        suite_fail(const char* message);
+        suite_fail(const char* message) noexcept;
         virtual void handle() override;
 
         typedef test::check_fail base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
     };
 
     class DOT_PUBLIC test::run_fail : public test::suite_fail
     {
     public:
-        run_fail(const char* message);
+        run_fail(const char* message) noexcept;
         virtual void handle() override;
 
         typedef test::suite_fail base;
-        static const class_id& id();
-        virtual const class_id& who() const override;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
     };
 
 #define DOT_TEST_OUTPUT_ANY "%$"
@@ -160,6 +160,12 @@ void test_suite_##suite_name::body()
 
         output();
         ~output();
+
+        output(const output& another) = delete;
+        output& operator = (const output& another) = delete;
+
+        output(output&& temporary) = delete;
+        output& operator = (output&& temporary) = delete;
 
         std::ostream& stream();
 
@@ -197,12 +203,6 @@ void test_suite_##suite_name::body()
     private:
         instance* m_instance;
 
-        output(const output& another) = delete;
-        output& operator = (const output& another) = delete;
-
-        output(output&& temporary) = delete;
-        output& operator = (output&& temporary) = delete;
-
         bool find_placement(const char* description, const char*& before_end, const char*& after_begin);
         void print_range(const char* range_begin, const char* range_end);
     };
@@ -218,7 +218,7 @@ void test_suite_##suite_name::body()
         {
             success = condition();
         }
-        catch (dot::exception& unhandled)
+        catch (fail::error& unhandled)
         {
             output out;
             out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
@@ -276,7 +276,7 @@ void test_suite_##suite_name::body()
     template <typename fail_type, typename argument_type>
     void test::check<fail_type, argument_type>::is_null() const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is_null();
             },
@@ -288,7 +288,7 @@ void test_suite_##suite_name::body()
     template <typename fail_type, typename argument_type>
     void test::check<fail_type, argument_type>::is_not_null() const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is_not_null();
             },
@@ -301,7 +301,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::is() const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is<another_type>();
             },
@@ -315,7 +315,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::is_not() const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return static_cast<const object&>(m_argument).is_not<another_type>();
             },
@@ -329,7 +329,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::operator == (const another_type& another) const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument == another;
             },
@@ -343,7 +343,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::operator != (const another_type& another) const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument != another;
             },
@@ -357,7 +357,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::operator <= (const another_type& another) const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument <= another;
             },
@@ -371,7 +371,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::operator >= (const another_type& another) const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument >= another;
             },
@@ -385,7 +385,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::operator < (const another_type& another) const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument < another;
             },
@@ -399,7 +399,7 @@ void test_suite_##suite_name::body()
     template <typename another_type>
     void test::check<fail_type, argument_type>::operator > (const another_type& another) const
     {
-        ensure<fail_type>(
+        test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument > another;
             },
@@ -416,7 +416,7 @@ void test_suite_##suite_name::body()
         {
             m_argument();
         }
-        catch (exception& unexpected)
+        catch (fail::error& unexpected)
         {
             test::output out;
             out.print("Unexpected exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
@@ -447,7 +447,7 @@ void test_suite_##suite_name::body()
         {
             return;
         }
-        catch (dot::exception& unexpected)
+        catch (fail::error& unexpected)
         {
             test::output out;
             out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but caught exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
