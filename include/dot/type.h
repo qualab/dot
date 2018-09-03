@@ -89,7 +89,7 @@ namespace dot
         derived_type& as()
         {
             return const_cast<derived_type&>(
-                static_cast<const object*>(this)->as<derived_type>());
+                static_cast<const hierarchic*>(this)->as<derived_type>());
         }
     };
 
