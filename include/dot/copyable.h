@@ -201,13 +201,6 @@ namespace dot
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::id() noexcept
-    {
-        static const class_id copyable_id("copyable");
-        return copyable_id;
-    }
-
-    template <typename instance_type>
     const class_id& copyable<instance_type>::who() const noexcept
     {
         return copyable<instance_type>::id();
@@ -307,13 +300,6 @@ namespace dot
             old_block->dec_counter();
         }
         return m_block->instance;
-    }
-
-    template <typename instance_type>
-    const class_id& copyable<instance_type>::data::id() noexcept
-    {
-        static const class_id copyable_data_id("copyable::data");
-        return copyable_data_id;
     }
 
     template <typename instance_type>

@@ -50,12 +50,12 @@ namespace dot
         static bool of() noexcept
         {
             return derived_type::id() == base_type::id() ||
-                is_class<derived_type::base>::of<base_type>();
+                is_class<typename derived_type::base>::of<base_type>();
         }
     };
 
     // invalid_typecast() throws invalid type cast exception by implementation
-    DOT_PUBLIC void invalid_typecast(const class_id& to_class, const class_id& from_class);
+    DOT_PUBLIC void invalid_typecast(const char* to_class, const char* from_class);
 
     // base class for any hierarchy with runtime up-casts
     class DOT_PUBLIC hierarchic
@@ -81,7 +81,7 @@ namespace dot
         const derived_type& as() const
         {
             if (!is<derived_type>())
-                invalid_typecast(derived_type::id(), who());
+                invalid_typecast(derived_type::id().name(), who().name());
             return static_cast<const derived_type&>(*this);
         }
 

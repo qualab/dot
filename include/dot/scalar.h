@@ -1,4 +1,4 @@
-// DOT copy-on-write object
+// DOT scalar data object
 
 #pragma once
 
@@ -89,13 +89,6 @@ namespace dot
     }
 
     template <typename value_type>
-    const class_id& scalar<value_type>::id() noexcept
-    {
-        static const class_id scalar_id("scalar");
-        return scalar_id;
-    }
-
-    template <typename value_type>
     const class_id& scalar<value_type>::who() const noexcept
     {
         return scalar<value_type>::id();
@@ -133,13 +126,6 @@ namespace dot
     }
 
     template <typename value_type>
-    const class_id& scalar<value_type>::data::id() noexcept
-    {
-        static const class_id scalar_data_id("scalar::data");
-        return scalar_data_id;
-    }
-
-    template <typename value_type>
     const class_id& scalar<value_type>::data::who() const noexcept
     {
         return scalar<value_type>::data::id();
@@ -168,6 +154,38 @@ namespace dot
     {
         stream >> m_value;
     }
+
+    template<> DOT_PUBLIC const class_id& scalar<int64>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int32>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int16>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int8 >::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<uint64>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<uint32>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<uint16>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<uint8 >::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<double>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<float >::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<bool>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<char>::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<int64>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int32>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int16>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int8 >::data::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<uint64>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<uint32>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<uint16>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<uint8 >::data::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<double>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<float >::data::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& scalar<bool>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<char>::data::id() noexcept;
 }
 
 // Unicode signature: Владимир Керимов

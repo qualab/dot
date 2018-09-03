@@ -203,7 +203,7 @@ namespace dot
                               backtrace.not_empty();
                               backtrace.pop())
             {
-                stream << " -> "
+                stream << " >>-> "
                     << backtrace.top_name() << " at "
                     << backtrace.top_file() << '('
                     << backtrace.top_line() << ")\n";

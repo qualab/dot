@@ -72,7 +72,7 @@ namespace dot
 
     std::ostream& operator << (std::ostream& stream, const fail::error& source)
     {
-        stream << " !> " << source.who().name() << ": " << *source;
+        stream << " !!>> " << source.who().name() << ": " << *source;
         return stream;
     }
 
@@ -84,10 +84,10 @@ namespace dot
 
     namespace
     {
-        std::string generate_typecast_exception_message(const char* to_type, const char* from_type)
+        std::string generate_typecast_exception_message(const char* to_type_name, const char* from_type_name)
         {
             std::stringstream message_stream;
-            message_stream << "Unable to cast type '" << from_type << "' to type '" << to_type << "'.";
+            message_stream << "Unable to cast type '" << from_type_name << "' to type '" << to_type_name << "'.";
             return message_stream.str();
         }
     }
@@ -122,6 +122,18 @@ namespace dot
     const class_id& fail::null_reference::who() const noexcept
     {
         return fail::null_reference::id();
+    }
+
+    template<> const class_id& copyable<fail::info>::id() noexcept
+    {
+        static class_id copyable_fail_info_id("copyable<fail::info>");
+        return copyable_fail_info_id;
+    }
+
+    template<> const class_id& copyable<fail::info>::data::id() noexcept
+    {
+        static class_id copyable_fail_info_data_id("copyable<fail::info>::data");
+        return copyable_fail_info_data_id;
     }
 }
 

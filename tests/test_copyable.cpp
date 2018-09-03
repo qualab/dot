@@ -2,8 +2,8 @@
 
 #include <dot/test.h>
 #include <dot/copyable.h>
+#include <dot/string.h>
 #include <iostream>
-#include <string>
 #include <thread>
 #include <vector>
 

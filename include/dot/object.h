@@ -29,7 +29,7 @@ namespace dot
 
         // create object with value
         template <typename value_type>
-        explicit object(value_type value);
+        object(value_type value);
 
         // assign value to object
         template <typename value_type>

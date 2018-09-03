@@ -70,6 +70,10 @@ namespace dot
         static const class_id& id() noexcept;
         virtual const class_id& who() const noexcept override;
     };
+
+    template<> DOT_PUBLIC const class_id& copyable<fail::info>::id() noexcept;
+
+    template<> DOT_PUBLIC const class_id& copyable<fail::info>::data::id() noexcept;
 }
 
 // Unicode signature: Владимир Керимов

@@ -94,17 +94,7 @@ namespace dot
                     std::for_each(test_fails.begin(), test_fails.end(),
                         [](const std::unique_ptr<const test::check_fail>& fail)
                         {
-                            std::cout << " !!!> " << fail->who().name() << ": " << fail->what() << std::endl;
-                            for (trace::stack backtrace = fail->backtrace();
-                                              backtrace.not_empty();
-                                              backtrace.pop())
-                            {
-                                std::cout << " ! -> "
-                                    << backtrace.top_name() << " at "
-                                    << backtrace.top_file() << '('
-                                    << backtrace.top_line() << ')'
-                                    << std::endl;
-                            }
+                            std::cout << *fail;
                         }
                     );
                     test_fails.clear();
@@ -136,7 +126,7 @@ namespace dot
 
     const class_id& test::check_fail::id() noexcept
     {
-        static const class_id check_fail_id("CHECK FAIL");
+        static const class_id check_fail_id("FAIL");
         return check_fail_id;
     }
 
@@ -158,7 +148,7 @@ namespace dot
 
     const class_id& test::suite_fail::id() noexcept
     {
-        static const class_id suite_fail_id("SUITE FAIL");
+        static const class_id suite_fail_id("ERROR");
         return suite_fail_id;
     }
 
@@ -180,7 +170,7 @@ namespace dot
 
     const class_id& test::run_fail::id() noexcept
     {
-        static const class_id run_fail_id("RUN FAIL");
+        static const class_id run_fail_id("FATAL ERROR");
         return run_fail_id;
     }
 

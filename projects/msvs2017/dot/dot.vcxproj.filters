@@ -39,6 +39,9 @@
     <ClInclude Include="..\..\..\include\dot\fail.h">
       <Filter>include\dot</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\string.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\sources\object.cpp">
@@ -54,6 +57,12 @@
       <Filter>sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\sources\fail.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sources\scalar.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sources\string.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>

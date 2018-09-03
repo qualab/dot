@@ -8,6 +8,8 @@ namespace dot
 {
     DOT_TEST_SUITE(scalar_creation)
     {
+        scalar<int> i = 5;
+        DOT_CHECK(i.get_as<int>()) == 5;
     }
 }
 

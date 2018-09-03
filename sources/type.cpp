@@ -36,9 +36,9 @@ namespace dot
         return my_index != another.my_index;
     }
 
-    void invalid_typecast(const class_id& to_class, const class_id& from_class)
+    void invalid_typecast(const char* to_class_name, const char* from_class_name)
     {
-        throw fail::bad_typecast(to_class, from_class);
+        throw fail::bad_typecast(to_class_name, from_class_name);
     }
 }
 
