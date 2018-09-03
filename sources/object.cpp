@@ -134,42 +134,44 @@ namespace dot
         return stream;
     }
 
-    template<> void object::set_as(int64 value) { initialize<scalar<int64>::data>(value); }
-    template<> void object::set_as(int32 value) { initialize<scalar<int32>::data>(value); }
-    template<> void object::set_as(int16 value) { initialize<scalar<int16>::data>(value); }
-    template<> void object::set_as(int8  value) { initialize<scalar<int8 >::data>(value); }
+    template<> void object::set_as(long long value) { initialize<scalar<long long>::data>(value); }
+    template<> void object::set_as(long      value) { initialize<scalar<long     >::data>(value); }
+    template<> void object::set_as(int       value) { initialize<scalar<int      >::data>(value); }
+    template<> void object::set_as(short     value) { initialize<scalar<short    >::data>(value); }
+    template<> void object::set_as(char      value) { initialize<scalar<char     >::data>(value); }
 
-    template<> void object::set_as(uint64 value) { initialize<scalar<uint64>::data>(value); }
-    template<> void object::set_as(uint32 value) { initialize<scalar<uint32>::data>(value); }
-    template<> void object::set_as(uint16 value) { initialize<scalar<uint16>::data>(value); }
-    template<> void object::set_as(uint8  value) { initialize<scalar<uint8 >::data>(value); }
+    template<> void object::set_as(unsigned long long value) { initialize<scalar<unsigned long long>::data>(value); }
+    template<> void object::set_as(unsigned long      value) { initialize<scalar<unsigned long     >::data>(value); }
+    template<> void object::set_as(unsigned int       value) { initialize<scalar<unsigned int      >::data>(value); }
+    template<> void object::set_as(unsigned short     value) { initialize<scalar<unsigned short    >::data>(value); }
+    template<> void object::set_as(unsigned char      value) { initialize<scalar<unsigned char     >::data>(value); }
 
     template<> void object::set_as(double value) { initialize<scalar<double>::data>(value); }
     template<> void object::set_as(float  value) { initialize<scalar<float >::data>(value); }
 
     template<> void object::set_as(bool value) { initialize<scalar<bool>::data>(value); }
-    template<> void object::set_as(char value) { initialize<scalar<char>::data>(value); }
 
     template<> void object::set_as(const char* value) { initialize<copyable<std::string>::data>(value); }
     template<> void object::set_as(std::string value) { initialize<copyable<std::string>::data>(std::move(value)); }
 
     template<> void object::set_as(std::nullptr_t) { reset(); }
 
-    template<> int64 object::get_as() const { return data_as<scalar<int64>::data>().get(); }
-    template<> int32 object::get_as() const { return data_as<scalar<int32>::data>().get(); }
-    template<> int16 object::get_as() const { return data_as<scalar<int16>::data>().get(); }
-    template<> int8  object::get_as() const { return data_as<scalar<int8 >::data>().get(); }
+    template<> long long object::get_as() const { return data_as<scalar<long long>::data>().get(); }
+    template<> long      object::get_as() const { return data_as<scalar<long     >::data>().get(); }
+    template<> int       object::get_as() const { return data_as<scalar<int      >::data>().get(); }
+    template<> short     object::get_as() const { return data_as<scalar<short    >::data>().get(); }
+    template<> char      object::get_as() const { return data_as<scalar<char     >::data>().get(); }
 
-    template<> uint64 object::get_as() const { return data_as<scalar<uint64>::data>().get(); }
-    template<> uint32 object::get_as() const { return data_as<scalar<uint32>::data>().get(); }
-    template<> uint16 object::get_as() const { return data_as<scalar<uint16>::data>().get(); }
-    template<> uint8  object::get_as() const { return data_as<scalar<uint8 >::data>().get(); }
+    template<> unsigned long long object::get_as() const { return data_as<scalar<unsigned long long>::data>().get(); }
+    template<> unsigned long      object::get_as() const { return data_as<scalar<unsigned long     >::data>().get(); }
+    template<> unsigned int       object::get_as() const { return data_as<scalar<unsigned int      >::data>().get(); }
+    template<> unsigned short     object::get_as() const { return data_as<scalar<unsigned short    >::data>().get(); }
+    template<> unsigned char      object::get_as() const { return data_as<scalar<unsigned char     >::data>().get(); }
 
     template<> double object::get_as() const { return data_as<scalar<double>::data>().get(); }
     template<> float  object::get_as() const { return data_as<scalar<float >::data>().get(); }
 
     template<> bool object::get_as() const { return data_as<scalar<bool>::data>().get(); }
-    template<> char object::get_as() const { return data_as<scalar<char>::data>().get(); }
 
     template<> const char* object::get_as() const { return data_as<copyable<std::string>::data>().get().c_str(); }
     template<> std::string object::get_as() const { return data_as<copyable<std::string>::data>().get(); }

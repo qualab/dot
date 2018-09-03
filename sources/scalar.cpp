@@ -5,52 +5,64 @@
 
 namespace dot
 {
-    template<> const class_id& scalar<int64>::id() noexcept
+    template<> const class_id& scalar<long long>::id() noexcept
     {
-        static const class_id scalar_int64_id("scalar<int64>");
-        return scalar_int64_id;
+        static const class_id scalar_long_long_id("scalar<long long>");
+        return scalar_long_long_id;
     }
 
-    template<> const class_id& scalar<int32>::id() noexcept
+    template<> const class_id& scalar<long>::id() noexcept
     {
-        static const class_id scalar_int32_id("scalar<int32>");
-        return scalar_int32_id;
+        static const class_id scalar_long_id("scalar<long>");
+        return scalar_long_id;
     }
 
-    template<> const class_id& scalar<int16>::id() noexcept
+    template<> const class_id& scalar<int>::id() noexcept
     {
-        static const class_id scalar_int16_id("scalar<int16>");
-        return scalar_int16_id;
+        static const class_id scalar_int_id("scalar<int>");
+        return scalar_int_id;
     }
 
-    template<> const class_id& scalar<int8>::id() noexcept
+    template<> const class_id& scalar<short>::id() noexcept
     {
-        static const class_id scalar_int8_id("scalar<int8>");
-        return scalar_int8_id;
+        static const class_id scalar_short_id("scalar<short>");
+        return scalar_short_id;
     }
 
-    template<> const class_id& scalar<uint64>::id() noexcept
+    template<> const class_id& scalar<char>::id() noexcept
     {
-        static const class_id scalar_uint64_id("scalar<uint64>");
-        return scalar_uint64_id;
+        static const class_id scalar_char_id("scalar<char>");
+        return scalar_char_id;
     }
 
-    template<> const class_id& scalar<uint32>::id() noexcept
+    template<> const class_id& scalar<unsigned long long>::id() noexcept
     {
-        static const class_id scalar_uint32_id("scalar<uint32>");
-        return scalar_uint32_id;
+        static const class_id scalar_unsigned_long_long_id("scalar<unsigned long long>");
+        return scalar_unsigned_long_long_id;
     }
 
-    template<> const class_id& scalar<uint16>::id() noexcept
+    template<> const class_id& scalar<unsigned long>::id() noexcept
     {
-        static const class_id scalar_uint16_id("scalar<uint16>");
-        return scalar_uint16_id;
+        static const class_id scalar_unsigned_long_id("scalar<unsigned long>");
+        return scalar_unsigned_long_id;
     }
 
-    template<> const class_id& scalar<uint8 >::id() noexcept
+    template<> const class_id& scalar<unsigned int>::id() noexcept
     {
-        static const class_id scalar_uint8_id("scalar<uint8>");
-        return scalar_uint8_id;
+        static const class_id scalar_unsigned_int_id("scalar<unsigned int>");
+        return scalar_unsigned_int_id;
+    }
+
+    template<> const class_id& scalar<unsigned short>::id() noexcept
+    {
+        static const class_id scalar_unsigned_short_id("scalar<unsigned short>");
+        return scalar_unsigned_short_id;
+    }
+
+    template<> const class_id& scalar<unsigned char>::id() noexcept
+    {
+        static const class_id scalar_unsigned_char_id("scalar<unsigned char>");
+        return scalar_unsigned_char_id;
     }
 
     template<> const class_id& scalar<double>::id() noexcept
@@ -71,58 +83,64 @@ namespace dot
         return scalar_bool_id;
     }
 
-    template<> const class_id& scalar<char>::id() noexcept
+    template<> const class_id& scalar<long long>::data::id() noexcept
     {
-        static const class_id scalar_char_id("scalar<char>");
-        return scalar_char_id;
+        static const class_id scalar_long_long_data_id("scalar<long long>::data");
+        return scalar_long_long_data_id;
     }
 
-    template<> const class_id& scalar<int64>::data::id() noexcept
+    template<> const class_id& scalar<long>::data::id() noexcept
     {
-        static const class_id scalar_int64_data_id("scalar<int64>::data");
-        return scalar_int64_data_id;
+        static const class_id scalar_long_data_id("scalar<long>::data");
+        return scalar_long_data_id;
     }
 
-    template<> const class_id& scalar<int32>::data::id() noexcept
+    template<> const class_id& scalar<int>::data::id() noexcept
     {
-        static const class_id scalar_int32_data_id("scalar<int32>::data");
-        return scalar_int32_data_id;
+        static const class_id scalar_int_data_id("scalar<int>::data");
+        return scalar_int_data_id;
     }
 
-    template<> const class_id& scalar<int16>::data::id() noexcept
+    template<> const class_id& scalar<short>::data::id() noexcept
     {
-        static const class_id scalar_int16_data_id("scalar<int16>::data");
-        return scalar_int16_data_id;
+        static const class_id scalar_short_data_id("scalar<short>::data");
+        return scalar_short_data_id;
     }
 
-    template<> const class_id& scalar<int8>::data::id() noexcept
+    template<> const class_id& scalar<char>::data::id() noexcept
     {
-        static const class_id scalar_int8_data_id("scalar<int8>::data");
-        return scalar_int8_data_id;
+        static const class_id scalar_char_data_id("scalar<char>::data");
+        return scalar_char_data_id;
     }
 
-    template<> const class_id& scalar<uint64>::data::id() noexcept
+    template<> const class_id& scalar<unsigned long long>::data::id() noexcept
     {
-        static const class_id scalar_uint64_data_id("scalar<uint64>::data");
-        return scalar_uint64_data_id;
+        static const class_id scalar_unsigned_long_long_data_id("scalar<unsigned long long>::data");
+        return scalar_unsigned_long_long_data_id;
     }
 
-    template<> const class_id& scalar<uint32>::data::id() noexcept
+    template<> const class_id& scalar<unsigned long>::data::id() noexcept
     {
-        static const class_id scalar_uint32_data_id("scalar<uint32>::data");
-        return scalar_uint32_data_id;
+        static const class_id scalar_unsigned_long_data_id("scalar<unsigned long>::data");
+        return scalar_unsigned_long_data_id;
     }
 
-    template<> const class_id& scalar<uint16>::data::id() noexcept
+    template<> const class_id& scalar<unsigned int>::data::id() noexcept
     {
-        static const class_id scalar_uint16_data_id("scalar<uint16>::data");
-        return scalar_uint16_data_id;
+        static const class_id scalar_unsigned_int_data_id("scalar<unsigned int>::data");
+        return scalar_unsigned_int_data_id;
     }
 
-    template<> const class_id& scalar<uint8>::data::id() noexcept
+    template<> const class_id& scalar<unsigned short>::data::id() noexcept
     {
-        static const class_id scalar_uint8_data_id("scalar<uint8>::data");
-        return scalar_uint8_data_id;
+        static const class_id scalar_unsigned_short_data_id("scalar<unsigned short>::data");
+        return scalar_unsigned_short_data_id;
+    }
+
+    template<> const class_id& scalar<unsigned char>::data::id() noexcept
+    {
+        static const class_id scalar_unsigned_char_data_id("scalar<unsigned char>::data");
+        return scalar_unsigned_char_data_id;
     }
 
     template<> const class_id& scalar<double>::data::id() noexcept
@@ -141,12 +159,6 @@ namespace dot
     {
         static const class_id scalar_bool_data_id("scalar<bool>::data");
         return scalar_bool_data_id;
-    }
-
-    template<> const class_id& scalar<char>::data::id() noexcept
-    {
-        static const class_id scalar_char_data_id("scalar<char>::data");
-        return scalar_char_data_id;
     }
 }
 

@@ -159,42 +159,44 @@ namespace dot
         return result;
     }
 
-    template<> DOT_PUBLIC void object::set_as(int64 value);
-    template<> DOT_PUBLIC void object::set_as(int32 value);
-    template<> DOT_PUBLIC void object::set_as(int16 value);
-    template<> DOT_PUBLIC void object::set_as(int8  value);
+    template<> DOT_PUBLIC void object::set_as(long long value);
+    template<> DOT_PUBLIC void object::set_as(long value);
+    template<> DOT_PUBLIC void object::set_as(int value);
+    template<> DOT_PUBLIC void object::set_as(short value);
+    template<> DOT_PUBLIC void object::set_as(char value);
 
-    template<> DOT_PUBLIC void object::set_as(uint64 value);
-    template<> DOT_PUBLIC void object::set_as(uint32 value);
-    template<> DOT_PUBLIC void object::set_as(uint16 value);
-    template<> DOT_PUBLIC void object::set_as(uint8  value);
+    template<> DOT_PUBLIC void object::set_as(unsigned long long value);
+    template<> DOT_PUBLIC void object::set_as(unsigned long value);
+    template<> DOT_PUBLIC void object::set_as(unsigned int value);
+    template<> DOT_PUBLIC void object::set_as(unsigned short value);
+    template<> DOT_PUBLIC void object::set_as(unsigned char value);
 
     template<> DOT_PUBLIC void object::set_as(double value);
     template<> DOT_PUBLIC void object::set_as(float  value);
 
     template<> DOT_PUBLIC void object::set_as(bool value);
-    template<> DOT_PUBLIC void object::set_as(char value);
 
     template<> DOT_PUBLIC void object::set_as(const char* value);
     template<> DOT_PUBLIC void object::set_as(std::string value);
 
     template<> DOT_PUBLIC void object::set_as(std::nullptr_t);
 
-    template<> DOT_PUBLIC int64 object::get_as() const;
-    template<> DOT_PUBLIC int32 object::get_as() const;
-    template<> DOT_PUBLIC int16 object::get_as() const;
-    template<> DOT_PUBLIC int8  object::get_as() const;
+    template<> DOT_PUBLIC long long object::get_as() const;
+    template<> DOT_PUBLIC long      object::get_as() const;
+    template<> DOT_PUBLIC int       object::get_as() const;
+    template<> DOT_PUBLIC short     object::get_as() const;
+    template<> DOT_PUBLIC char      object::get_as() const;
 
-    template<> DOT_PUBLIC uint64 object::get_as() const;
-    template<> DOT_PUBLIC uint32 object::get_as() const;
-    template<> DOT_PUBLIC uint16 object::get_as() const;
-    template<> DOT_PUBLIC uint8  object::get_as() const;
+    template<> DOT_PUBLIC unsigned long long object::get_as() const;
+    template<> DOT_PUBLIC unsigned long      object::get_as() const;
+    template<> DOT_PUBLIC unsigned int       object::get_as() const;
+    template<> DOT_PUBLIC unsigned short     object::get_as() const;
+    template<> DOT_PUBLIC unsigned char      object::get_as() const;
 
     template<> DOT_PUBLIC double object::get_as() const;
     template<> DOT_PUBLIC float  object::get_as() const;
 
     template<> DOT_PUBLIC bool object::get_as() const;
-    template<> DOT_PUBLIC char object::get_as() const;
 
     template<> DOT_PUBLIC const char* object::get_as() const;
     template<> DOT_PUBLIC std::string object::get_as() const;

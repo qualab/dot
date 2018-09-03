@@ -11,9 +11,6 @@ namespace dot
     class scalar : public object
     {
     public:
-        scalar();
-        scalar(value_type value);
-
         template <typename... argument_types>
         scalar(argument_types... arguments);
 
@@ -34,9 +31,6 @@ namespace dot
     class scalar<value_type>::data : public object::data
     {
     public:
-        data();
-        data(value_type value);
-
         template <typename... argument_types>
         data(argument_types... arguments);
 
@@ -56,18 +50,6 @@ namespace dot
     private:
         value_type m_value;
     };
-
-    template <typename value_type>
-    scalar<value_type>::scalar()
-        : m_data(initialize<data>())
-    {
-    }
-
-    template <typename value_type>
-    scalar<value_type>::scalar(value_type value)
-        : m_data(initialize<data>(value))
-    {
-    }
 
     template <typename value_type>
     template <typename... argument_types>
@@ -95,21 +77,9 @@ namespace dot
     }
 
     template <typename value_type>
-    scalar<value_type>::data::data()
-        : m_value()
-    {
-    }
-
-    template <typename value_type>
-    scalar<value_type>::data::data(value_type value)
-        : m_value(value)
-    {
-    }
-
-    template <typename value_type>
     template <typename... argument_types>
     scalar<value_type>::data::data(argument_types... arguments)
-        : m_value(arguments....)
+        : m_value(arguments...)
     {
     }
 
@@ -155,15 +125,17 @@ namespace dot
         stream >> m_value;
     }
 
-    template<> DOT_PUBLIC const class_id& scalar<int64>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<int32>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<int16>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<int8 >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<long long>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<long     >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int      >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<short    >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<char     >::id() noexcept;
 
-    template<> DOT_PUBLIC const class_id& scalar<uint64>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<uint32>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<uint16>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<uint8 >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned long long>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned long     >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned int      >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned short    >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned char     >::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& scalar<double>::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar<float >::id() noexcept;
@@ -171,15 +143,17 @@ namespace dot
     template<> DOT_PUBLIC const class_id& scalar<bool>::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar<char>::id() noexcept;
 
-    template<> DOT_PUBLIC const class_id& scalar<int64>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<int32>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<int16>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<int8 >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<long long>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<long     >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<int      >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<short    >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<char     >::data::id() noexcept;
 
-    template<> DOT_PUBLIC const class_id& scalar<uint64>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<uint32>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<uint16>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<uint8 >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned long long>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned long     >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned int      >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned short    >::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& scalar<unsigned char     >::data::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& scalar<double>::data::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar<float >::data::id() noexcept;
