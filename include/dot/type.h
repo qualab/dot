@@ -50,7 +50,7 @@ namespace dot
         static bool of() noexcept
         {
             return derived_type::id() == base_type::id() ||
-                is_class<typename derived_type::base>::of<base_type>();
+               is_class<derived_type::base>::of<base_type>();
         }
     };
 
