@@ -17,10 +17,11 @@ namespace dot
         scalar<unsigned long> uL = 4201234567uL;
         scalar<unsigned int> ui = 0xbadfaced;
         scalar<unsigned short> us = unsigned short(0x1eaf);
-        scalar<unsigned char> uc = 'u';
+        scalar<unsigned char> uc = unsigned char('u');
         scalar<double> d = 987.65432109876;
         scalar<float> f = 54.321f;
         scalar<bool> b = true;
+
         DOT_CHECK(long long(LL)) == -1234567890123456789LL;
         DOT_CHECK(long(L)) == 123456789L;
         DOT_CHECK(int(i)) == -987654321;
