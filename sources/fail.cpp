@@ -8,9 +8,13 @@
 namespace dot
 {
     fail::info::info(const char* message) noexcept
-        : m_backtrace(trace::stack::thread_stack())
+        : m_backtrace(trace::stack::thread_stack(), message)
     {
-        m_backtrace.set_message(message);
+    }
+
+    fail::info::info(const char* message, const trace::stack& backtrace) noexcept
+        : m_backtrace(backtrace, message)
+    {
     }
 
     const char* fail::info::what() const noexcept
@@ -45,7 +49,12 @@ namespace dot
     }
 
     fail::error::error(const char* message) noexcept
-        : base(message)
+        : base(message), std::exception(message)
+    {
+    }
+
+    fail::error::error(const char* message, const trace::stack& backtrace) noexcept
+        : base(message, backtrace), std::exception(message)
     {
     }
 

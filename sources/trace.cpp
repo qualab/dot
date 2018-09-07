@@ -135,6 +135,18 @@ namespace dot
         return *this;
     }
 
+    trace::stack::stack(const trace::stack& another, const char* message) noexcept
+        : m_instance(new instance(*another.m_instance))
+    {
+        set_message(message);
+    }
+
+    trace::stack::stack(trace::stack&& temporary, const char* message) noexcept
+        : m_instance(new instance(std::move(*temporary.m_instance)))
+    {
+        set_message(message);
+    }
+
     void trace::stack::push(const char* name, const char* file, int line) noexcept
     {
         m_instance->push(name, file, line);

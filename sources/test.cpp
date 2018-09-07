@@ -66,14 +66,14 @@ namespace dot
                 catch (fail::error& unhandled)
                 {
                     output out;
-                    out.print("Test suite interruption by exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+                    out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
                         unhandled.who().name(), unhandled.what());
-                    register_fail<test::suite_fail>(out.message());
+                    register_fail<test::suite_fail>(out.message(), unhandled.backtrace());
                 }
                 catch (std::exception& unhandled)
                 {
                     output out;
-                    out.print("Test suite interruption by exception: " DOT_TEST_OUTPUT_ANY,
+                    out.print("Unhandled exception: " DOT_TEST_OUTPUT_ANY,
                         unhandled.what());
                     register_fail<test::suite_fail>(out.message());
                 }
@@ -119,6 +119,11 @@ namespace dot
     {
     }
 
+    test::check_fail::check_fail(const char* message, const trace::stack& backtrace) noexcept
+        : base(message, backtrace)
+    {
+    }
+
     void test::check_fail::handle()
     {
         register_fail<check_fail>(*this);
@@ -137,6 +142,11 @@ namespace dot
 
     test::suite_fail::suite_fail(const char* message) noexcept
         : base(message)
+    {
+    }
+
+    test::suite_fail::suite_fail(const char* message, const trace::stack& backtrace) noexcept
+        : base(message, backtrace)
     {
     }
 
@@ -159,6 +169,11 @@ namespace dot
 
     test::run_fail::run_fail(const char* message) noexcept
         : base(message)
+    {
+    }
+
+    test::run_fail::run_fail(const char* message, const trace::stack& backtrace) noexcept
+        : base(message, backtrace)
     {
     }
 

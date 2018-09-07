@@ -24,11 +24,12 @@ namespace dot
     {
     public:
         explicit info(const char* message) noexcept;
+        explicit info(const char* message, const trace::stack& backtrace) noexcept;
 
         virtual const char* what() const noexcept;
         const trace::stack& backtrace() const noexcept;
 
-    private:
+   private:
         trace::stack m_backtrace;
     };
 
@@ -39,6 +40,7 @@ namespace dot
     {
     public:
         explicit error(const char* message) noexcept;
+        explicit error(const char* message, const trace::stack& backtrace) noexcept;
 
         virtual const char* what() const noexcept override;
         virtual const trace::stack& backtrace() const noexcept;

@@ -31,12 +31,9 @@ namespace dot
 
         template <typename fail_type, typename argument_type>
         static check<fail_type, argument_type>
-            make_check(const argument_type& argument,
-                       const char* name,
-                       const char* file,
-                       int line)
+            make_check(const argument_type& argument)
         {
-            return check<fail_type, argument_type>(argument, name, file, line);
+            return check<fail_type, argument_type>(argument);
         }
 
         template <typename fail_type, typename... argument_types>
@@ -76,12 +73,10 @@ private: \
 void test_suite_##suite_name::body()
 
     template <typename fail_type, typename argument_type>
-    class test::check : public trace::scope
+    class test::check
     {
     public:
-        typedef trace::scope base;
-
-        check(const argument_type& argument, const char* name, const char* file, int line);
+        check(const argument_type& argument);
 
         void is_true() const;
         void is_false() const;
@@ -95,8 +90,8 @@ void test_suite_##suite_name::body()
         template <typename another_type> void operator != (const another_type& another) const;
         template <typename another_type> void operator <= (const another_type& another) const;
         template <typename another_type> void operator >= (const another_type& another) const;
-        template <typename another_type> void operator < (const another_type& another) const;
-        template <typename another_type> void operator > (const another_type& another) const;
+        template <typename another_type> void operator <  (const another_type& another) const;
+        template <typename another_type> void operator >  (const another_type& another) const;
 
         void no_exception() const;
 
@@ -106,15 +101,17 @@ void test_suite_##suite_name::body()
         const argument_type& m_argument;
     };
 
-#define DOT_CHECK(argument) test::make_check<test::check_fail>(argument, "check", __FILE__, __LINE__)
+#define DOT_SCOPE(name) trace::scope(name, __FILE__, __LINE__)
+
+#define DOT_CHECK(argument) DOT_SCOPE("check"), test::make_check<test::check_fail>(argument)
 #define DOT_CHECK_NO_EXCEPTION(operation) DOT_CHECK([&]() { operation; }).no_exception()
 #define DOT_CHECK_EXPECT_EXCEPTION(exception_class, operation) DOT_CHECK([&]() { operation; }).expect_exception<exception_class>()
 
-#define DOT_ENSURE(argument) test::make_check<test::suite_fail>(argument, "ensure", __FILE__, __LINE__)
+#define DOT_ENSURE(argument) DOT_SCOPE("ensure"), test::make_check<test::suite_fail>(argument)
 #define DOT_ENSURE_NO_EXCEPTION(operation) DOT_ENSURE([&]() { operation; }).no_exception()
 #define DOT_ENSURE_EXPECT_EXCEPTION(exception_class, operation) DOT_ENSURE([&]() { operation; }).expect_exception<exception_class>()
 
-#define DOT_ASSERT(argument) test::make_check<test::run_fail>(argument, "assert", __FILE__, __LINE__)
+#define DOT_ASSERT(argument) DOT_SCOPE("assert"), test::make_check<test::run_fail>(argument)
 #define DOT_ASSERT_NO_EXCEPTION(operation) DOT_ASSERT([&]() { operation; }).no_exception()
 #define DOT_ASSERT_EXPECT_EXCEPTION(exception_class, operation) DOT_ASSERT([&]() { operation; }).expect_exception<exception_class>()
 
@@ -122,6 +119,7 @@ void test_suite_##suite_name::body()
     {
     public:
         check_fail(const char* message) noexcept;
+        check_fail(const char* message, const trace::stack& backtrace) noexcept;
         virtual void handle();
 
         typedef fail::error base;
@@ -133,6 +131,7 @@ void test_suite_##suite_name::body()
     {
     public:
         suite_fail(const char* message) noexcept;
+        suite_fail(const char* message, const trace::stack& backtrace) noexcept;
         virtual void handle() override;
 
         typedef test::check_fail base;
@@ -144,6 +143,7 @@ void test_suite_##suite_name::body()
     {
     public:
         run_fail(const char* message) noexcept;
+        run_fail(const char* message, const trace::stack& backtrace) noexcept;
         virtual void handle() override;
 
         typedef test::suite_fail base;
@@ -244,8 +244,8 @@ void test_suite_##suite_name::body()
     }
 
     template <typename fail_type, typename argument_type>
-    test::check<fail_type, argument_type>::check(const argument_type& argument, const char* name, const char* file, int line)
-        : base(name, file, line), m_argument(argument)
+    test::check<fail_type, argument_type>::check(const argument_type& argument)
+        : m_argument(argument)
     {
     }
 

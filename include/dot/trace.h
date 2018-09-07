@@ -37,6 +37,9 @@ namespace dot
         stack(stack&& temporary) noexcept;
         stack& operator = (stack&& temporary) noexcept;
 
+        stack(const stack& another, const char* message) noexcept;
+        stack(stack&& temporary, const char* message) noexcept;
+
         void push(const char* name, const char* file, int line) noexcept;
         void pop() noexcept;
 
