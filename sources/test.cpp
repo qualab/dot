@@ -102,7 +102,7 @@ namespace dot
                 return interrupt;
             }
         );
-        std::cout << "\n -- Tests: " << (suite_failed ? "FAIL" : "OK");
+        std::cout << "\n -- Test run is " << (suite_failed ? "FAILED" : "OK");
         std::cout << " (Total: " << suite_number
             << "; Passed: " << suite_passed
             << "; Failed: " << suite_failed
