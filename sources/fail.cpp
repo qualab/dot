@@ -68,6 +68,11 @@ namespace dot
         return (*this)->backtrace();
     }
 
+    const char* fail::error::label() const noexcept
+    {
+        return "ERROR";
+    }
+
     const class_id& fail::error::id() noexcept
     {
         static const class_id fail_error_id("fail::error");
@@ -81,7 +86,7 @@ namespace dot
 
     std::ostream& operator << (std::ostream& stream, const fail::error& source)
     {
-        stream << " !!>> " << source.who().name() << ": " << *source;
+        stream << " !!>> " << source.label() << ": " << *source;
         return stream;
     }
 
@@ -106,6 +111,11 @@ namespace dot
     {
     }
 
+    const char* fail::bad_typecast::label() const noexcept
+    {
+        return "BAD TYPECAST";
+    }
+
     const class_id& fail::bad_typecast::id() noexcept
     {
         static const class_id fail_bad_typecast_id("fail::bad_typecast");
@@ -120,6 +130,11 @@ namespace dot
     fail::null_reference::null_reference(const char* message) noexcept
         : base(message)
     {
+    }
+
+    const char* fail::null_reference::label() const noexcept
+    {
+        return "NULL REFERENCE";
     }
 
     const class_id& fail::null_reference::id() noexcept

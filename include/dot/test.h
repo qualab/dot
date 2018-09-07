@@ -120,6 +120,7 @@ void test_suite_##suite_name::body()
     public:
         check_fail(const char* message) noexcept;
         check_fail(const char* message, const trace::stack& backtrace) noexcept;
+        virtual const char* label() const noexcept override;
         virtual void handle();
 
         typedef fail::error base;
@@ -132,6 +133,7 @@ void test_suite_##suite_name::body()
     public:
         suite_fail(const char* message) noexcept;
         suite_fail(const char* message, const trace::stack& backtrace) noexcept;
+        virtual const char* label() const noexcept override;
         virtual void handle() override;
 
         typedef test::check_fail base;
@@ -144,6 +146,7 @@ void test_suite_##suite_name::body()
     public:
         run_fail(const char* message) noexcept;
         run_fail(const char* message, const trace::stack& backtrace) noexcept;
+        virtual const char* label() const noexcept override;
         virtual void handle() override;
 
         typedef test::suite_fail base;
@@ -222,7 +225,7 @@ void test_suite_##suite_name::body()
         {
             output out;
             out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                unhandled.who().name(), unhandled.what());
+                unhandled.label(), unhandled.what());
             handle_fail<suite_fail>(out.message());
         }
         catch (std::exception& unhandled)
@@ -420,7 +423,7 @@ void test_suite_##suite_name::body()
         {
             test::output out;
             out.print("Unexpected exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                unexpected.who().name(), unexpected.what());
+                unexpected.label(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (std::exception& unexpected)

@@ -66,21 +66,21 @@ namespace dot
                 catch (fail::error& unhandled)
                 {
                     output out;
-                    out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                        unhandled.who().name(), unhandled.what());
+                    out.print("Interrupted by exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+                        unhandled.label(), unhandled.what());
                     register_fail<test::suite_fail>(out.message(), unhandled.backtrace());
                 }
                 catch (std::exception& unhandled)
                 {
                     output out;
-                    out.print("Unhandled exception: " DOT_TEST_OUTPUT_ANY,
+                    out.print("Interrupted by exception: " DOT_TEST_OUTPUT_ANY,
                         unhandled.what());
                     register_fail<test::suite_fail>(out.message());
                 }
                 catch (...)
                 {
                     register_fail<test::suite_fail>(
-                        "Test suite interrupred by non-standard exception.");
+                        "Interrupred by non-standard exception.");
                 }
                 if (test_fails.empty())
                 {
@@ -90,7 +90,7 @@ namespace dot
                 else
                 {
                     ++suite_failed;
-                    std::cout << test_fails.back()->who().name() << std::endl;
+                    std::cout << test_fails.back()->label() << std::endl;
                     std::for_each(test_fails.begin(), test_fails.end(),
                         [](const std::unique_ptr<const test::check_fail>& fail)
                         {
@@ -124,6 +124,11 @@ namespace dot
     {
     }
 
+    const char* test::check_fail::label() const noexcept
+    {
+        return "CHECK FAIL";
+    }
+
     void test::check_fail::handle()
     {
         register_fail<check_fail>(*this);
@@ -131,7 +136,7 @@ namespace dot
 
     const class_id& test::check_fail::id() noexcept
     {
-        static const class_id check_fail_id("FAIL");
+        static const class_id check_fail_id("test::check_fail");
         return check_fail_id;
     }
 
@@ -150,6 +155,11 @@ namespace dot
     {
     }
 
+    const char* test::suite_fail::label() const noexcept
+    {
+        return "SUITE FAIL";
+    }
+
     void test::suite_fail::handle()
     {
         register_fail<suite_fail>(*this);
@@ -158,7 +168,7 @@ namespace dot
 
     const class_id& test::suite_fail::id() noexcept
     {
-        static const class_id suite_fail_id("ERROR");
+        static const class_id suite_fail_id("test::suite_fail");
         return suite_fail_id;
     }
 
@@ -177,6 +187,11 @@ namespace dot
     {
     }
 
+    const char* test::run_fail::label() const noexcept
+    {
+        return "RUN FAIL";
+    }
+
     void test::run_fail::handle()
     {
         register_fail<run_fail>(*this);
@@ -185,7 +200,7 @@ namespace dot
 
     const class_id& test::run_fail::id() noexcept
     {
-        static const class_id run_fail_id("FATAL ERROR");
+        static const class_id run_fail_id("test::run_fail");
         return run_fail_id;
     }
 

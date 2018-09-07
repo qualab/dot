@@ -44,6 +44,7 @@ namespace dot
 
         virtual const char* what() const noexcept override;
         virtual const trace::stack& backtrace() const noexcept;
+        virtual const char* label() const noexcept;
 
         typedef copyable<fail::info> base;
         static const class_id& id() noexcept;
@@ -57,6 +58,7 @@ namespace dot
     {
     public:
         explicit bad_typecast(const class_id& to_type, const class_id& from_type) noexcept;
+        virtual const char* label() const noexcept override;
 
         typedef fail::error base;
         static const class_id& id() noexcept;
@@ -67,6 +69,7 @@ namespace dot
     {
     public:
         explicit null_reference(const char* message) noexcept;
+        virtual const char* label() const noexcept override;
 
         typedef fail::error base;
         static const class_id& id() noexcept;
