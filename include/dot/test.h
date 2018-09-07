@@ -306,7 +306,7 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<const object&>(m_argument).is<another_type>();
+                return static_cast<const hierarchic&>(m_argument).is<another_type>();
             },
             DOT_TEST_OUTPUT_ANY " is " DOT_TEST_OUTPUT_ANY,
             m_argument,

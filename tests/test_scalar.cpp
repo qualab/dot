@@ -36,6 +36,99 @@ namespace dot
         DOT_CHECK(float(f)) == 54.321f;
         DOT_CHECK(bool(b)).is_true();
     }
+
+    namespace
+    {
+        struct test_type
+        {
+            uint64 index;
+            double value;
+
+            test_type(uint64 id, double num)
+                : index(id), value(num) { }
+        };
+
+        std::ostream& operator << (std::ostream& stream, const test_type& source)
+        {
+            return stream << source.index << ", " << source.value;
+        }
+
+        std::istream& operator >> (std::istream& stream, test_type&)
+        {
+            return stream; // read is not required
+        }
+    }
+
+    template<> void object::set_as(test_type value)
+    {
+        initialize<scalar<test_type>::data>(value);
+    }
+
+    template<> test_type object::get_as() const
+    {
+        return data_as<scalar<test_type>::data>().get();
+    }
+
+    template<> const class_id& scalar<test_type>::id() noexcept
+    {
+        static const class_id scalar_test_type_id("scalar<test_type>");
+        return scalar_test_type_id;
+    }
+
+    template<> const class_id& scalar<test_type>::data::id() noexcept
+    {
+        static const class_id scalar_test_type_data_id("scalar<test_type>::data");
+        return scalar_test_type_data_id;
+    }
+
+    DOT_TEST_SUITE(scalar_test_type)
+    {
+        object x = test_type(100500uLL, 9000.1);
+        DOT_ENSURE(x.get_data()).is<scalar<test_type>::data>();
+        DOT_ENSURE_NO_EXCEPTION(x.get_as<test_type>());
+        DOT_CHECK(x.get_as<test_type>().index) == 100500uLL;
+        DOT_CHECK(x.get_as<test_type>().value) == 9000.1;
+
+        scalar<test_type> y = x;
+        DOT_ENSURE(y).is<scalar<test_type>>();
+        DOT_ENSURE(y.get_data()).is<scalar<test_type>::data>();
+        DOT_ENSURE_NO_EXCEPTION(y.get_as<test_type>());
+        DOT_CHECK(y.get_as<test_type>().index) == 100500uLL;
+        DOT_CHECK(y.get_as<test_type>().value) == 9000.1;
+
+        DOT_ENSURE_NO_EXCEPTION(
+            x = test_type(12345678901234567890uLL, -1234567.87654321));
+        DOT_ENSURE(x.get_data()).is<scalar<test_type>::data>();
+        DOT_ENSURE_NO_EXCEPTION(x.get_as<test_type>());
+        DOT_CHECK(x.get_as<test_type>().index) == 12345678901234567890uLL;
+        DOT_CHECK(x.get_as<test_type>().value) == -1234567.87654321;
+
+        DOT_ENSURE(y).is<scalar<test_type>>();
+        DOT_ENSURE(y.get_data()).is<scalar<test_type>::data>();
+        DOT_ENSURE_NO_EXCEPTION(y.get_as<test_type>());
+        DOT_CHECK(y.get_as<test_type>().index) == 100500uLL;
+        DOT_CHECK(y.get_as<test_type>().value) == 9000.1;
+
+        object z = static_cast<const object&>(y);
+        DOT_ENSURE(z.get_data()).is<scalar<test_type>::data>();
+        DOT_ENSURE_NO_EXCEPTION(z.get_as<test_type>());
+        DOT_CHECK(z.get_as<test_type>().index) == 100500uLL;
+        DOT_CHECK(z.get_as<test_type>().value) == 9000.1;
+
+        DOT_ENSURE_NO_EXCEPTION(z = 0);
+        DOT_ENSURE(z.get_data()).is<scalar<int>::data>();
+        DOT_CHECK(z.get_as<int>()) == 0;
+
+        DOT_ENSURE(y).is<scalar<test_type>>();
+        DOT_ENSURE(y.get_data()).is<scalar<test_type>::data>();
+        DOT_CHECK(y.get_as<test_type>().index) == 100500uLL;
+        DOT_CHECK(y.get_as<test_type>().value) == 9000.1;
+
+        DOT_ENSURE(x.get_data()).is<scalar<test_type>::data>();
+        DOT_ENSURE_NO_EXCEPTION(x.get_as<test_type>());
+        DOT_CHECK(x.get_as<test_type>().index) == 12345678901234567890uLL;
+        DOT_CHECK(x.get_as<test_type>().value) == -1234567.87654321;
+    }
 }
 
 // Unicode signature: Владимир Керимов
