@@ -11,6 +11,14 @@ namespace dot
         object obj;
         DOT_CHECK(obj).is_null();
         DOT_CHECK(obj).is<object>();
+        DOT_CHECK(obj.is_null()).is_true();
+        DOT_CHECK(obj.is_not_null()).is_false();
+
+        object nil = obj;
+        DOT_CHECK(nil).is_null();
+        DOT_CHECK(nil).is<object>();
+        DOT_CHECK(nil.is_null()).is_true();
+        DOT_CHECK(nil.is_not_null()).is_false();
     }
 
     DOT_TEST_SUITE(object_set)
