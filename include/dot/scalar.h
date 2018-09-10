@@ -11,6 +11,8 @@ namespace dot
     class scalar : public object
     {
     public:
+        scalar(const object& another);
+
         template <typename... argument_types>
         scalar(argument_types... arguments);
 
@@ -23,6 +25,8 @@ namespace dot
 
         class data;
 
+        const data& scalar_data() const noexcept;
+
     private:
         data* m_data;
     };
@@ -31,6 +35,8 @@ namespace dot
     class scalar<value_type>::data : public object::data
     {
     public:
+        data(const data& another);
+
         template <typename... argument_types>
         data(argument_types... arguments);
 
@@ -50,6 +56,13 @@ namespace dot
     private:
         value_type m_value;
     };
+
+    template <typename value_type>
+    scalar<value_type>::scalar(const object& another)
+        : m_data(initialize<scalar<value_type>::data>(
+            another.data_as<scalar<value_type>::data>()))
+    {
+    }
 
     template <typename value_type>
     template <typename... argument_types>
@@ -74,6 +87,18 @@ namespace dot
     const class_id& scalar<value_type>::who() const noexcept
     {
         return scalar<value_type>::id();
+    }
+
+    template <typename value_type>
+    const typename scalar<value_type>::data& scalar<value_type>::scalar_data() const noexcept
+    {
+        return *m_data;
+    }
+
+    template <typename value_type>
+    scalar<value_type>::data::data(const data& another)
+        : m_value(another.m_value)
+    {
     }
 
     template <typename value_type>
@@ -159,7 +184,23 @@ namespace dot
     template<> DOT_PUBLIC const class_id& scalar<float >::data::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& scalar<bool>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& scalar<char>::data::id() noexcept;
+
+    template<> DOT_PUBLIC void object::set_as(scalar<long long> another);
+    template<> DOT_PUBLIC void object::set_as(scalar<long     > another);
+    template<> DOT_PUBLIC void object::set_as(scalar<int      > another);
+    template<> DOT_PUBLIC void object::set_as(scalar<short    > another);
+    template<> DOT_PUBLIC void object::set_as(scalar<char     > another);
+
+    template<> DOT_PUBLIC void object::set_as(scalar<unsigned long long> another);
+    template<> DOT_PUBLIC void object::set_as(scalar<unsigned long     > another);
+    template<> DOT_PUBLIC void object::set_as(scalar<unsigned int      > another);
+    template<> DOT_PUBLIC void object::set_as(scalar<unsigned short    > another);
+    template<> DOT_PUBLIC void object::set_as(scalar<unsigned char     > another);
+
+    template<> DOT_PUBLIC void object::set_as(scalar<double> another);
+    template<> DOT_PUBLIC void object::set_as(scalar<float > another);
+
+    template<> DOT_PUBLIC void object::set_as(scalar<bool> another);
 }
 
 // Unicode signature: Владимир Керимов

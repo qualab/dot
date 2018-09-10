@@ -160,6 +160,23 @@ namespace dot
         static const class_id scalar_bool_data_id("scalar<bool>::data");
         return scalar_bool_data_id;
     }
+
+    template<> void object::set_as(scalar<long long> another) { initialize<scalar<long long>::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<long     > another) { initialize<scalar<long     >::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<int      > another) { initialize<scalar<int      >::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<short    > another) { initialize<scalar<short    >::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<char     > another) { initialize<scalar<char     >::data>(another.scalar_data()); }
+
+    template<> void object::set_as(scalar<unsigned long long> another) { initialize<scalar<unsigned long long>::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<unsigned long     > another) { initialize<scalar<unsigned long     >::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<unsigned int      > another) { initialize<scalar<unsigned int      >::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<unsigned short    > another) { initialize<scalar<unsigned short    >::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<unsigned char     > another) { initialize<scalar<unsigned char     >::data>(another.scalar_data()); }
+
+    template<> void object::set_as(scalar<double> another) { initialize<scalar<double>::data>(another.scalar_data()); }
+    template<> void object::set_as(scalar<float > another) { initialize<scalar<float >::data>(another.scalar_data()); }
+
+    template<> void object::set_as(scalar<bool> another) { initialize<scalar<bool>::data>(another.scalar_data()); }
 }
 
 // Unicode signature: Владимир Керимов

@@ -35,6 +35,76 @@ namespace dot
         DOT_CHECK(double(d)) == 987.65432109876;
         DOT_CHECK(float(f)) == 54.321f;
         DOT_CHECK(bool(b)).is_true();
+
+        object oLL = LL;
+        object oL = L;
+        object oi = i;
+        object os = s;
+        object oc = c;
+        object ouLL = uLL;
+        object ouL = uL;
+        object oui = ui;
+        object ous = us;
+        object ouc = uc;
+        object od = d;
+        object of = f;
+        object ob = b;
+
+        DOT_CHECK(long long(oLL)) == -1234567890123456789LL;
+        DOT_CHECK(long(oL)) == 123456789L;
+        DOT_CHECK(int(oi)) == -987654321;
+        DOT_CHECK(short(os)) == -32100;
+        DOT_CHECK(char(oc)) == 'c';
+        DOT_CHECK(unsigned long long(ouLL)) == 12345678901234567890uLL;
+        DOT_CHECK(unsigned long(ouL)) == 4201234567uL;
+        DOT_CHECK(unsigned int(oui)) == 0xbadfaced;
+        DOT_CHECK(unsigned short(ous)) == 0x1eaf;
+        DOT_CHECK(unsigned char(ouc)) == 'u';
+        DOT_CHECK(double(od)) == 987.65432109876;
+        DOT_CHECK(float(of)) == 54.321f;
+        DOT_CHECK(bool(ob)).is_true();
+
+        scalar<long long> aLL = oLL;
+        scalar<long> aL = oL;
+        scalar<int> ai = oi;
+        scalar<short> as = os;
+        scalar<char> ac = oc;
+        scalar<unsigned long long> auLL = ouLL;
+        scalar<unsigned long> auL = ouL;
+        scalar<unsigned int> aui = oui;
+        scalar<unsigned short> aus = ous;
+        scalar<unsigned char> auc = ouc;
+        scalar<double> ad = od;
+        scalar<float> af = of;
+        scalar<bool> ab = ob;
+
+        DOT_CHECK(long long(aLL)) == -1234567890123456789LL;
+        DOT_CHECK(long(aL)) == 123456789L;
+        DOT_CHECK(int(ai)) == -987654321;
+        DOT_CHECK(short(as)) == -32100;
+        DOT_CHECK(char(ac)) == 'c';
+        DOT_CHECK(unsigned long long(auLL)) == 12345678901234567890uLL;
+        DOT_CHECK(unsigned long(auL)) == 4201234567uL;
+        DOT_CHECK(unsigned int(aui)) == 0xbadfaced;
+        DOT_CHECK(unsigned short(aus)) == 0x1eaf;
+        DOT_CHECK(unsigned char(auc)) == 'u';
+        DOT_CHECK(double(ad)) == 987.65432109876;
+        DOT_CHECK(float(af)) == 54.321f;
+        DOT_CHECK(bool(ab)).is_true();
+
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, ab = c);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, af = d);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, ad = i);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, ac = s);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, as = i);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, ai = L);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, aL = LL);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, aLL = uLL);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, auc = us);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, aus = ui);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, aui = uL);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, auL = uLL);
+        DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, auLL = LL);
     }
 
     namespace
@@ -62,6 +132,11 @@ namespace dot
     template<> void object::set_as(test_type value)
     {
         initialize<scalar<test_type>::data>(value);
+    }
+
+    template<> void object::set_as(scalar<test_type> value)
+    {
+        initialize<scalar<test_type>::data>(value.scalar_data());
     }
 
     template<> test_type object::get_as() const
@@ -109,7 +184,7 @@ namespace dot
         DOT_CHECK(y.get_as<test_type>().index) == 100500uLL;
         DOT_CHECK(y.get_as<test_type>().value) == 9000.1;
 
-        object z = static_cast<const object&>(y);
+        object z = y;
         DOT_ENSURE(z.get_data()).is<scalar<test_type>::data>();
         DOT_ENSURE_NO_EXCEPTION(z.get_as<test_type>());
         DOT_CHECK(z.get_as<test_type>().index) == 100500uLL;
