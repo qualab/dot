@@ -2,6 +2,7 @@
 
 #include <dot/test.h>
 #include <dot/object.h>
+#include <dot/scalar.h>
 #include <iostream>
 
 namespace dot

@@ -106,7 +106,7 @@ namespace dot
 
     // hierarchy base class ends instance hierarchy search
     template<>
-    inline bool hierarchic::is<hierarchic>() const
+    inline bool hierarchic::is<hierarchic>() const noexcept
     {
         return false;
     }

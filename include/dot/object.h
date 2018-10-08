@@ -4,6 +4,8 @@
 
 #include <dot/type.h>
 #include <dot/stdfwd.h>
+#include <type_traits>
+#include <utility>
 
 namespace dot
 {
@@ -20,32 +22,32 @@ namespace dot
         virtual bool is_not_null() const noexcept;
 
         // copy object override
-        object(const object& another) noexcept;
-        object& operator = (const object& another) noexcept;
+        object(const object& another);
+        object& operator = (const object& another);
 
         // move object override
-        object(object&& temporary) noexcept;
-        object& operator = (object&& temporary) noexcept;
+        object(object&& temporary);
+        object& operator = (object&& temporary);
 
-        // create object with value
-        template <typename value_type>
-        object(value_type value);
+        // create object by value of another type
+        template <typename another_type>
+        object(another_type&& another);
 
-        // assign value to object
-        template <typename value_type>
-        object& operator = (value_type value);
+        // assign value of another type to object
+        template <typename another_type>
+        object& operator = (another_type&& another);
 
-        // cast object to value type
-        template <typename value_type>
-        explicit operator value_type() const;
+        // cast object to another type
+        template <typename another_type>
+        explicit operator another_type() const;
 
-        // set value to object
-        template <typename value_type>
-        void set_as(value_type value);
+        // set object by scalar value
+        template <typename another_type>
+        void set_as(another_type&& another);
 
-        // get value of object
-        template <typename value_type>
-        value_type get_as() const;
+        // get object as derived type reference
+        template <typename another_type>
+        another_type get_as() const;
 
         // base data class for all objects
         class data;
@@ -66,7 +68,10 @@ namespace dot
     protected:
         // initialize internal object data by derived data type
         template <typename derived_data, typename... argument_types>
-        derived_data* initialize(argument_types... arguments);
+        derived_data* initialize(argument_types&&... arguments);
+
+        void assign_to(object& target) const&;
+        void assign_to(object& target) &&;
 
     private:
         // internal object data
@@ -108,38 +113,68 @@ namespace dot
         friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object::data& destination);
     };
 
-    template <typename value_type>
-    object::object(value_type value)
+// -- implmentation --
+
+    template <typename another_type>
+    object::object(another_type&& another)
         : m_data(nullptr)
     {
-        set_as(value);
+        set_as(std::forward<another_type>(another));
     }
 
-    template <typename value_type>
-    object& object::operator = (value_type value)
+    template <typename another_type>
+    object& object::operator = (another_type&& another)
     {
-        set_as(value);
+        set_as(std::forward<another_type>(another));
         return *this;
     }
 
-    template <typename value_type>
-    object::operator value_type() const
+    template <typename another_type>
+    object::operator another_type() const
     {
-        return get_as<value_type>();
+        return get_as<another_type>();
     }
 
-    template <typename value_type>
-    void object::set_as(value_type value)
+    template <typename another_type>
+    void object::set_as(another_type&& another)
     {
-        static_assert(false,
-            "Template object::set_as<type> is not specialized for this type.");
+        using source_type = std::remove_reference_t<another_type>;
+        if constexpr (std::is_same_v<object, source_type>)
+        {
+            another.assign_to(*this);
+        }
+        else if constexpr (std::is_base_of_v<object, source_type>)
+        {
+            using another_data_type = typename source_type::data;
+            const another_data_type& another_data = another.data_as<another_data_type>();
+            initialize<another_data_type>(another_data);
+        }
+        else if constexpr (std::is_arithmetic_v<source_type>)
+        {
+            using another_data_type = typename scalar<source_type>::data;
+            initialize<another_data_type>(std::forward<another_type>(another));
+        }
+        else
+        {
+            static_assert(false, "Required specialization of object::set_as<> method for this type.");
+        }
     }
 
-    template <typename value_type>
-    value_type object::get_as() const
+    template <typename another_type>
+    another_type object::get_as() const
     {
-        static_assert(false,
-            "Template object::get_as<type> is not specialized for this type.");
+        if constexpr (std::is_base_of_v<object, another_type>)
+        {
+            return another_type(*this);
+        }
+        else if constexpr (std::is_arithmetic_v<another_type>)
+        {
+            return data_as<typename scalar<another_type>::data>().get();
+        }
+        else
+        {
+            static_assert(false, "Required specialization of object::get_as<> method for this type.");
+        }
     }
 
     template <typename data_type>
@@ -149,57 +184,15 @@ namespace dot
     }
 
     template <typename derived_data, typename... argument_types>
-    derived_data* object::initialize(argument_types... arguments)
+    derived_data* object::initialize(argument_types&&... arguments)
     {
         static_assert(sizeof(derived_data) <= object::max_data_size,
             "Size of derived data type is too big for object data internal buffer.");
         derived_data* result = nullptr;
         reset();
-        m_data = result = new(m_buffer) derived_data(arguments...);
+        m_data = result = new(m_buffer) derived_data(std::forward<argument_types>(arguments)...);
         return result;
     }
-
-    template<> DOT_PUBLIC void object::set_as(long long value);
-    template<> DOT_PUBLIC void object::set_as(long value);
-    template<> DOT_PUBLIC void object::set_as(int value);
-    template<> DOT_PUBLIC void object::set_as(short value);
-    template<> DOT_PUBLIC void object::set_as(char value);
-
-    template<> DOT_PUBLIC void object::set_as(unsigned long long value);
-    template<> DOT_PUBLIC void object::set_as(unsigned long value);
-    template<> DOT_PUBLIC void object::set_as(unsigned int value);
-    template<> DOT_PUBLIC void object::set_as(unsigned short value);
-    template<> DOT_PUBLIC void object::set_as(unsigned char value);
-
-    template<> DOT_PUBLIC void object::set_as(double value);
-    template<> DOT_PUBLIC void object::set_as(float  value);
-
-    template<> DOT_PUBLIC void object::set_as(bool value);
-
-    template<> DOT_PUBLIC void object::set_as(const char* value);
-    template<> DOT_PUBLIC void object::set_as(std::string value);
-
-    template<> DOT_PUBLIC void object::set_as(std::nullptr_t);
-
-    template<> DOT_PUBLIC long long object::get_as() const;
-    template<> DOT_PUBLIC long      object::get_as() const;
-    template<> DOT_PUBLIC int       object::get_as() const;
-    template<> DOT_PUBLIC short     object::get_as() const;
-    template<> DOT_PUBLIC char      object::get_as() const;
-
-    template<> DOT_PUBLIC unsigned long long object::get_as() const;
-    template<> DOT_PUBLIC unsigned long      object::get_as() const;
-    template<> DOT_PUBLIC unsigned int       object::get_as() const;
-    template<> DOT_PUBLIC unsigned short     object::get_as() const;
-    template<> DOT_PUBLIC unsigned char      object::get_as() const;
-
-    template<> DOT_PUBLIC double object::get_as() const;
-    template<> DOT_PUBLIC float  object::get_as() const;
-
-    template<> DOT_PUBLIC bool object::get_as() const;
-
-    template<> DOT_PUBLIC const char* object::get_as() const;
-    template<> DOT_PUBLIC std::string object::get_as() const;
 }
 
 // Unicode signature: Владимир Керимов

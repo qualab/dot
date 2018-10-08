@@ -39,30 +39,42 @@ namespace dot
         return !is_null();
     }
 
-    object::object(const object& another) noexcept
-        : m_data(another.m_data ? another.m_data->copy_to(m_buffer) : nullptr)
+    object::object(const object& another)
+        : m_data(nullptr)
     {
+        another.assign_to(*this);
     }
 
-    object& object::operator = (const object& another) noexcept
+    object& object::operator = (const object& another)
     {
-        reset();
-        if (another.m_data)
-            m_data = another.m_data->copy_to(m_buffer); 
+        another.assign_to(*this);
         return *this;
     }
 
-    object::object(object&& another) noexcept
-        : m_data(another.m_data ? another.m_data->move_to(m_buffer) : nullptr)
+    object::object(object&& temporary)
+        : m_data(nullptr)
     {
+        temporary.assign_to(*this);
     }
 
-    object& object::operator = (object&& another) noexcept
+    object& object::operator = (object&& temporary)
     {
-        reset();
-        if (another.m_data)
-            m_data = another.m_data->move_to(m_buffer);
+        temporary.assign_to(*this);
         return *this;
+    }
+
+    void object::assign_to(object& target) const&
+    {
+        target.reset();
+        if (m_data)
+            target.m_data = m_data->copy_to(target.m_buffer);
+    }
+
+    void object::assign_to(object& target) &&
+    {
+        target.reset();
+        if (m_data)
+            target.m_data = m_data->move_to(target.m_buffer);
     }
 
     const object::data& object::get_data() const
@@ -133,48 +145,6 @@ namespace dot
         value.read(stream);
         return stream;
     }
-
-    template<> void object::set_as(long long value) { initialize<scalar<long long>::data>(value); }
-    template<> void object::set_as(long      value) { initialize<scalar<long     >::data>(value); }
-    template<> void object::set_as(int       value) { initialize<scalar<int      >::data>(value); }
-    template<> void object::set_as(short     value) { initialize<scalar<short    >::data>(value); }
-    template<> void object::set_as(char      value) { initialize<scalar<char     >::data>(value); }
-
-    template<> void object::set_as(unsigned long long value) { initialize<scalar<unsigned long long>::data>(value); }
-    template<> void object::set_as(unsigned long      value) { initialize<scalar<unsigned long     >::data>(value); }
-    template<> void object::set_as(unsigned int       value) { initialize<scalar<unsigned int      >::data>(value); }
-    template<> void object::set_as(unsigned short     value) { initialize<scalar<unsigned short    >::data>(value); }
-    template<> void object::set_as(unsigned char      value) { initialize<scalar<unsigned char     >::data>(value); }
-
-    template<> void object::set_as(double value) { initialize<scalar<double>::data>(value); }
-    template<> void object::set_as(float  value) { initialize<scalar<float >::data>(value); }
-
-    template<> void object::set_as(bool value) { initialize<scalar<bool>::data>(value); }
-
-    template<> void object::set_as(const char* value) { initialize<copyable<std::string>::data>(value); }
-    template<> void object::set_as(std::string value) { initialize<copyable<std::string>::data>(std::move(value)); }
-
-    template<> void object::set_as(std::nullptr_t) { reset(); }
-
-    template<> long long object::get_as() const { return data_as<scalar<long long>::data>().get(); }
-    template<> long      object::get_as() const { return data_as<scalar<long     >::data>().get(); }
-    template<> int       object::get_as() const { return data_as<scalar<int      >::data>().get(); }
-    template<> short     object::get_as() const { return data_as<scalar<short    >::data>().get(); }
-    template<> char      object::get_as() const { return data_as<scalar<char     >::data>().get(); }
-
-    template<> unsigned long long object::get_as() const { return data_as<scalar<unsigned long long>::data>().get(); }
-    template<> unsigned long      object::get_as() const { return data_as<scalar<unsigned long     >::data>().get(); }
-    template<> unsigned int       object::get_as() const { return data_as<scalar<unsigned int      >::data>().get(); }
-    template<> unsigned short     object::get_as() const { return data_as<scalar<unsigned short    >::data>().get(); }
-    template<> unsigned char      object::get_as() const { return data_as<scalar<unsigned char     >::data>().get(); }
-
-    template<> double object::get_as() const { return data_as<scalar<double>::data>().get(); }
-    template<> float  object::get_as() const { return data_as<scalar<float >::data>().get(); }
-
-    template<> bool object::get_as() const { return data_as<scalar<bool>::data>().get(); }
-
-    template<> const char* object::get_as() const { return data_as<copyable<std::string>::data>().get().c_str(); }
-    template<> std::string object::get_as() const { return data_as<copyable<std::string>::data>().get(); }
 }
 
 // Unicode signature: Владимир Керимов

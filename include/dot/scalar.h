@@ -184,23 +184,6 @@ namespace dot
     template<> DOT_PUBLIC const class_id& scalar<float >::data::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& scalar<bool>::data::id() noexcept;
-
-    template<> DOT_PUBLIC void object::set_as(scalar<long long> another);
-    template<> DOT_PUBLIC void object::set_as(scalar<long     > another);
-    template<> DOT_PUBLIC void object::set_as(scalar<int      > another);
-    template<> DOT_PUBLIC void object::set_as(scalar<short    > another);
-    template<> DOT_PUBLIC void object::set_as(scalar<char     > another);
-
-    template<> DOT_PUBLIC void object::set_as(scalar<unsigned long long> another);
-    template<> DOT_PUBLIC void object::set_as(scalar<unsigned long     > another);
-    template<> DOT_PUBLIC void object::set_as(scalar<unsigned int      > another);
-    template<> DOT_PUBLIC void object::set_as(scalar<unsigned short    > another);
-    template<> DOT_PUBLIC void object::set_as(scalar<unsigned char     > another);
-
-    template<> DOT_PUBLIC void object::set_as(scalar<double> another);
-    template<> DOT_PUBLIC void object::set_as(scalar<float > another);
-
-    template<> DOT_PUBLIC void object::set_as(scalar<bool> another);
 }
 
 // Unicode signature: Владимир Керимов

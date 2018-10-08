@@ -234,13 +234,13 @@ namespace dot
     template <typename instance_type>
     void copyable<instance_type>::data::write(std::ostream& stream) const
     {
-        stream << m_block->instance;
+        stream << get();
     }
 
     template <typename instance_type>
     void copyable<instance_type>::data::read(std::istream& stream)
     {
-        stream >> m_block->instance;
+        stream >> ref();
     }
 
     template <typename instance_type>

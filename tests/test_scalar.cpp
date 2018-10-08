@@ -129,21 +129,6 @@ namespace dot
         }
     }
 
-    template<> void object::set_as(test_type value)
-    {
-        initialize<scalar<test_type>::data>(value);
-    }
-
-    template<> void object::set_as(scalar<test_type> value)
-    {
-        initialize<scalar<test_type>::data>(value.scalar_data());
-    }
-
-    template<> test_type object::get_as() const
-    {
-        return data_as<scalar<test_type>::data>().get();
-    }
-
     template<> const class_id& scalar<test_type>::id() noexcept
     {
         static const class_id scalar_test_type_id("scalar<test_type>");
@@ -154,6 +139,16 @@ namespace dot
     {
         static const class_id scalar_test_type_data_id("scalar<test_type>::data");
         return scalar_test_type_data_id;
+    }
+
+    template<> void object::set_as<test_type>(test_type&& another)
+    {
+        initialize<scalar<test_type>::data>(another);
+    }
+
+    template<> test_type object::get_as<test_type>() const
+    {
+        return data_as<scalar<test_type>::data>().get();
     }
 
     DOT_TEST_SUITE(scalar_test_type)
