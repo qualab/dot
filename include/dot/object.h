@@ -58,7 +58,10 @@ namespace dot
         const data_type& data_as() const;
 
         // enough for two 64-bit fields and virtual table pointer
-        static const size_t max_data_size = 3 * sizeof(int64);
+        enum 
+        {
+            max_data_size = 3 * sizeof(int64)
+        };
 
         // class identification
         typedef hierarchic base;
