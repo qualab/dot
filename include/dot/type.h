@@ -20,8 +20,13 @@ namespace dot
     typedef std::uint8_t  uint8;
 
     // unsigned integers
-    typedef unsigned uint;
+    typedef unsigned int   uint;
+    typedef unsigned short ushort;
+    typedef unsigned long  ulong;
+
+    // byte types
     typedef uint8 byte;
+    typedef int8 sbyte;
 
     // class identificator type
     class DOT_PUBLIC class_id

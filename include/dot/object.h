@@ -138,7 +138,7 @@ namespace dot
     template <typename another_type>
     void object::set_as(another_type&& another)
     {
-        using source_type = std::remove_reference_t<another_type>;
+        using source_type = std::remove_const_t<std::remove_reference_t<another_type>>;
         if constexpr (std::is_same_v<object, source_type>)
         {
             another.assign_to(*this);
@@ -163,13 +163,18 @@ namespace dot
     template <typename another_type>
     another_type object::get_as() const
     {
-        if constexpr (std::is_base_of_v<object, another_type>)
+        using target_type = std::remove_const_t<std::remove_reference_t<another_type>>;
+        if constexpr (std::is_same_v<object, target_type>)
         {
-            return another_type(*this);
+            return *this;
         }
-        else if constexpr (std::is_arithmetic_v<another_type>)
+        if constexpr (std::is_base_of_v<object, target_type>)
         {
-            return data_as<typename scalar<another_type>::data>().get();
+            return target_type(*this);
+        }
+        else if constexpr (std::is_arithmetic_v<target_type>)
+        {
+            return data_as<typename scalar<target_type>::data>().get();
         }
         else
         {

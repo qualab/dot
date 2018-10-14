@@ -8,6 +8,9 @@
 #include <vector>
 
 using std::string;
+using std::wstring;
+using std::u16string;
+using std::u32string;
 using std::thread;
 using std::vector;
 
@@ -108,6 +111,22 @@ namespace dot
         DOT_CHECK(original.unique_ref()).is_true();
         DOT_CHECK(another.ref_count()) == copy_count + 1;
         DOT_CHECK(another.unique_ref()).is_false();
+    }
+
+    DOT_TEST_SUITE(object_from_string)
+    {
+        static const string    s_test("Hello!");
+        static const wstring   w_test(L"Unicode: Широкие Буквы!");
+        static const u16string u_test(u"Unicode: Толстые Буквы!");
+        static const u32string U_test(U"Unicode: Большие Буквы!");
+        object s = s_test;
+        object w = w_test;
+        object u = u_test;
+        object U = U_test;
+        DOT_CHECK(s.get_as<string>())    == s_test;
+        DOT_CHECK(w.get_as<wstring>())   == w_test;
+        DOT_CHECK(u.get_as<u16string>()) == u_test;
+        DOT_CHECK(U.get_as<u32string>()) == U_test;
     }
 }
 
