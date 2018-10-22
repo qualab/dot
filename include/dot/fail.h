@@ -18,6 +18,7 @@ namespace dot
         class error;
         class bad_typecast;
         class null_reference;
+        class unreadable_data;
     };
 
     class DOT_PUBLIC fail::info
@@ -69,6 +70,17 @@ namespace dot
     {
     public:
         explicit null_reference(const char* message) noexcept;
+        virtual const char* label() const noexcept override;
+
+        typedef fail::error base;
+        static const class_id& id() noexcept;
+        virtual const class_id& who() const noexcept override;
+    };
+
+    class DOT_PUBLIC fail::unreadable_data : public fail::error
+    {
+    public:
+        explicit unreadable_data(const char* message) noexcept;
         virtual const char* label() const noexcept override;
 
         typedef fail::error base;

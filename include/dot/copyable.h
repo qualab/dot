@@ -21,6 +21,9 @@ namespace dot
         copyable(copyable&& temporary);
         copyable& operator = (copyable&& temporary);
 
+        copyable(const object& another);
+        copyable& operator = (const object& another);
+
         const instance_type* operator -> () const noexcept;
         instance_type* operator -> ();
 
@@ -32,12 +35,6 @@ namespace dot
 
         const instance_type& get() const noexcept;
         instance_type& ref();
-
-        template <typename another_type>
-        bool operator == (another_type&& another) const;
-
-        template <typename another_type>
-        bool operator != (another_type&& another) const;
 
         typedef object base;
         static const class_id& id() noexcept;
@@ -139,6 +136,19 @@ namespace dot
     }
 
     template <typename instance_type>
+    copyable<instance_type>::copyable(const object& another)
+        : m_data(initialize<data>(another.data_as<data>()))
+    {
+    }
+
+    template <typename instance_type>
+    copyable<instance_type>& copyable<instance_type>::operator = (const object& another)
+    {
+        m_data = initialize<data>(another.data_as<data>());
+        return *this;
+    }
+
+    template <typename instance_type>
     const instance_type* copyable<instance_type>::operator -> () const noexcept
     {
         return &m_data->get();
@@ -184,20 +194,6 @@ namespace dot
     instance_type& copyable<instance_type>::ref()
     {
         return m_data->ref();
-    }
-
-    template <typename instance_type>
-    template <typename another_type>
-    bool copyable<instance_type>::operator == (another_type&& another) const
-    {
-        return m_data->get() == another;
-    }
-
-    template <typename instance_type>
-    template <typename another_type>
-    bool copyable<instance_type>::operator != (another_type&& another) const
-    {
-        return !(*this == another);
     }
 
     template <typename instance_type>

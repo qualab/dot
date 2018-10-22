@@ -148,6 +148,27 @@ namespace dot
         return fail::null_reference::id();
     }
 
+    fail::unreadable_data::unreadable_data(const char* message) noexcept
+        : base(message)
+    {
+    }
+
+    const char* fail::unreadable_data::label() const noexcept
+    {
+        return "UNREADABLE DATA";
+    }
+
+    const class_id& fail::unreadable_data::id() noexcept
+    {
+        static class_id fail_unreadable_data_id("fail::unreadable_data");
+        return fail_unreadable_data_id;
+    }
+
+    const class_id& fail::unreadable_data::who() const noexcept
+    {
+        return fail::unreadable_data::id();
+    }
+
     template<> const class_id& copyable<fail::info>::id() noexcept
     {
         static class_id copyable_fail_info_id("copyable<fail::info>");

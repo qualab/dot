@@ -31,9 +31,9 @@ namespace dot
 
         template <typename fail_type, typename argument_type>
         static check<fail_type, argument_type>
-            make_check(const argument_type& argument)
+            make_check(argument_type&& argument)
         {
-            return check<fail_type, argument_type>(argument);
+            return check<fail_type, argument_type>(std::forward<argument_type>(argument));
         }
 
         template <typename fail_type, typename... argument_types>
@@ -76,7 +76,7 @@ void test_suite_##suite_name::body()
     class test::check
     {
     public:
-        check(const argument_type& argument);
+        check(argument_type&& argument);
 
         void is_true() const;
         void is_false() const;
@@ -86,19 +86,19 @@ void test_suite_##suite_name::body()
         template <typename another_type> void is() const;
         template <typename another_type> void is_not() const;
 
-        template <typename another_type> void operator == (const another_type& another) const;
-        template <typename another_type> void operator != (const another_type& another) const;
-        template <typename another_type> void operator <= (const another_type& another) const;
-        template <typename another_type> void operator >= (const another_type& another) const;
-        template <typename another_type> void operator <  (const another_type& another) const;
-        template <typename another_type> void operator >  (const another_type& another) const;
+        template <typename another_type> void operator == (another_type&& another) const;
+        template <typename another_type> void operator != (another_type&& another) const;
+        template <typename another_type> void operator <= (another_type&& another) const;
+        template <typename another_type> void operator >= (another_type&& another) const;
+        template <typename another_type> void operator <  (another_type&& another) const;
+        template <typename another_type> void operator >  (another_type&& another) const;
 
         void no_exception() const;
 
         template <typename exception_type> void expect_exception() const;
 
     private:
-        const argument_type& m_argument;
+        argument_type&& m_argument;
     };
 
 #define DOT_SCOPE(name) trace::scope(name, __FILE__, __LINE__)
@@ -247,8 +247,8 @@ void test_suite_##suite_name::body()
     }
 
     template <typename fail_type, typename argument_type>
-    test::check<fail_type, argument_type>::check(const argument_type& argument)
-        : m_argument(argument)
+    test::check<fail_type, argument_type>::check(argument_type&& argument)
+        : m_argument(std::forward<argument_type>(argument))
     {
     }
 
@@ -260,7 +260,7 @@ void test_suite_##suite_name::body()
                 return static_cast<bool>(m_argument);
             },
             DOT_TEST_OUTPUT_ANY " is true",
-            m_argument
+            std::forward<argument_type>(m_argument)
         );
     }
 
@@ -272,7 +272,7 @@ void test_suite_##suite_name::body()
                 return !static_cast<bool>(m_argument);
             },
             DOT_TEST_OUTPUT_ANY " is false",
-            m_argument
+            std::forward<argument_type>(m_argument)
         );
     }
 
@@ -284,7 +284,7 @@ void test_suite_##suite_name::body()
                 return static_cast<const object&>(m_argument).is_null();
             },
             DOT_TEST_OUTPUT_ANY " is null",
-            m_argument
+            std::forward<argument_type>(m_argument)
         );
     }
 
@@ -296,7 +296,7 @@ void test_suite_##suite_name::body()
                 return static_cast<const object&>(m_argument).is_not_null();
             },
             DOT_TEST_OUTPUT_ANY " is not null",
-            m_argument
+            std::forward<argument_type>(m_argument)
         );
     }
 
@@ -309,7 +309,7 @@ void test_suite_##suite_name::body()
                 return static_cast<const hierarchic&>(m_argument).is<another_type>();
             },
             DOT_TEST_OUTPUT_ANY " is " DOT_TEST_OUTPUT_ANY,
-            m_argument,
+            std::forward<argument_type>(m_argument),
             another_type::id().name()
         );
     }
@@ -323,92 +323,92 @@ void test_suite_##suite_name::body()
                 return static_cast<const object&>(m_argument).is_not<another_type>();
             },
             DOT_TEST_OUTPUT_ANY " is not " DOT_TEST_OUTPUT_ANY,
-            m_argument,
+            std::forward<argument_type>(m_argument),
             another_type::id().name()
         );
     }
 
     template <typename fail_type, typename argument_type>
     template <typename another_type>
-    void test::check<fail_type, argument_type>::operator == (const another_type& another) const
+    void test::check<fail_type, argument_type>::operator == (another_type&& another) const
     {
         test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument == another;
             },
             DOT_TEST_OUTPUT_ANY " == " DOT_TEST_OUTPUT_ANY,
-            m_argument,
-            another
+            std::forward<argument_type>(m_argument),
+            std::forward<another_type>(another)
         );
     }
 
     template <typename fail_type, typename argument_type>
     template <typename another_type>
-    void test::check<fail_type, argument_type>::operator != (const another_type& another) const
+    void test::check<fail_type, argument_type>::operator != (another_type&& another) const
     {
         test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument != another;
             },
             DOT_TEST_OUTPUT_ANY " != " DOT_TEST_OUTPUT_ANY,
-            m_argument,
-            another
+            std::forward<argument_type>(m_argument),
+            std::forward<another_type>(another)
         );
     }
 
     template <typename fail_type, typename argument_type>
     template <typename another_type>
-    void test::check<fail_type, argument_type>::operator <= (const another_type& another) const
+    void test::check<fail_type, argument_type>::operator <= (another_type&& another) const
     {
         test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument <= another;
             },
             DOT_TEST_OUTPUT_ANY " <= " DOT_TEST_OUTPUT_ANY,
-            m_argument,
-            another
+            std::forward<argument_type>(m_argument),
+            std::forward<another_type>(another)
         );
     }
 
     template <typename fail_type, typename argument_type>
     template <typename another_type>
-    void test::check<fail_type, argument_type>::operator >= (const another_type& another) const
+    void test::check<fail_type, argument_type>::operator >= (another_type&& another) const
     {
         test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument >= another;
             },
             DOT_TEST_OUTPUT_ANY " >= " DOT_TEST_OUTPUT_ANY,
-            m_argument,
-            another
+            std::forward<argument_type>(m_argument),
+            std::forward<another_type>(another)
         );
     }
 
     template <typename fail_type, typename argument_type>
     template <typename another_type>
-    void test::check<fail_type, argument_type>::operator < (const another_type& another) const
+    void test::check<fail_type, argument_type>::operator < (another_type&& another) const
     {
         test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument < another;
             },
             DOT_TEST_OUTPUT_ANY " < " DOT_TEST_OUTPUT_ANY,
-            m_argument,
-            another
+            std::forward<argument_type>(m_argument),
+            std::forward<another_type>(another)
         );
     }
 
     template <typename fail_type, typename argument_type>
     template <typename another_type>
-    void test::check<fail_type, argument_type>::operator > (const another_type& another) const
+    void test::check<fail_type, argument_type>::operator > (another_type&& another) const
     {
         test::ensure<fail_type>(
             [=]() -> bool {
                 return m_argument > another;
             },
             DOT_TEST_OUTPUT_ANY " > " DOT_TEST_OUTPUT_ANY,
-            m_argument,
-            another
+            std::forward<argument_type>(m_argument),
+            std::forward<another_type>(another)
         );
     }
 

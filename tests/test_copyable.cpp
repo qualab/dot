@@ -25,6 +25,7 @@ namespace dot
         DOT_ENSURE(str.ref_count()) == 1;
         DOT_CHECK(*str) == test_string;
         DOT_CHECK(str->size()) == std::strlen(test_string);
+
         copyable<string> copy = str;
         DOT_ENSURE(str.unique_ref()).is_false();
         DOT_ENSURE(copy.unique_ref()).is_false();
@@ -115,18 +116,62 @@ namespace dot
 
     DOT_TEST_SUITE(object_from_string)
     {
-        static const string    s_test("Hello!");
-        static const wstring   w_test(L"Unicode: Широкие Буквы!");
-        static const u16string u_test(u"Unicode: Толстые Буквы!");
-        static const u32string U_test(U"Unicode: Большие Буквы!");
-        object s = s_test;
-        object w = w_test;
-        object u = u_test;
-        object U = U_test;
-        DOT_CHECK(s.get_as<string>())    == s_test;
-        DOT_CHECK(w.get_as<wstring>())   == w_test;
-        DOT_CHECK(u.get_as<u16string>()) == u_test;
-        DOT_CHECK(U.get_as<u32string>()) == U_test;
+        static const char*     const cp = u8"Unicode: Нормальная кодировка!";
+        static const wchar_t*  const wp = L"Unicode: Широкие Буквы!";
+        static const char16_t* const up = u"Unicode: Упитанные Буквы!";
+        static const char32_t* const Up = U"Unicode: Наитолстейшие Буквы!";
+        static const string     cs = cp;
+        static const wstring    ws = wp;
+        static const u16string  us = up;
+        static const u32string  Us = Up;
+        object c1 = cp;
+        object w1 = wp;
+        object u1 = up;
+        object U1 = Up;
+        DOT_CHECK(c1.get_as<string>()) == cp;
+        DOT_CHECK(w1.get_as<wstring>()) == wp;
+        DOT_CHECK(u1.get_as<u16string>()) == up;
+        DOT_CHECK(U1.get_as<u32string>()) == Up;
+        DOT_CHECK(c1.get_as<const char*>()) == cs;
+        DOT_CHECK(w1.get_as<const wchar_t*>()) == ws;
+        DOT_CHECK(u1.get_as<const char16_t*>()) == us;
+        DOT_CHECK(U1.get_as<const char32_t*>()) == Us;
+        DOT_CHECK(c1.get_as<const string&>()) == cp;
+        DOT_CHECK(w1.get_as<const wstring&>()) == wp;
+        DOT_CHECK(u1.get_as<const u16string&>()) == up;
+        DOT_CHECK(U1.get_as<const u32string&>()) == Up;
+        object c2 = cs;
+        object w2 = ws;
+        object u2 = us;
+        object U2 = Us;
+        DOT_CHECK(c2.get_as<string>()) == cp;
+        DOT_CHECK(w2.get_as<wstring>()) == wp;
+        DOT_CHECK(u2.get_as<u16string>()) == up;
+        DOT_CHECK(U2.get_as<u32string>()) == Up;
+        DOT_CHECK(c2.get_as<const char*>()) == cs;
+        DOT_CHECK(w2.get_as<const wchar_t*>()) == ws;
+        DOT_CHECK(u2.get_as<const char16_t*>()) == us;
+        DOT_CHECK(U2.get_as<const char32_t*>()) == Us;
+        DOT_CHECK(c2.get_as<const string&>()) == cp;
+        DOT_CHECK(w2.get_as<const wstring&>()) == wp;
+        DOT_CHECK(u2.get_as<const u16string&>()) == up;
+        DOT_CHECK(U2.get_as<const u32string&>()) == Up;
+        copyable<string>    c = c1;
+        copyable<wstring>   w = w1;
+        copyable<u16string> u = u1;
+        copyable<u32string> U = U1;
+        DOT_CHECK(c.get()) == cs;
+        DOT_CHECK(w.get()) == ws;
+        DOT_CHECK(u.get()) == us;
+        DOT_CHECK(U.get()) == Us;
+        c = c2;
+        w = w2;
+        u = u2;
+        U = U2;
+        DOT_CHECK(c.get()) == cp;
+        DOT_CHECK(w.get()) == wp;
+        DOT_CHECK(u.get()) == up;
+        DOT_CHECK(U.get()) == Up;
     }
 }
 

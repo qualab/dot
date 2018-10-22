@@ -77,6 +77,42 @@ namespace dot
             target.m_data = m_data->move_to(target.m_buffer);
     }
 
+    bool object::operator == (const object& another) const
+    {
+        return m_data == another.m_data ||
+            m_data && another.m_data && m_data->equals(*another.m_data);
+    }
+
+    bool object::operator != (const object& another) const
+    {
+        return m_data != another.m_data &&
+            m_data && another.m_data && !m_data->equals(*another.m_data);
+    }
+
+    bool object::operator <= (const object& another) const
+    {
+        return m_data == another.m_data ||
+            m_data && another.m_data && !another.m_data->less(*m_data);
+    }
+
+    bool object::operator >= (const object& another) const
+    {
+        return m_data == another.m_data ||
+            m_data && another.m_data && !m_data->less(*another.m_data);
+    }
+
+    bool object::operator < (const object& another) const
+    {
+        return m_data != another.m_data &&
+            m_data && another.m_data && m_data->less(*another.m_data);
+    }
+
+    bool object::operator > (const object& another) const
+    {
+        return m_data != another.m_data &&
+            m_data && another.m_data && another.m_data->less(*m_data);
+    }
+
     const object::data& object::get_data() const
     {
         if (!m_data)
@@ -121,6 +157,30 @@ namespace dot
 
     object::data::~data() noexcept
     {
+    }
+
+    void object::data::write(std::ostream& stream) const
+    {
+        // unknown data output by default with proper type
+        // should be overloaded with normal { value : type }
+        stream << "{ " << who().name() << " }";
+    }
+
+    void object::data::read(std::istream&)
+    {
+        // exception of unreadable data throws by default
+        // must be overloaded before read data from stream
+        throw fail::unreadable_data("Unable to read data of the object from byte stream.");
+    }
+
+    bool object::data::equals(const data& another) const
+    {
+        return this == &another; // compare address by default, override if required
+    }
+
+    bool object::data::less(const data& another) const
+    {
+        return this < &another; // compare address by default, override if required
     }
 
     const class_id& object::data::id() noexcept

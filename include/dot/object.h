@@ -49,6 +49,13 @@ namespace dot
         template <typename another_type>
         another_type get_as() const;
 
+        bool operator == (const object& another) const;
+        bool operator != (const object& another) const;
+        bool operator <= (const object& another) const;
+        bool operator >= (const object& another) const;
+        bool operator <  (const object& another) const;
+        bool operator >  (const object& another) const;
+
         // base data class for all objects
         class data;
 
@@ -92,6 +99,13 @@ namespace dot
         data() noexcept;
         virtual ~data() noexcept;
 
+        // stream input and output
+        virtual void write(std::ostream& stream) const; // type output by default
+        virtual void read(std::istream& stream); // unable to read by default
+
+        virtual bool equals(const data& another) const;
+        virtual bool less(const data& another) const;
+
         // class identification
         typedef hierarchic base;
         static const class_id& id() noexcept;
@@ -102,13 +116,9 @@ namespace dot
         virtual data* copy_to(void* buffer) const noexcept = 0;
         virtual data* move_to(void* buffer) noexcept = 0;
 
-        // stream input and output
-        virtual void write(std::ostream& stream) const = 0;
-        virtual void read(std::istream& stream) = 0;
-
         friend class object;
 
-        // data output and input using byte characters
+        // data output and input using byte streams
         friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object::data& source);
         friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object::data& destination);
     };
