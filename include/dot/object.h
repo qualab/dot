@@ -99,23 +99,61 @@ namespace dot
         data() noexcept;
         virtual ~data() noexcept;
 
-        // stream input and output
-        virtual void write(std::ostream& stream) const; // type output by default
-        virtual void read(std::istream& stream); // unable to read by default
-
-        virtual bool equals(const data& another) const;
-        virtual bool less(const data& another) const;
+        bool operator == (const data& another) const;
+        bool operator != (const data& another) const;
+        bool operator <= (const data& another) const;
+        bool operator >= (const data& another) const;
+        bool operator <  (const data& another) const;
+        bool operator >  (const data& another) const;
 
         // class identification
         typedef hierarchic base;
         static const class_id& id() noexcept;
         virtual const class_id& who() const noexcept override;
 
+        // constant for null data string representation
+        static const char* const null_string;
+
     protected:
         // placement into object internal buffer
         virtual data* copy_to(void* buffer) const noexcept = 0;
         virtual data* move_to(void* buffer) noexcept = 0;
 
+        // override if stream input/output operations are required
+        virtual void write(std::ostream& stream) const;
+        virtual void read(std::istream& stream);
+
+        // override if comparison operations are required
+        virtual bool equals(const data& another) const noexcept;
+        virtual bool less(const data& another) const noexcept;
+
+        // helpful structures to allow operations with value in data
+        template <typename value_type, typename meta_type = void>
+        struct writable : std::false_type { };
+
+        template <typename value_type, typename meta_type = void>
+        struct readable : std::false_type { };
+
+        template <typename value_type, typename meta_type = void>
+        struct comparable : std::false_type { };
+
+        template <typename value_type, typename meta_type = void>
+        struct orderable : std::false_type { };
+
+        // helpful constants for the simplest way check
+        template <typename value_type>
+        static constexpr bool is_writable = writable<value_type>::value;
+
+        template <typename value_type>
+        static constexpr bool is_readable = readable<value_type>::value;
+
+        template <typename value_type>
+        static constexpr bool is_comparable = comparable<value_type>::value;
+
+        template <typename value_type>
+        static constexpr bool is_orderable = orderable<value_type>::value;
+
+        // object is friend to use copy/move into the internal buffer
         friend class object;
 
         // data output and input using byte streams
@@ -208,6 +246,52 @@ namespace dot
         m_data = result = new(m_buffer) derived_data(std::forward<argument_types>(arguments)...);
         return result;
     }
+
+    template <typename instance_type>
+    struct object::data::writable<instance_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<std::ostream&>() << std::declval<const instance_type&>()),
+            std::ostream&>>>
+        : std::true_type
+    {
+    };
+
+
+    template <typename value_type>
+    struct object::data::writable<value_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<std::ostream&>() << std::declval<value_type>()),
+            std::ostream&
+        >>> : std::true_type
+    {
+    };
+
+    template <typename value_type>
+    struct object::data::readable<value_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<std::istream&>() >> std::declval<value_type&>()),
+            std::istream&
+        >>> : std::true_type
+    {
+    };
+
+    template <typename value_type>
+    struct object::data::comparable<value_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<value_type>() == std::declval<value_type>()),
+            int
+        >>> : std::true_type
+    {
+    };
+
+    template <typename value_type>
+    struct object::data::orderable<value_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<value_type>() < std::declval<value_type>()),
+            int
+        >>> : std::true_type
+    {
+    };
 }
 
 // Unicode signature: Владимир Керимов

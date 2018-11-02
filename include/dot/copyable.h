@@ -73,8 +73,12 @@ namespace dot
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;
         virtual object::data* move_to(void* buffer) noexcept override;
+
         virtual void write(std::ostream& stream) const override;
         virtual void read(std::istream& stream) override;
+
+        virtual bool equals(const object::data& another) const noexcept override;
+        virtual bool less(const object::data& another) const noexcept override;
 
     private:
         struct memory_block
@@ -230,13 +234,27 @@ namespace dot
     template <typename instance_type>
     void copyable<instance_type>::data::write(std::ostream& stream) const
     {
-        stream << get();
+        if constexpr (is_writable<instance_type>)
+        {
+            stream << get();
+        }
+        else
+        {
+            base::write(stream);
+        }
     }
 
     template <typename instance_type>
     void copyable<instance_type>::data::read(std::istream& stream)
     {
-        stream >> ref();
+        if constexpr (is_readable<instance_type>)
+        {
+            stream >> ref();
+        }
+        else
+        {
+            base::read(stream);
+        }
     }
 
     template <typename instance_type>
@@ -296,6 +314,38 @@ namespace dot
             old_block->dec_counter();
         }
         return m_block->instance;
+    }
+
+    template <typename instance_type>
+    bool copyable<instance_type>::data::equals(const object::data& another) const noexcept
+    {
+        if constexpr (is_comparable<instance_type>)
+        {
+            if (another.is<data>())
+                return get() == another.as<data>().get();
+            else
+                return base::equals(another);
+        }
+        else
+        {
+            return base::equals(another);
+        }
+    }
+
+    template <typename instance_type>
+    bool copyable<instance_type>::data::less(const object::data& another) const noexcept
+    {
+        if constexpr (is_orderable<instance_type>)
+        {
+            if (another.is<data>())
+                return get() < another.as<data>().get();
+            else
+                return base::less(another);
+        }
+        else
+        {
+            return base::less(another);
+        }
     }
 
     template <typename instance_type>

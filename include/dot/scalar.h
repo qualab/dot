@@ -50,8 +50,12 @@ namespace dot
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;
         virtual object::data* move_to(void* buffer) noexcept override;
+
         virtual void write(std::ostream& stream) const override;
         virtual void read(std::istream& stream) override;
+
+        virtual bool equals(const object::data& another) const noexcept override;
+        virtual bool less(const object::data& another) const noexcept override;
 
     private:
         value_type m_value;
@@ -141,13 +145,59 @@ namespace dot
     template <typename value_type>
     void scalar<value_type>::data::write(std::ostream& stream) const
     {
-        stream << m_value;
+        if constexpr (is_writable<value_type>)
+        {
+            stream << m_value;
+        }
+        else
+        {
+            base::write(stream);
+        }
     }
 
     template <typename value_type>
     void scalar<value_type>::data::read(std::istream& stream)
     {
-        stream >> m_value;
+        if constexpr (is_readable<value_type>)
+        {
+            stream >> m_value;
+        }
+        else
+        {
+            base::read(stream);
+        }
+    }
+
+    template <typename value_type>
+    bool scalar<value_type>::data::equals(const object::data& another) const noexcept
+    {
+        if constexpr (is_comparable<value_type>)
+        {
+            if (another.is<data>())
+                return get() == another.as<data>().get();
+            else
+                return base::equals(another);
+        }
+        else
+        {
+            return base::equals(another);
+        }
+    }
+
+    template <typename value_type>
+    bool scalar<value_type>::data::less(const object::data& another) const noexcept
+    {
+        if constexpr (is_orderable<value_type>)
+        {
+            if (another.is<data>())
+                return get() < another.as<data>().get();
+            else
+                return base::equals(another);
+        }
+        else
+        {
+            return base::equals(another);
+        }
     }
 
     template<> DOT_PUBLIC const class_id& scalar<long long>::id() noexcept;

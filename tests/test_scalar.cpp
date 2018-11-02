@@ -117,16 +117,6 @@ namespace dot
             test_type(uint64 id, double num)
                 : index(id), value(num) { }
         };
-
-        std::ostream& operator << (std::ostream& stream, const test_type& source)
-        {
-            return stream << source.index << ", " << source.value;
-        }
-
-        std::istream& operator >> (std::istream& stream, test_type&)
-        {
-            return stream; // read is not required
-        }
     }
 
     template<> const class_id& scalar<test_type>::id() noexcept

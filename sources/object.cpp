@@ -10,6 +10,8 @@
 
 namespace dot
 {
+    const char* const object::data::null_string = "null";
+
     object::object() noexcept
         : m_data(nullptr)
     {
@@ -85,32 +87,28 @@ namespace dot
 
     bool object::operator != (const object& another) const
     {
-        return m_data != another.m_data &&
-            m_data && another.m_data && !m_data->equals(*another.m_data);
+        return !(*this == another);
     }
 
     bool object::operator <= (const object& another) const
     {
-        return m_data == another.m_data ||
-            m_data && another.m_data && !another.m_data->less(*m_data);
+        return !(another < *this);
     }
 
     bool object::operator >= (const object& another) const
     {
-        return m_data == another.m_data ||
-            m_data && another.m_data && !m_data->less(*another.m_data);
+        return !(*this < another);
     }
 
     bool object::operator < (const object& another) const
     {
-        return m_data != another.m_data &&
+        return !m_data && another.m_data ||
             m_data && another.m_data && m_data->less(*another.m_data);
     }
 
     bool object::operator > (const object& another) const
     {
-        return m_data != another.m_data &&
-            m_data && another.m_data && another.m_data->less(*m_data);
+        return another < *this;
     }
 
     const object::data& object::get_data() const
@@ -133,21 +131,19 @@ namespace dot
 
     std::ostream& operator << (std::ostream& stream, const object& source)
     {
-        stream << source.who().name() << " = { ";
         if (source.m_data)
         {
-            stream << source.m_data->who().name() << " = " << *source.m_data;
+            return stream << *source.m_data;
         }
         else
         {
-            stream << "null";
+            return stream << object::data::null_string;
         }
-        return stream << " }";
     }
 
     std::istream& operator >> (std::istream& stream, object& /*destination*/)
     {
-        // TODO: read object with data
+        // TODO: initialize data by incoming byte stream
         return stream;
     }
 
@@ -161,9 +157,8 @@ namespace dot
 
     void object::data::write(std::ostream& stream) const
     {
-        // unknown data output by default with proper type
-        // should be overloaded with normal { value : type }
-        stream << "{ " << who().name() << " }";
+        // unknown data output by default
+        stream << "<data: " << who().name() << ">";
     }
 
     void object::data::read(std::istream&)
@@ -173,12 +168,42 @@ namespace dot
         throw fail::unreadable_data("Unable to read data of the object from byte stream.");
     }
 
-    bool object::data::equals(const data& another) const
+    bool object::data::operator == (const data& another) const
+    {
+        return equals(another);
+    }
+
+    bool object::data::operator != (const data& another) const
+    {
+        return !equals(another);
+    }
+
+    bool object::data::operator <= (const data& another) const
+    {
+        return !another.less(*this);
+    }
+
+    bool object::data::operator >= (const data& another) const
+    {
+        return !less(another);
+    }
+
+    bool object::data::operator < (const data& another) const
+    {
+        return less(another);
+    }
+
+    bool object::data::operator > (const data& another) const
+    {
+        return another.less(*this);
+    }
+
+    bool object::data::equals(const data& another) const noexcept
     {
         return this == &another; // compare address by default, override if required
     }
 
-    bool object::data::less(const data& another) const
+    bool object::data::less(const data& another) const noexcept
     {
         return this < &another; // compare address by default, override if required
     }
