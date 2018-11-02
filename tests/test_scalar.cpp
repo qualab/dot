@@ -105,6 +105,20 @@ namespace dot
         DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, aui = uL);
         DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, auL = uLL);
         DOT_CHECK_EXPECT_EXCEPTION(fail::bad_typecast, auLL = LL);
+
+        DOT_CHECK(LL) == aLL;
+        DOT_CHECK(L) == aL;
+        DOT_CHECK(i) == ai;
+        DOT_CHECK(s) == as;
+        DOT_CHECK(c) == ac;
+        DOT_CHECK(uLL) == auLL;
+        DOT_CHECK(uL) == auL;
+        DOT_CHECK(ui) == aui;
+        DOT_CHECK(us) == aus;
+        DOT_CHECK(uc) == auc;
+        DOT_CHECK(d) == ad;
+        DOT_CHECK(f) == af;
+        DOT_CHECK(b) == ab;
     }
 
     namespace
