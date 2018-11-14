@@ -5,13 +5,13 @@ There is a lot of cases when we have no idea what type of variables comes to us.
 
 DOT is the new way of solutions for such cases. All you need is object with runtime determined data instance which is derived from object::data base class. You may work with suitable classes derived from object base class that provide methods to handle such data. For example object may contain data with text and you always be able to handle such data with text class or handle any scalar data with scalar class.
 
-### Hierarchy of classes
+### The hierarchy of classes
 
 - object
 	- scalar<type\>
 	- copyable<type\>
 
-### Hierarchy of data classes are same
+### The hierarchy of data classes is the same
 
 - object::data
 	- scalar<type\>::data
@@ -25,6 +25,7 @@ Data is strictly limited by size to place into internal buffer inside object cla
 This library will grow up step by step and goes richer by classes, documentation and tests.
 Feel free for any requests, usage or forks and good luck to us.
 
+### By the way
 Each file which contains source code also contains the ending line with Unicode signature to ensure that your code editor supports correct Unicode representation and all you see is correct. The ending line is the same for each source code file and contains author name of source code in native language using Cyrillic and always looks like the ending line in this README.md. You may check how it's shown in your browser for example and compare it with your source code editor representation.
 
 // Unicode signature: Владимир Керимов
