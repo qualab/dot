@@ -3,7 +3,9 @@
 #pragma once
 
 #include <dot/public.h>
+#include <type_traits>
 #include <cstdint>
+#include <iosfwd>
 
 namespace dot
 {
@@ -115,6 +117,62 @@ namespace dot
     {
         return false;
     }
+
+    // check is the type able to be written into output byte stream
+    template <typename test_type, typename meta_type = void>
+    struct writable_type : std::false_type { };
+
+    template <typename test_type>
+    struct writable_type<test_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<std::ostream&>() << std::declval<test_type>()),
+            std::ostream&
+        >>> : std::true_type { };
+
+    template <typename test_type>
+    constexpr bool is_writable = writable_type<test_type>::value;
+
+    // check is the type able to be read from input byte stream
+    template <typename test_type, typename meta_type = void>
+    struct readable_type : std::false_type { };
+
+    template <typename test_type>
+    struct readable_type<test_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<std::istream&>() >> std::declval<test_type&>()),
+            std::istream&
+        >>> : std::true_type { };
+
+    template <typename test_type>
+    constexpr bool is_readable = readable_type<test_type>::value;
+
+    // check is the type support the operation of comparison
+    template <typename test_type, typename meta_type = void>
+    struct comparable_type : std::false_type { };
+
+    template <typename test_type>
+    struct comparable_type<test_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<test_type>() == std::declval<test_type>()),
+            bool
+        >>> : std::true_type { };
+
+    template <typename test_type>
+    constexpr bool is_comparable = comparable_type<test_type>::value;
+
+    // check is the type supports the operation of ordering
+    template <typename test_type, typename meta_type = void>
+    struct orderable_type : std::false_type { };
+
+    template <typename test_type>
+    struct orderable_type<test_type, std::enable_if_t<
+        std::is_convertible_v<
+            decltype(std::declval<test_type>() < std::declval<test_type>()),
+            bool
+        >>> : std::true_type { };
+
+    template <typename test_type>
+    static constexpr bool is_orderable = orderable_type<test_type>::value;
 }
 
 // Unicode signature: Владимир Керимов

@@ -17,14 +17,6 @@ namespace dot
     template<> DOT_PUBLIC const class_id& copyable<std::u16string>::data::id() noexcept;
     template<> DOT_PUBLIC const class_id& copyable<std::u32string>::data::id() noexcept;
 
-    template<> DOT_PUBLIC void copyable<std::wstring  >::data::write(std::ostream& stream) const;
-    template<> DOT_PUBLIC void copyable<std::u16string>::data::write(std::ostream& stream) const;
-    template<> DOT_PUBLIC void copyable<std::u32string>::data::write(std::ostream& stream) const;
-
-    template<> DOT_PUBLIC void copyable<std::wstring  >::data::read(std::istream& stream);
-    template<> DOT_PUBLIC void copyable<std::u16string>::data::read(std::istream& stream);
-    template<> DOT_PUBLIC void copyable<std::u32string>::data::read(std::istream& stream);
-
     template<> DOT_PUBLIC void object::set_as(const char* const& value);
     template<> DOT_PUBLIC void object::set_as(const std::string& value);
     template<> DOT_PUBLIC void object::set_as(std::string&& value);

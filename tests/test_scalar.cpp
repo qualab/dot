@@ -157,7 +157,7 @@ namespace dot
 
     DOT_TEST_SUITE(scalar_test_type)
     {
-        object x = test_type(100500uLL, 9000.1);
+        object x(test_type(100500uLL, 9000.1));
         DOT_ENSURE(x.get_data()).is<scalar<test_type>::data>();
         DOT_ENSURE_NO_EXCEPTION(x.get_as<test_type>());
         DOT_CHECK(x.get_as<test_type>().index) == 100500uLL;
