@@ -8,21 +8,32 @@
 
 namespace dot
 {
+    class DOT_PUBLIC copyable : public object
+    {
+    public:
+        copyable();
+
+        template <typename instance_type>
+        copyable(instance_type&& instance);
+
+        DOT_HIERARCHIC(object);
+    };
+
     template <typename instance_type>
-    class copyable : public object
+    class copyable_of : public copyable
     {
     public:
         template <typename... argument_types>
-        copyable(argument_types... arguments);
+        copyable_of(argument_types... arguments);
 
-        copyable(const copyable& another);
-        copyable& operator = (const copyable& another);
+        copyable_of(const copyable_of& another);
+        copyable_of& operator = (const copyable_of& another);
 
-        copyable(copyable&& temporary);
-        copyable& operator = (copyable&& temporary);
+        copyable_of(copyable_of&& temporary);
+        copyable_of& operator = (copyable_of&& temporary);
 
-        copyable(const object& another);
-        copyable& operator = (const object& another);
+        copyable_of(const object& another);
+        copyable_of& operator = (const object& another);
 
         const instance_type* operator -> () const noexcept;
         instance_type* operator -> ();
@@ -36,9 +47,7 @@ namespace dot
         const instance_type& get() const noexcept;
         instance_type& ref();
 
-        typedef object base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(copyable);
 
         class data;
 
@@ -47,7 +56,7 @@ namespace dot
     };
 
     template <typename instance_type>
-    class copyable<instance_type>::data : public object::data
+    class copyable_of<instance_type>::data : public object::data
     {
     public:
         template <typename... argument_types>
@@ -66,9 +75,7 @@ namespace dot
         const instance_type& get() const noexcept;
         instance_type& ref();
 
-        typedef object::data base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(object::data);
 
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;
@@ -107,132 +114,138 @@ namespace dot
     };
 
     template <typename instance_type>
+    copyable::copyable(instance_type&& instance)
+        : base(std::forward<instance_type>(instance))
+    {
+    }
+
+    template <typename instance_type>
     template <typename... argument_types>
-    copyable<instance_type>::copyable(argument_types... arguments)
+    copyable_of<instance_type>::copyable_of(argument_types... arguments)
         : m_data(initialize<data>(arguments...))
     {
     }
 
     template <typename instance_type>
-    copyable<instance_type>::copyable(const copyable& another)
+    copyable_of<instance_type>::copyable_of(const copyable_of& another)
         : m_data(initialize<data>(*another.m_data))
     {
     }
 
     template <typename instance_type>
-    copyable<instance_type>& copyable<instance_type>::operator = (const copyable& another)
+    copyable_of<instance_type>& copyable_of<instance_type>::operator = (const copyable_of& another)
     {
         m_data = initialize<data>(*another.m_data);
         return *this;
     }
 
     template <typename instance_type>
-    copyable<instance_type>::copyable(copyable&& temporary)
+    copyable_of<instance_type>::copyable_of(copyable_of&& temporary)
         : m_data(initialize<data>(std::move(*temporary.m_data)))
     {
     }
 
     template <typename instance_type>
-    copyable<instance_type>& copyable<instance_type>::operator = (copyable&& temporary)
+    copyable_of<instance_type>& copyable_of<instance_type>::operator = (copyable_of&& temporary)
     {
         m_data = initialize<data>(std::move(*temporary.m_data));
         return *this;
     }
 
     template <typename instance_type>
-    copyable<instance_type>::copyable(const object& another)
+    copyable_of<instance_type>::copyable_of(const object& another)
         : m_data(initialize<data>(another.data_as<data>()))
     {
     }
 
     template <typename instance_type>
-    copyable<instance_type>& copyable<instance_type>::operator = (const object& another)
+    copyable_of<instance_type>& copyable_of<instance_type>::operator = (const object& another)
     {
         m_data = initialize<data>(another.data_as<data>());
         return *this;
     }
 
     template <typename instance_type>
-    const instance_type* copyable<instance_type>::operator -> () const noexcept
+    const instance_type* copyable_of<instance_type>::operator -> () const noexcept
     {
         return &m_data->get();
     }
 
     template <typename instance_type>
-    instance_type* copyable<instance_type>::operator -> ()
+    instance_type* copyable_of<instance_type>::operator -> ()
     {
         return &m_data->ref();
     }
 
     template <typename instance_type>
-    const instance_type& copyable<instance_type>::operator * () const noexcept
+    const instance_type& copyable_of<instance_type>::operator * () const noexcept
     {
         return m_data->get();
     }
 
     template <typename instance_type>
-    instance_type& copyable<instance_type>::operator * ()
+    instance_type& copyable_of<instance_type>::operator * ()
     {
         return m_data->ref();
     }
 
     template <typename instance_type>
-    uint64 copyable<instance_type>::ref_count() const noexcept
+    uint64 copyable_of<instance_type>::ref_count() const noexcept
     {
         return m_data->ref_count();
     }
 
     template <typename instance_type>
-    bool copyable<instance_type>::unique_ref() const noexcept
+    bool copyable_of<instance_type>::unique_ref() const noexcept
     {
         return m_data->ref_count() == 1;
     }
 
     template <typename instance_type>
-    const instance_type& copyable<instance_type>::get() const noexcept
+    const instance_type& copyable_of<instance_type>::get() const noexcept
     {
         return m_data->get();
     }
 
     template <typename instance_type>
-    instance_type& copyable<instance_type>::ref()
+    instance_type& copyable_of<instance_type>::ref()
     {
         return m_data->ref();
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::who() const noexcept
+    const class_id& copyable_of<instance_type>::who() const noexcept
     {
-        return copyable<instance_type>::id();
+        return copyable_of<instance_type>::id();
     }
 
     template <typename instance_type>
     template <typename... argument_types>
-    copyable<instance_type>::data::data(argument_types... arguments)
+    copyable_of<instance_type>::data::data(argument_types... arguments)
         : m_block(new memory_block(arguments...))
     {
     }
 
     template <typename instance_type>
-    copyable<instance_type>::data::~data() noexcept
+    copyable_of<instance_type>::data::~data() noexcept
     {
         m_block->dec_counter();
     }
 
     template <typename instance_type>
-    object::data* copyable<instance_type>::data::copy_to(void* buffer) const noexcept
+    object::data* copyable_of<instance_type>::data::copy_to(void* buffer) const noexcept
     {
         return new(buffer) data(*this);
     }
 
     template <typename instance_type>
-    object::data* copyable<instance_type>::data::move_to(void* buffer) noexcept
+    object::data* copyable_of<instance_type>::data::move_to(void* buffer) noexcept
     {
         return new(buffer) data(std::move(*this));
     }
 
     template <typename instance_type>
-    void copyable<instance_type>::data::write(std::ostream& stream) const
+    void copyable_of<instance_type>::data::write(std::ostream& stream) const
     {
         if constexpr (is_writable<instance_type>)
         {
@@ -245,7 +258,7 @@ namespace dot
     }
 
     template <typename instance_type>
-    void copyable<instance_type>::data::read(std::istream& stream)
+    void copyable_of<instance_type>::data::read(std::istream& stream)
     {
         if constexpr (is_readable<instance_type>)
         {
@@ -258,15 +271,15 @@ namespace dot
     }
 
     template <typename instance_type>
-    copyable<instance_type>::data::data(const data& another)
+    copyable_of<instance_type>::data::data(const data& another)
         : m_block(another.m_block->inc_counter())
     {
     }
 
     template <typename instance_type>
-    typename copyable<instance_type>::data&
-        copyable<instance_type>::data::operator = (
-            const typename copyable<instance_type>::data& another)
+    typename copyable_of<instance_type>::data&
+        copyable_of<instance_type>::data::operator = (
+            const typename copyable_of<instance_type>::data& another)
     {
         memory_block* old_block = m_block;
         m_block = another.m_block->inc_counter();
@@ -275,7 +288,7 @@ namespace dot
     }
 
     template <typename instance_type>
-    copyable<instance_type>::data::data(data&& temporary)
+    copyable_of<instance_type>::data::data(data&& temporary)
         : m_block(temporary.m_block->inc_counter())
     {
         // to avoid unitialized or nullptr temporary.m_block instead
@@ -284,28 +297,28 @@ namespace dot
     }
 
     template <typename instance_type>
-    typename copyable<instance_type>::data&
-        copyable<instance_type>::data::operator = (
-            typename copyable<instance_type>::data&& temporary)
+    typename copyable_of<instance_type>::data&
+        copyable_of<instance_type>::data::operator = (
+            typename copyable_of<instance_type>::data&& temporary)
     {
         std::swap(m_block, temporary.m_block);
         return *this;
     }
 
     template <typename instance_type>
-    uint64 copyable<instance_type>::data::ref_count() const noexcept
+    uint64 copyable_of<instance_type>::data::ref_count() const noexcept
     {
         return m_block->counter;
     }
 
     template <typename instance_type>
-    const instance_type& copyable<instance_type>::data::get() const noexcept
+    const instance_type& copyable_of<instance_type>::data::get() const noexcept
     {
         return m_block->instance;
     }
 
     template <typename instance_type>
-    instance_type& copyable<instance_type>::data::ref()
+    instance_type& copyable_of<instance_type>::data::ref()
     {
         if (m_block->counter > 1)
         {
@@ -317,7 +330,7 @@ namespace dot
     }
 
     template <typename instance_type>
-    bool copyable<instance_type>::data::equals(const object::data& another) const noexcept
+    bool copyable_of<instance_type>::data::equals(const object::data& another) const noexcept
     {
         if constexpr (is_comparable<instance_type>)
         {
@@ -333,7 +346,7 @@ namespace dot
     }
 
     template <typename instance_type>
-    bool copyable<instance_type>::data::less(const object::data& another) const noexcept
+    bool copyable_of<instance_type>::data::less(const object::data& another) const noexcept
     {
         if constexpr (is_orderable<instance_type>)
         {
@@ -349,9 +362,9 @@ namespace dot
     }
 
     template <typename instance_type>
-    const class_id& copyable<instance_type>::data::who() const noexcept
+    const class_id& copyable_of<instance_type>::data::who() const noexcept
     {
-        return copyable<instance_type>::data::id();
+        return copyable_of<instance_type>::data::id();
     }
 }
 

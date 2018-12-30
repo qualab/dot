@@ -66,9 +66,7 @@ namespace dot
         static const size_t max_data_size = 3 * sizeof(int64);
 
         // class identification
-        typedef hierarchic base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(hierarchic);
 
     protected:
         // initialize internal object data by derived data type
@@ -105,9 +103,7 @@ namespace dot
         bool operator >  (const data& another) const;
 
         // class identification
-        typedef hierarchic base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(hierarchic);
 
         // constant for null data string representation
         static const char* const null_string;
@@ -170,7 +166,7 @@ namespace dot
         }
         else if constexpr (std::is_arithmetic_v<source_type>)
         {
-            using another_data_type = typename scalar<source_type>::data;
+            using another_data_type = typename scalar_of<source_type>::data;
             initialize<another_data_type>(std::forward<another_type>(another));
         }
         else
@@ -193,7 +189,7 @@ namespace dot
         }
         else if constexpr (std::is_arithmetic_v<target_type>)
         {
-            return data_as<typename scalar<target_type>::data>().get();
+            return data_as<typename scalar_of<target_type>::data>().get();
         }
         else
         {

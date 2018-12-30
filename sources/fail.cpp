@@ -169,13 +169,13 @@ namespace dot
         return fail::unreadable_data::id();
     }
 
-    template<> const class_id& copyable<fail::info>::id() noexcept
+    template<> const class_id& copyable_of<fail::info>::id() noexcept
     {
         static class_id copyable_fail_info_id("copyable<fail::info>");
         return copyable_fail_info_id;
     }
 
-    template<> const class_id& copyable<fail::info>::data::id() noexcept
+    template<> const class_id& copyable_of<fail::info>::data::id() noexcept
     {
         static class_id copyable_fail_info_data_id("copyable<fail::info>::data");
         return copyable_fail_info_data_id;

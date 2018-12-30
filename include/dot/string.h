@@ -7,15 +7,15 @@
 
 namespace dot
 {
-    template<> DOT_PUBLIC const class_id& copyable<std::string>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable<std::wstring>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable<std::u16string>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable<std::u32string>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::string>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::wstring>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::u16string>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::u32string>::id() noexcept;
 
-    template<> DOT_PUBLIC const class_id& copyable<std::string>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable<std::wstring>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable<std::u16string>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable<std::u32string>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::string>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::wstring>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::u16string>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<std::u32string>::data::id() noexcept;
 
     template<> DOT_PUBLIC void object::set_as(const char* const& value);
     template<> DOT_PUBLIC void object::set_as(const std::string& value);

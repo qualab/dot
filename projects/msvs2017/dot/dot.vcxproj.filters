@@ -65,5 +65,8 @@
     <ClCompile Include="..\..\..\sources\string.cpp">
       <Filter>sources</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\sources\copyable.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

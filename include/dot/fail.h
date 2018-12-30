@@ -37,7 +37,7 @@ namespace dot
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::info& source);
     DOT_PUBLIC std::istream& operator >> (std::istream& stream, fail::info& destination);
 
-    class DOT_PUBLIC fail::error : public copyable<fail::info>, public std::exception
+    class DOT_PUBLIC fail::error : public copyable_of<fail::info>, public std::exception
     {
     public:
         explicit error(const char* message) noexcept;
@@ -47,7 +47,7 @@ namespace dot
         virtual const trace::stack& backtrace() const noexcept;
         virtual const char* label() const noexcept;
 
-        typedef copyable<fail::info> base;
+        typedef copyable_of<fail::info> base;
         static const class_id& id() noexcept;
         virtual const class_id& who() const noexcept override;
     };
@@ -88,9 +88,9 @@ namespace dot
         virtual const class_id& who() const noexcept override;
     };
 
-    template<> DOT_PUBLIC const class_id& copyable<fail::info>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::id() noexcept;
 
-    template<> DOT_PUBLIC const class_id& copyable<fail::info>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::data::id() noexcept;
 }
 
 // Unicode signature: Владимир Керимов

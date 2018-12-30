@@ -320,7 +320,7 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<const object&>(m_argument).is_not<another_type>();
+                return static_cast<const hierarchic&>(m_argument).is_not<another_type>();
             },
             DOT_TEST_OUTPUT_ANY " is not " DOT_TEST_OUTPUT_ANY,
             std::forward<argument_type>(m_argument),

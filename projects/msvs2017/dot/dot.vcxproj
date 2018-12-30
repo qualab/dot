@@ -93,6 +93,7 @@
     <ClInclude Include="..\..\..\include\dot\type.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\sources\copyable.cpp" />
     <ClCompile Include="..\..\..\sources\fail.cpp" />
     <ClCompile Include="..\..\..\sources\object.cpp" />
     <ClCompile Include="..\..\..\sources\scalar.cpp" />

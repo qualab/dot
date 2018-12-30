@@ -53,11 +53,11 @@ namespace dot
     template <typename derived_type>
     struct is_class
     {
-        template <typename base_type>
+        template <typename instance_type>
         static bool of() noexcept
         {
-            return derived_type::id() == base_type::id() ||
-               is_class<derived_type::base>::of<base_type>();
+            return derived_type::id() == instance_type::id() ||
+               is_class<derived_type::base>::of<instance_type>();
         }
     };
 
@@ -72,16 +72,23 @@ namespace dot
 
         virtual const class_id& who() const noexcept = 0;
 
-        template <typename derived_type>
+        // hierarchy base class ends instance hierarchy search
+        template <typename instance_type>
         bool is() const noexcept
         {
-            return derived_type::id() == who() || is<derived_type::base>();
+            return is_base_id(instance_type::id());
         }
 
         template <typename derived_type>
         bool is_not() const noexcept
         {
             return !is<derived_type>();
+        }
+
+        // hierarchicy base class ends instance hierarchy search
+        virtual bool is_base_id(const class_id&) const noexcept
+        {
+            return false;
         }
 
         template <typename derived_type>
@@ -104,18 +111,21 @@ namespace dot
     template<>
     struct is_class<hierarchic>
     {
-        template <typename base_type>
+        template <typename instance_type>
         static bool of()
         {
             return false;
         }
     };
 
-    // hierarchy base class ends instance hierarchy search
-    template<>
-    inline bool hierarchic::is<hierarchic>() const noexcept
-    {
-        return false;
+#define DOT_HIERARCHIC(base_class) \
+    typedef base_class base; \
+    static const class_id& id() noexcept; \
+    virtual const class_id& who() const noexcept override; \
+    virtual bool is_base_id(const class_id& base_id) const noexcept override \
+    { \
+        return base_id == id() || \
+               base::is_base_id(base_id); \
     }
 
     // check is the type able to be written into output byte stream
@@ -147,32 +157,38 @@ namespace dot
     constexpr bool is_readable = readable_type<test_type>::value;
 
     // check is the type support the operation of comparison
-    template <typename test_type, typename meta_type = void>
-    struct comparable_type : std::false_type { };
+    template <typename left_type, typename right_type, typename meta_type = void>
+    struct comparable_types : std::false_type { };
 
-    template <typename test_type>
-    struct comparable_type<test_type, std::enable_if_t<
-        std::is_convertible_v<
-            decltype(std::declval<test_type>() == std::declval<test_type>()),
+    template <typename left_type, typename right_type>
+    struct comparable_types<typename left_type, typename right_type,
+        std::enable_if_t<std::is_convertible_v<
+            decltype(std::declval<left_type>() == std::declval<right_type>()),
             bool
         >>> : std::true_type { };
 
+    template <typename left_type, typename right_type>
+    constexpr bool are_comparable = comparable_types<left_type, right_type>::value;
+
     template <typename test_type>
-    constexpr bool is_comparable = comparable_type<test_type>::value;
+    constexpr bool is_comparable = comparable_types<test_type, test_type>::value;
 
     // check is the type supports the operation of ordering
-    template <typename test_type, typename meta_type = void>
-    struct orderable_type : std::false_type { };
+    template <typename left_type, typename right_type, typename meta_type = void>
+    struct orderable_types : std::false_type { };
 
-    template <typename test_type>
-    struct orderable_type<test_type, std::enable_if_t<
+    template <typename left_type, typename right_type>
+    struct orderable_types<left_type, right_type, std::enable_if_t<
         std::is_convertible_v<
-            decltype(std::declval<test_type>() < std::declval<test_type>()),
+            decltype(std::declval<left_type>() < std::declval<right_type>()),
             bool
         >>> : std::true_type { };
 
+    template <typename left_type, typename right_type>
+    static constexpr bool are_orderable = orderable_types<left_type, right_type>::value;
+
     template <typename test_type>
-    static constexpr bool is_orderable = orderable_type<test_type>::value;
+    static constexpr bool is_orderable = orderable_types<test_type, test_type>::value;
 }
 
 // Unicode signature: Владимир Керимов
