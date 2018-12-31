@@ -17,6 +17,8 @@ namespace dot
         copyable(instance_type&& instance);
 
         DOT_HIERARCHIC(object);
+
+        class data;
     };
 
     template <typename instance_type>
@@ -55,8 +57,14 @@ namespace dot
         data* m_data;
     };
 
+    class DOT_PUBLIC copyable::data : public object::data
+    {
+    public:
+        DOT_HIERARCHIC(object::data);
+    };
+
     template <typename instance_type>
-    class copyable_of<instance_type>::data : public object::data
+    class copyable_of<instance_type>::data : public copyable::data
     {
     public:
         template <typename... argument_types>
@@ -75,7 +83,7 @@ namespace dot
         const instance_type& get() const noexcept;
         instance_type& ref();
 
-        DOT_HIERARCHIC(object::data);
+        DOT_HIERARCHIC(copyable::data);
 
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;

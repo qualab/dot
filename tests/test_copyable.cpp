@@ -16,6 +16,91 @@ using std::vector;
 
 namespace dot
 {
+    DOT_TEST_SUITE(copyable_class_hierarchy)
+    {
+        DOT_CHECK(is_class<copyable>::of<object>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>>::of<object>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>>::of<copyable>()).is_true();
+        DOT_CHECK(is_class<copyable_of<wstring>>::of<object>()).is_true();
+        DOT_CHECK(is_class<copyable_of<wstring>>::of<copyable>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>>::of<copyable_of<wstring>>()).is_false();
+        DOT_CHECK(is_class<copyable_of<wstring>>::of<copyable_of<string>>()).is_false();
+        DOT_CHECK(is_class<object>::of<copyable_of<wstring>>()).is_false();
+        DOT_CHECK(is_class<object>::of<copyable_of<string>>()).is_false();
+        DOT_CHECK(is_class<copyable>::of<copyable_of<wstring>>()).is_false();
+        DOT_CHECK(is_class<copyable>::of<copyable_of<string>>()).is_false();
+        DOT_CHECK(is_class<object>::of<copyable>()).is_false();
+        DOT_CHECK(is_class<copyable>::of<copyable>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>>::of<copyable_of<string>>()).is_true();
+        DOT_CHECK(is_class<copyable_of<wstring>>::of<copyable_of<wstring>>()).is_true();
+
+        DOT_CHECK(is_class<copyable::data>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>::data>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>::data>::of<copyable::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<wstring>::data>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<wstring>::data>::of<copyable::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>::data>::of<copyable_of<wstring>::data>()).is_false();
+        DOT_CHECK(is_class<copyable_of<wstring>::data>::of<copyable_of<string>::data>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<copyable_of<wstring>::data>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<copyable_of<string>::data>()).is_false();
+        DOT_CHECK(is_class<copyable::data>::of<copyable_of<wstring>::data>()).is_false();
+        DOT_CHECK(is_class<copyable::data>::of<copyable_of<string>::data>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<copyable::data>()).is_false();
+        DOT_CHECK(is_class<copyable::data>::of<copyable::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<string>::data>::of<copyable_of<string>::data>()).is_true();
+        DOT_CHECK(is_class<copyable_of<wstring>::data>::of<copyable_of<wstring>::data>()).is_true();
+    }
+
+    DOT_TEST_SUITE(copyable_instance_hierarchy)
+    {
+        copyable n;
+        DOT_CHECK(n).is_null();
+        DOT_CHECK(n).is<copyable>();
+        DOT_CHECK(n).is<object>();
+        DOT_CHECK(n).is_not<copyable_of<string>>();
+        DOT_CHECK(n.who() == copyable::id()).is_true();
+        DOT_CHECK(n.who() == copyable_of<std::string>::id()).is_false();
+        DOT_CHECK(n.who() == object::id()).is_false();
+
+        static const std::string test_utf8 = u8"Здесь был Unicode.";
+
+        copyable s(test_utf8);
+        DOT_CHECK(s).is_not_null();
+        DOT_CHECK(s).is<copyable>();
+        DOT_CHECK(s).is<object>();
+        DOT_CHECK(s).is_not<copyable_of<std::string>>();
+        DOT_CHECK(s.get_data()).is<copyable_of<std::string>::data>();
+        DOT_CHECK(s.get_data()).is<copyable::data>();
+        DOT_CHECK(s.get_data()).is<object::data>();
+        DOT_CHECK(s.get_data()).is_not<copyable_of<std::wstring>::data>();
+
+        static const std::wstring test_wide = L"Толще Unicode - больше Unicode.";
+
+        copyable_of<std::wstring> w(test_wide);
+        DOT_CHECK(w).is_not_null();
+        DOT_CHECK(w).is<copyable>();
+        DOT_CHECK(w).is<object>();
+        DOT_CHECK(w).is<copyable_of<std::wstring>>();
+        DOT_CHECK(w).is_not<copyable_of<std::string>>();
+        DOT_CHECK(w.get_data()).is<copyable_of<std::wstring>::data>();
+        DOT_CHECK(s.get_data()).is<copyable::data>();
+        DOT_CHECK(w.get_data()).is<object::data>();
+        DOT_CHECK(w.get_data()).is_not<copyable_of<std::string>::data>();
+
+        static const std::string test_ascii = "Nobody likes ASCII jail!";
+
+        copyable_of<std::string> a(test_ascii);
+        DOT_CHECK(a).is_not_null();
+        DOT_CHECK(a).is<copyable>();
+        DOT_CHECK(a).is<object>();
+        DOT_CHECK(a).is<copyable_of<std::string>>();
+        DOT_CHECK(a).is_not<copyable_of<std::wstring>>();
+        DOT_CHECK(a.get_data()).is<copyable_of<std::string>::data>();
+        DOT_CHECK(s.get_data()).is<copyable::data>();
+        DOT_CHECK(a.get_data()).is<object::data>();
+        DOT_CHECK(a.get_data()).is_not<copyable_of<std::wstring>::data>();
+    }
+
     DOT_TEST_SUITE(copyable_of_string)
     {
         static const char* const test_string = "copy me";
@@ -192,66 +277,6 @@ namespace dot
         DOT_CHECK(w) == w2;
         DOT_CHECK(u) == u2;
         DOT_CHECK(U) == U2;
-    }
-
-    DOT_TEST_SUITE(copyable_hierarchy_test)
-    {
-        DOT_CHECK(is_class<copyable>::of<object>()).is_true();
-        DOT_CHECK(is_class<copyable_of<string>>::of<object>()).is_true();
-        DOT_CHECK(is_class<copyable_of<string>>::of<copyable>()).is_true();
-        DOT_CHECK(is_class<copyable_of<wstring>>::of<object>()).is_true();
-        DOT_CHECK(is_class<copyable_of<wstring>>::of<copyable>()).is_true();
-        DOT_CHECK(is_class<copyable_of<string>>::of<copyable_of<wstring>>()).is_false();
-        DOT_CHECK(is_class<copyable_of<wstring>>::of<copyable_of<string>>()).is_false();
-        DOT_CHECK(is_class<object>::of<copyable_of<wstring>>()).is_false();
-        DOT_CHECK(is_class<object>::of<copyable_of<string>>()).is_false();
-        DOT_CHECK(is_class<copyable>::of<copyable_of<wstring>>()).is_false();
-        DOT_CHECK(is_class<copyable>::of<copyable_of<string>>()).is_false();
-        DOT_CHECK(is_class<object>::of<copyable>()).is_false();
-        DOT_CHECK(is_class<copyable>::of<copyable>()).is_true();
-        DOT_CHECK(is_class<copyable_of<string>>::of<copyable_of<string>>()).is_true();
-        DOT_CHECK(is_class<copyable_of<wstring>>::of<copyable_of<wstring>>()).is_true();
-
-        copyable n;
-        DOT_CHECK(n).is_null();
-        DOT_CHECK(n).is<copyable>();
-        DOT_CHECK(n).is<object>();
-        DOT_CHECK(n).is_not<copyable_of<string>>();
-
-        static const std::string test_utf8 = u8"Здесь был Unicode.";
-
-        copyable s(test_utf8);
-        DOT_CHECK(s).is_not_null();
-        DOT_CHECK(s).is<copyable>();
-        DOT_CHECK(s).is<object>();
-        DOT_CHECK(s).is_not<copyable_of<std::string>>();
-        DOT_CHECK(s.get_data()).is<copyable_of<std::string>::data>();
-        DOT_CHECK(s.get_data()).is<object::data>();
-        DOT_CHECK(s.get_data()).is_not<copyable_of<std::wstring>::data>();
-
-        static const std::wstring test_wide = L"Толще Unicode - больше Unicode.";
-
-        copyable_of<std::wstring> w(test_wide);
-        DOT_CHECK(w).is_not_null();
-        DOT_CHECK(w).is<copyable>();
-        DOT_CHECK(w).is<object>();
-        DOT_CHECK(w).is<copyable_of<std::wstring>>();
-        DOT_CHECK(w).is_not<copyable_of<std::string>>();
-        DOT_CHECK(w.get_data()).is<copyable_of<std::wstring>::data>();
-        DOT_CHECK(w.get_data()).is<object::data>();
-        DOT_CHECK(w.get_data()).is_not<copyable_of<std::string>::data>();
-
-        static const std::string test_ascii = "Nobody likes ASCII jail!";
-
-        copyable_of<std::string> a(test_ascii);
-        DOT_CHECK(a).is_not_null();
-        DOT_CHECK(a).is<copyable>();
-        DOT_CHECK(a).is<object>();
-        DOT_CHECK(a).is<copyable_of<std::string>>();
-        DOT_CHECK(a).is_not<copyable_of<std::wstring>>();
-        DOT_CHECK(a.get_data()).is<copyable_of<std::string>::data>();        
-        DOT_CHECK(a.get_data()).is<object::data>();
-        DOT_CHECK(a.get_data()).is_not<copyable_of<std::wstring>::data>();
     }
 }
 

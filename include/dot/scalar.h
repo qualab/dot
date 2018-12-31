@@ -4,7 +4,6 @@
 
 #include <dot/object.h>
 #include <utility>
-#include <optional>
 
 namespace dot
 {
@@ -17,6 +16,8 @@ namespace dot
         explicit scalar(value_type&& value);
 
         DOT_HIERARCHIC(object);
+
+        class data;
     };
 
     template <typename value_type>
@@ -56,8 +57,14 @@ namespace dot
         data* m_data;
     };
 
+    class DOT_PUBLIC scalar::data : public object::data
+    {
+    public:
+        DOT_HIERARCHIC(object::data);
+    };
+
     template <typename value_type>
-    class scalar_of<value_type>::data : public object::data
+    class scalar_of<value_type>::data : public scalar::data
     {
     public:
         data(const data& another);
@@ -69,7 +76,7 @@ namespace dot
         const value_type& ref() const noexcept;
         value_type& ref() noexcept;
 
-        DOT_HIERARCHIC(object::data);
+        DOT_HIERARCHIC(scalar::data);
 
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;

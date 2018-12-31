@@ -19,6 +19,17 @@ namespace dot
         return scalar::id();
     }
 
+    const class_id& scalar::data::id() noexcept
+    {
+        static const class_id scalar_data_id("scalar::data");
+        return scalar_data_id;
+    }
+
+    const class_id& scalar::data::who() const noexcept
+    {
+        return scalar::data::id();
+    }
+
     template<> const class_id& scalar_of<long long>::id() noexcept
     {
         static const class_id scalar_long_long_id("scalar_of<long long>");

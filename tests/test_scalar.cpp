@@ -6,6 +6,91 @@
 
 namespace dot
 {
+    DOT_TEST_SUITE(scalar_class_hierarchy)
+    {
+        DOT_CHECK(is_class<scalar>::of<object>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>>::of<object>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>>::of<scalar>()).is_true();
+        DOT_CHECK(is_class<scalar_of<uint>>::of<object>()).is_true();
+        DOT_CHECK(is_class<scalar_of<uint>>::of<scalar>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>>::of<scalar_of<uint>>()).is_false();
+        DOT_CHECK(is_class<scalar_of<uint>>::of<scalar_of<int>>()).is_false();
+        DOT_CHECK(is_class<object>::of<scalar_of<int>>()).is_false();
+        DOT_CHECK(is_class<object>::of<scalar_of<uint>>()).is_false();
+        DOT_CHECK(is_class<scalar>::of<scalar_of<int>>()).is_false();
+        DOT_CHECK(is_class<scalar>::of<scalar_of<uint>>()).is_false();
+        DOT_CHECK(is_class<object>::of<scalar>()).is_false();
+        DOT_CHECK(is_class<scalar>::of<scalar>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>>::of<scalar_of<int>>()).is_true();
+        DOT_CHECK(is_class<scalar_of<uint>>::of<scalar_of<uint>>()).is_true();
+
+        DOT_CHECK(is_class<scalar::data>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>::data>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>::data>::of<scalar::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<uint>::data>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<uint>::data>::of<scalar::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>::data>::of<scalar_of<uint>::data>()).is_false();
+        DOT_CHECK(is_class<scalar_of<uint>::data>::of<scalar_of<int>::data>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<scalar_of<int>::data>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<scalar_of<uint>::data>()).is_false();
+        DOT_CHECK(is_class<scalar::data>::of<scalar_of<int>::data>()).is_false();
+        DOT_CHECK(is_class<scalar::data>::of<scalar_of<uint>::data>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<scalar::data>()).is_false();
+        DOT_CHECK(is_class<scalar::data>::of<scalar::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<int>::data>::of<scalar_of<int>::data>()).is_true();
+        DOT_CHECK(is_class<scalar_of<uint>::data>::of<scalar_of<uint>::data>()).is_true();
+    }
+
+    DOT_TEST_SUITE(scalar_instance_hierarchy)
+    {
+        scalar n;
+        DOT_CHECK(n).is_null();
+        DOT_CHECK(n).is<scalar>();
+        DOT_CHECK(n).is<object>();
+        DOT_CHECK(n).is_not<scalar_of<int>>();
+        DOT_CHECK(n.who() == scalar::id()).is_true();
+        DOT_CHECK(n.who() == scalar_of<int>::id()).is_false();
+        DOT_CHECK(n.who() == object::id()).is_false();
+
+        scalar i(-1);
+        DOT_CHECK(i).is_not_null();
+        DOT_CHECK(scalar_of<int>(i)) == -1;
+        DOT_CHECK(i).is<scalar>();
+        DOT_CHECK(i).is<object>();
+        DOT_CHECK(i).is_not<scalar_of<int>>();
+        DOT_CHECK(i.get_data()).is<scalar_of<int>::data>();
+        DOT_CHECK(i.get_data()).is<scalar::data>();
+        DOT_CHECK(i.get_data()).is_not<scalar_of<uint>::data>();
+        DOT_CHECK(i.get_data()).is<object::data>();
+        DOT_CHECK(i.who() == scalar::id()).is_true();
+        DOT_CHECK(i.who() == scalar_of<int>::id()).is_false();
+        DOT_CHECK(i.who() == object::id()).is_false();
+
+        scalar_of<uint> u(0x1dea0fu);
+        DOT_CHECK(u).is_not_null();
+        DOT_CHECK(u) == 0x1dea0fu;
+        DOT_CHECK(u).is<scalar_of<uint>>();
+        DOT_CHECK(u).is_not<scalar_of<int>>();
+        DOT_CHECK(u).is<scalar>();
+        DOT_CHECK(u).is<object>();
+        DOT_CHECK(u.get_data()).is<scalar_of<uint>::data>();
+        DOT_CHECK(u.get_data()).is<scalar::data>();
+        DOT_CHECK(u.get_data()).is_not<scalar_of<int>::data>();
+        DOT_CHECK(u.get_data()).is<object::data>();
+
+        scalar_of<int> t(1234567890);
+        DOT_CHECK(t).is_not_null();
+        DOT_CHECK(t) == 1234567890;
+        DOT_CHECK(t).is<scalar_of<int>>();
+        DOT_CHECK(t).is_not<scalar_of<uint>>();
+        DOT_CHECK(t).is<scalar>();
+        DOT_CHECK(t).is<object>();
+        DOT_CHECK(t.get_data()).is<scalar_of<int>::data>();
+        DOT_CHECK(t.get_data()).is<scalar::data>();
+        DOT_CHECK(t.get_data()).is_not<scalar_of<uint>::data>();
+        DOT_CHECK(t.get_data()).is<object::data>();
+    }
+
     DOT_TEST_SUITE(scalar_creation)
     {
         scalar_of<long long> LL(-1234567890123456789LL);
@@ -202,62 +287,6 @@ namespace dot
         DOT_ENSURE_NO_EXCEPTION(x.get_as<test_type>());
         DOT_CHECK(x.get_as<test_type>().index) == 12345678901234567890uLL;
         DOT_CHECK(x.get_as<test_type>().value) == -1234567.87654321;
-    }
-
-    DOT_TEST_SUITE(scalar_hierarchy_test)
-    {
-        DOT_CHECK(is_class<scalar>::of<object>()).is_true();
-        DOT_CHECK(is_class<scalar_of<int>>::of<object>()).is_true();
-        DOT_CHECK(is_class<scalar_of<int>>::of<scalar>()).is_true();
-        DOT_CHECK(is_class<scalar_of<uint>>::of<object>()).is_true();
-        DOT_CHECK(is_class<scalar_of<uint>>::of<scalar>()).is_true();
-        DOT_CHECK(is_class<scalar_of<int>>::of<scalar_of<uint>>()).is_false();
-        DOT_CHECK(is_class<scalar_of<uint>>::of<scalar_of<int>>()).is_false();
-        DOT_CHECK(is_class<object>::of<scalar_of<int>>()).is_false();
-        DOT_CHECK(is_class<object>::of<scalar_of<uint>>()).is_false();
-        DOT_CHECK(is_class<scalar>::of<scalar_of<int>>()).is_false();
-        DOT_CHECK(is_class<scalar>::of<scalar_of<uint>>()).is_false();
-        DOT_CHECK(is_class<object>::of<scalar>()).is_false();
-        DOT_CHECK(is_class<scalar>::of<scalar>()).is_true();
-        DOT_CHECK(is_class<scalar_of<int>>::of<scalar_of<int>>()).is_true();
-        DOT_CHECK(is_class<scalar_of<uint>>::of<scalar_of<uint>>()).is_true();
-
-        scalar n;
-        DOT_CHECK(n).is_null();
-        DOT_CHECK(n).is<scalar>();
-        DOT_CHECK(n).is<object>();
-        DOT_CHECK(n).is_not<scalar_of<int>>();
-
-        scalar i(-1);
-        DOT_CHECK(i).is_not_null();
-        DOT_CHECK(scalar_of<int>(i)) == -1;
-        DOT_CHECK(i).is<scalar>();
-        DOT_CHECK(i).is<object>();
-        DOT_CHECK(i).is_not<scalar_of<int>>();
-        DOT_CHECK(i.get_data()).is<scalar_of<int>::data>();
-        DOT_CHECK(i.get_data()).is<object::data>();
-
-        scalar_of<uint> u(0x1dea0fu);
-        DOT_CHECK(u).is_not_null();
-        DOT_CHECK(u) == 0x1dea0fu;
-        DOT_CHECK(u).is<scalar_of<uint>>();
-        DOT_CHECK(u).is_not<scalar_of<int>>();
-        DOT_CHECK(u).is<scalar>();
-        DOT_CHECK(u).is<object>();
-        DOT_CHECK(u.get_data()).is<scalar_of<uint>::data>();
-        DOT_CHECK(u.get_data()).is_not<scalar_of<int>::data>();
-        DOT_CHECK(u.get_data()).is<object::data>();
-
-        scalar_of<int> t(1234567890);
-        DOT_CHECK(t).is_not_null();
-        DOT_CHECK(t) == 1234567890;
-        DOT_CHECK(t).is<scalar_of<int>>();
-        DOT_CHECK(t).is_not<scalar_of<uint>>();
-        DOT_CHECK(t).is<scalar>();
-        DOT_CHECK(t).is<object>();
-        DOT_CHECK(t.get_data()).is<scalar_of<int>::data>();
-        DOT_CHECK(t.get_data()).is_not<scalar_of<uint>::data>();
-        DOT_CHECK(t.get_data()).is<object::data>();
     }
 }
 

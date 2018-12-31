@@ -8,14 +8,18 @@ DOT is the new way of solutions for such cases. All you need is object with runt
 ### The hierarchy of classes
 
 - object
-	- scalar<type\>
-	- copyable<type\>
+	- scalar
+		- scalar\_of<value\_type\>
+	- copyable
+		- copyable\_of<instance\_type\>
 
 ### The hierarchy of data classes is the same
 
 - object::data
-	- scalar<type\>::data
-	- copyable<type\>::data
+	- scalar::data
+		- scalar\_of<value\_type\>::data
+	- copyable::data
+		- copyable\_of<instance\_type\>::data
 
 ### Description
 Any class hierarchy provide the way to check is class derived from another and check is instance implements any class form this hierarchy. It works as well even with RTTI switched off. Any hierarhy provide id of any class inside that hierarchy and any instance of such class may tell what class it implements without dynamic_cast or typeid usage with simplest additional object per class.
