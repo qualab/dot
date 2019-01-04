@@ -63,7 +63,7 @@ namespace dot
         const data_type& data_as() const;
 
         // enough for two 64-bit fields and virtual table pointer
-        static const size_t max_data_size = 3 * sizeof(int64);
+        static constexpr size_t max_data_size = 3 * sizeof(int64);
 
         // class identification
         DOT_HIERARCHIC(hierarchic);
@@ -164,14 +164,15 @@ namespace dot
             const another_data_type& another_data = another.data_as<another_data_type>();
             initialize<another_data_type>(another_data);
         }
-        else if constexpr (std::is_arithmetic_v<source_type>)
+        else if constexpr (sizeof(source_type) <= object::max_data_size)
         {
             using another_data_type = typename scalar_of<source_type>::data;
             initialize<another_data_type>(std::forward<another_type>(another));
         }
         else
         {
-            static_assert(false, "Required specialization of object::set_as<> method for this type.");
+            using another_data_type = typename copyable_of<source_type>::data;
+            initialize<another_data_type>(std::forward<another_type>(another));
         }
     }
 
@@ -187,13 +188,13 @@ namespace dot
         {
             return target_type(*this);
         }
-        else if constexpr (std::is_arithmetic_v<target_type>)
+        else if constexpr (sizeof(target_type) <= object::max_data_size)
         {
             return data_as<typename scalar_of<target_type>::data>().get();
         }
         else
         {
-            static_assert(false, "Required specialization of object::get_as<> method for this type.");
+            return data_as<typename copyable_of<target_type>::data>().get();
         }
     }
 
