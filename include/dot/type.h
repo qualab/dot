@@ -140,7 +140,7 @@ namespace dot
         >>> : std::true_type { };
 
     template <typename test_type>
-    constexpr bool is_writable = writable_type<test_type>::value;
+    inline constexpr bool is_writable = writable_type<test_type>::value;
 
     // check is the type able to be read from input byte stream
     template <typename test_type, typename meta_type = void>
@@ -154,7 +154,7 @@ namespace dot
         >>> : std::true_type { };
 
     template <typename test_type>
-    constexpr bool is_readable = readable_type<test_type>::value;
+    inline constexpr bool is_readable = readable_type<test_type>::value;
 
     // check is the type support the operation of comparison
     template <typename left_type, typename right_type, typename meta_type = void>
@@ -168,10 +168,10 @@ namespace dot
         >>> : std::true_type { };
 
     template <typename left_type, typename right_type>
-    constexpr bool are_comparable = comparable_types<left_type, right_type>::value;
+    inline constexpr bool are_comparable = comparable_types<left_type, right_type>::value;
 
     template <typename test_type>
-    constexpr bool is_comparable = comparable_types<test_type, test_type>::value;
+    inline constexpr bool is_comparable = comparable_types<test_type, test_type>::value;
 
     // check is the type supports the operation of ordering
     template <typename left_type, typename right_type, typename meta_type = void>
@@ -185,10 +185,10 @@ namespace dot
         >>> : std::true_type { };
 
     template <typename left_type, typename right_type>
-    static constexpr bool are_orderable = orderable_types<left_type, right_type>::value;
+    inline constexpr bool are_orderable = orderable_types<left_type, right_type>::value;
 
     template <typename test_type>
-    static constexpr bool is_orderable = orderable_types<test_type, test_type>::value;
+    inline constexpr bool is_orderable = orderable_types<test_type, test_type>::value;
 }
 
 // Unicode signature: Владимир Керимов

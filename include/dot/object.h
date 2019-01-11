@@ -62,11 +62,12 @@ namespace dot
         template <typename data_type>
         const data_type& data_as() const;
 
-        // enough for two 64-bit fields and virtual table pointer
-        static constexpr size_t max_data_size = 3 * sizeof(int64);
-
         // class identification
         DOT_HIERARCHIC(hierarchic);
+
+        // enough for two 64-bit fields and virtual table pointer
+        static constexpr size_t data_type_max = 2 * sizeof(int64);
+        static constexpr size_t data_buffer_size = data_type_max + sizeof(void*);
 
     protected:
         // initialize internal object data by derived data type
@@ -81,7 +82,7 @@ namespace dot
         data* m_data;
 
         // internal object buffer to place data
-        byte m_buffer[max_data_size];
+        byte m_buffer[data_buffer_size];
 
         // object output and input using byte characters
         friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object& source);
@@ -154,17 +155,11 @@ namespace dot
     void object::set_as(another_type&& another)
     {
         using source_type = std::remove_const_t<std::remove_reference_t<another_type>>;
-        if constexpr (std::is_same_v<object, source_type>)
+        if constexpr (std::is_base_of_v<object, source_type>)
         {
             another.assign_to(*this);
         }
-        else if constexpr (std::is_base_of_v<object, source_type>)
-        {
-            using another_data_type = typename source_type::data;
-            const another_data_type& another_data = another.data_as<another_data_type>();
-            initialize<another_data_type>(another_data);
-        }
-        else if constexpr (sizeof(source_type) <= object::max_data_size)
+        else if constexpr (sizeof(source_type) <= data_type_max)
         {
             using another_data_type = typename scalar_of<source_type>::data;
             initialize<another_data_type>(std::forward<another_type>(another));
@@ -180,15 +175,11 @@ namespace dot
     another_type object::get_as() const
     {
         using target_type = std::remove_const_t<std::remove_reference_t<another_type>>;
-        if constexpr (std::is_same_v<object, target_type>)
-        {
-            return *this;
-        }
         if constexpr (std::is_base_of_v<object, target_type>)
         {
             return target_type(*this);
         }
-        else if constexpr (sizeof(target_type) <= object::max_data_size)
+        else if constexpr (sizeof(target_type) <= data_type_max)
         {
             return data_as<typename scalar_of<target_type>::data>().get();
         }
@@ -207,7 +198,7 @@ namespace dot
     template <typename derived_data, typename... argument_types>
     derived_data* object::initialize(argument_types&&... arguments)
     {
-        static_assert(sizeof(derived_data) <= object::max_data_size,
+        static_assert(sizeof(derived_data) <= data_buffer_size,
             "Size of derived data type is too big for object data internal buffer.");
         derived_data* result = nullptr;
         reset();

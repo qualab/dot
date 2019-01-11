@@ -230,16 +230,6 @@ namespace dot
         return scalar_test_type_data_id;
     }
 
-    template<> void object::set_as<test_type>(test_type&& another)
-    {
-        initialize<scalar_of<test_type>::data>(another);
-    }
-
-    template<> test_type object::get_as<test_type>() const
-    {
-        return data_as<scalar_of<test_type>::data>().get();
-    }
-
     DOT_TEST_SUITE(scalar_test_type)
     {
         object x(test_type(100500uLL, 9000.1));
