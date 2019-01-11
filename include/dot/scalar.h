@@ -250,12 +250,6 @@ namespace dot
     }
 
     template <typename value_type>
-    const class_id& scalar_of<value_type>::who() const noexcept
-    {
-        return scalar_of<value_type>::id();
-    }
-
-    template <typename value_type>
     const typename scalar_of<value_type>::data& scalar_of<value_type>::scalar_data() const noexcept
     {
         return *m_data;
@@ -290,12 +284,6 @@ namespace dot
     value_type& scalar_of<value_type>::data::ref() noexcept
     {
         return m_value;
-    }
-
-    template <typename value_type>
-    const class_id& scalar_of<value_type>::data::who() const noexcept
-    {
-        return scalar_of<value_type>::data::id();
     }
 
     template <typename value_type>

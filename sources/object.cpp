@@ -124,11 +124,6 @@ namespace dot
         return object_id;
     }
 
-    const class_id& object::who() const noexcept
-    {
-        return object::id();
-    }
-
     std::ostream& operator << (std::ostream& stream, const object& source)
     {
         if (source.m_data)
@@ -212,11 +207,6 @@ namespace dot
     {
         static const class_id object_data_id("object::data");
         return object_data_id;
-    }
-
-    const class_id& object::data::who() const noexcept
-    {
-        return object::data::id();
     }
 
     std::ostream& operator << (std::ostream& stream, const object::data& value)

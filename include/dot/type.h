@@ -125,8 +125,11 @@ namespace dot
         return base_id == id() || \
                base::is_base_id(base_id); \
     } \
-    static const class_id& id() noexcept; \
-    virtual const class_id& who() const noexcept override
+    virtual const class_id& who() const noexcept override \
+    { \
+        return id(); \
+    } \
+    static const class_id& id() noexcept
 
     // check is the type able to be written into output byte stream
     template <typename test_type, typename meta_type = void>

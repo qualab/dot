@@ -47,9 +47,7 @@ namespace dot
         virtual const trace::stack& backtrace() const noexcept;
         virtual const char* label() const noexcept;
 
-        typedef copyable_of<fail::info> base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(copyable_of<fail::info>);
     };
 
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::error& source);
@@ -61,9 +59,7 @@ namespace dot
         explicit bad_typecast(const class_id& to_type, const class_id& from_type) noexcept;
         virtual const char* label() const noexcept override;
 
-        typedef fail::error base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(fail::error);
     };
 
     class DOT_PUBLIC fail::null_reference : public fail::error
@@ -72,9 +68,7 @@ namespace dot
         explicit null_reference(const char* message) noexcept;
         virtual const char* label() const noexcept override;
 
-        typedef fail::error base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(fail::error);
     };
 
     class DOT_PUBLIC fail::unreadable_data : public fail::error
@@ -83,13 +77,10 @@ namespace dot
         explicit unreadable_data(const char* message) noexcept;
         virtual const char* label() const noexcept override;
 
-        typedef fail::error base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(fail::error);
     };
 
     template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::id() noexcept;
-
     template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::data::id() noexcept;
 }
 

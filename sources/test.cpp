@@ -140,11 +140,6 @@ namespace dot
         return check_fail_id;
     }
 
-    const class_id& test::check_fail::who() const noexcept
-    {
-        return check_fail::id();
-    }
-
     test::suite_fail::suite_fail(const char* message) noexcept
         : base(message)
     {
@@ -172,11 +167,6 @@ namespace dot
         return suite_fail_id;
     }
 
-    const class_id& test::suite_fail::who() const noexcept
-    {
-        return suite_fail::id();
-    }
-
     test::run_fail::run_fail(const char* message) noexcept
         : base(message)
     {
@@ -202,11 +192,6 @@ namespace dot
     {
         static const class_id run_fail_id("test::run_fail");
         return run_fail_id;
-    }
-
-    const class_id& test::run_fail::who() const noexcept
-    {
-        return run_fail::id();
     }
 
     test::output::output()

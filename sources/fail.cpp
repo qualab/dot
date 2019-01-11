@@ -79,11 +79,6 @@ namespace dot
         return fail_error_id;
     }
 
-    const class_id& fail::error::who() const noexcept
-    {
-        return fail::error::id();
-    }
-
     std::ostream& operator << (std::ostream& stream, const fail::error& source)
     {
         stream << " !!>> " << source.label() << ": " << *source;
@@ -122,11 +117,6 @@ namespace dot
         return fail_bad_typecast_id;
     }
 
-    const class_id& fail::bad_typecast::who() const noexcept
-    {
-        return fail::bad_typecast::id();
-    }
-
     fail::null_reference::null_reference(const char* message) noexcept
         : base(message)
     {
@@ -143,11 +133,6 @@ namespace dot
         return fail_null_reference_id;
     }
 
-    const class_id& fail::null_reference::who() const noexcept
-    {
-        return fail::null_reference::id();
-    }
-
     fail::unreadable_data::unreadable_data(const char* message) noexcept
         : base(message)
     {
@@ -162,11 +147,6 @@ namespace dot
     {
         static class_id fail_unreadable_data_id("fail::unreadable_data");
         return fail_unreadable_data_id;
-    }
-
-    const class_id& fail::unreadable_data::who() const noexcept
-    {
-        return fail::unreadable_data::id();
     }
 
     template<> const class_id& copyable_of<fail::info>::id() noexcept

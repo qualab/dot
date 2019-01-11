@@ -123,9 +123,7 @@ void test_suite_##suite_name::body()
         virtual const char* label() const noexcept override;
         virtual void handle();
 
-        typedef fail::error base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(fail::error);
     };
 
     class DOT_PUBLIC test::suite_fail : public test::check_fail
@@ -136,9 +134,7 @@ void test_suite_##suite_name::body()
         virtual const char* label() const noexcept override;
         virtual void handle() override;
 
-        typedef test::check_fail base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(test::check_fail);
     };
 
     class DOT_PUBLIC test::run_fail : public test::suite_fail
@@ -149,9 +145,7 @@ void test_suite_##suite_name::body()
         virtual const char* label() const noexcept override;
         virtual void handle() override;
 
-        typedef test::suite_fail base;
-        static const class_id& id() noexcept;
-        virtual const class_id& who() const noexcept override;
+        DOT_HIERARCHIC(test::suite_fail);
     };
 
 #define DOT_TEST_OUTPUT_ANY "%$"

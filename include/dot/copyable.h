@@ -222,12 +222,6 @@ namespace dot
     }
 
     template <typename instance_type>
-    const class_id& copyable_of<instance_type>::who() const noexcept
-    {
-        return copyable_of<instance_type>::id();
-    }
-
-    template <typename instance_type>
     template <typename... argument_types>
     copyable_of<instance_type>::data::data(argument_types... arguments)
         : m_block(new memory_block(arguments...))
@@ -367,12 +361,6 @@ namespace dot
         {
             return base::less(another);
         }
-    }
-
-    template <typename instance_type>
-    const class_id& copyable_of<instance_type>::data::who() const noexcept
-    {
-        return copyable_of<instance_type>::data::id();
     }
 }
 
