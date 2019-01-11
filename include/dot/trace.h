@@ -60,7 +60,7 @@ namespace dot
         class entry;
         class instance;
 
-        instance* m_instance;
+        instance* my_instance;
     };
 
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const trace::stack& source);

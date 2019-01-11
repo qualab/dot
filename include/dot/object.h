@@ -79,10 +79,10 @@ namespace dot
 
     private:
         // internal object data
-        data* m_data;
+        data* my_data;
 
         // internal object buffer to place data
-        byte m_buffer[data_buffer_size];
+        byte my_buffer[data_buffer_size];
 
         // object output and input using byte characters
         friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object& source);
@@ -133,7 +133,7 @@ namespace dot
 
     template <typename another_type>
     object::object(another_type&& another)
-        : m_data(nullptr)
+        : my_data(nullptr)
     {
         set_as(std::forward<another_type>(another));
     }
@@ -202,7 +202,7 @@ namespace dot
             "Size of derived data type is too big for object data internal buffer.");
         derived_data* result = nullptr;
         reset();
-        m_data = result = new(m_buffer) derived_data(std::forward<argument_types>(arguments)...);
+        my_data = result = new(my_buffer) derived_data(std::forward<argument_types>(arguments)...);
         return result;
     }
 }

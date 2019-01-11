@@ -54,7 +54,7 @@ namespace dot
         class data;
 
     private:
-        data* m_data;
+        data* my_data;
     };
 
     class DOT_PUBLIC copyable::data : public object::data
@@ -118,7 +118,7 @@ namespace dot
             }
         };
 
-        memory_block* m_block;
+        memory_block* my_block;
     };
 
     template <typename instance_type>
@@ -130,108 +130,108 @@ namespace dot
     template <typename instance_type>
     template <typename... argument_types>
     copyable_of<instance_type>::copyable_of(argument_types... arguments)
-        : m_data(initialize<data>(arguments...))
+        : my_data(initialize<data>(arguments...))
     {
     }
 
     template <typename instance_type>
     copyable_of<instance_type>::copyable_of(const copyable_of& another)
-        : m_data(initialize<data>(*another.m_data))
+        : my_data(initialize<data>(*another.my_data))
     {
     }
 
     template <typename instance_type>
     copyable_of<instance_type>& copyable_of<instance_type>::operator = (const copyable_of& another)
     {
-        m_data = initialize<data>(*another.m_data);
+        my_data = initialize<data>(*another.my_data);
         return *this;
     }
 
     template <typename instance_type>
     copyable_of<instance_type>::copyable_of(copyable_of&& temporary)
-        : m_data(initialize<data>(std::move(*temporary.m_data)))
+        : my_data(initialize<data>(std::move(*temporary.my_data)))
     {
     }
 
     template <typename instance_type>
     copyable_of<instance_type>& copyable_of<instance_type>::operator = (copyable_of&& temporary)
     {
-        m_data = initialize<data>(std::move(*temporary.m_data));
+        my_data = initialize<data>(std::move(*temporary.my_data));
         return *this;
     }
 
     template <typename instance_type>
     copyable_of<instance_type>::copyable_of(const object& another)
-        : m_data(initialize<data>(another.data_as<data>()))
+        : my_data(initialize<data>(another.data_as<data>()))
     {
     }
 
     template <typename instance_type>
     copyable_of<instance_type>& copyable_of<instance_type>::operator = (const object& another)
     {
-        m_data = initialize<data>(another.data_as<data>());
+        my_data = initialize<data>(another.data_as<data>());
         return *this;
     }
 
     template <typename instance_type>
     const instance_type* copyable_of<instance_type>::operator -> () const noexcept
     {
-        return &m_data->get();
+        return &my_data->get();
     }
 
     template <typename instance_type>
     instance_type* copyable_of<instance_type>::operator -> ()
     {
-        return &m_data->ref();
+        return &my_data->ref();
     }
 
     template <typename instance_type>
     const instance_type& copyable_of<instance_type>::operator * () const noexcept
     {
-        return m_data->get();
+        return my_data->get();
     }
 
     template <typename instance_type>
     instance_type& copyable_of<instance_type>::operator * ()
     {
-        return m_data->ref();
+        return my_data->ref();
     }
 
     template <typename instance_type>
     uint64 copyable_of<instance_type>::ref_count() const noexcept
     {
-        return m_data->ref_count();
+        return my_data->ref_count();
     }
 
     template <typename instance_type>
     bool copyable_of<instance_type>::unique_ref() const noexcept
     {
-        return m_data->ref_count() == 1;
+        return my_data->ref_count() == 1;
     }
 
     template <typename instance_type>
     const instance_type& copyable_of<instance_type>::get() const noexcept
     {
-        return m_data->get();
+        return my_data->get();
     }
 
     template <typename instance_type>
     instance_type& copyable_of<instance_type>::ref()
     {
-        return m_data->ref();
+        return my_data->ref();
     }
 
     template <typename instance_type>
     template <typename... argument_types>
     copyable_of<instance_type>::data::data(argument_types... arguments)
-        : m_block(new memory_block(arguments...))
+        : my_block(new memory_block(arguments...))
     {
     }
 
     template <typename instance_type>
     copyable_of<instance_type>::data::~data() noexcept
     {
-        m_block->dec_counter();
+        my_block->dec_counter();
     }
 
     template <typename instance_type>
@@ -274,7 +274,7 @@ namespace dot
 
     template <typename instance_type>
     copyable_of<instance_type>::data::data(const data& another)
-        : m_block(another.m_block->inc_counter())
+        : my_block(another.my_block->inc_counter())
     {
     }
 
@@ -283,15 +283,15 @@ namespace dot
         copyable_of<instance_type>::data::operator = (
             const typename copyable_of<instance_type>::data& another)
     {
-        memory_block* old_block = m_block;
-        m_block = another.m_block->inc_counter();
+        memory_block* old_block = my_block;
+        my_block = another.my_block->inc_counter();
         old_block->dec_counter();
         return *this;
     }
 
     template <typename instance_type>
     copyable_of<instance_type>::data::data(data&& temporary)
-        : m_block(temporary.m_block->inc_counter())
+        : my_block(temporary.my_block->inc_counter())
     {
         // to avoid unitialized or nullptr temporary.m_block instead
         // atomic increment and decrement are very light operations
@@ -303,32 +303,32 @@ namespace dot
         copyable_of<instance_type>::data::operator = (
             typename copyable_of<instance_type>::data&& temporary)
     {
-        std::swap(m_block, temporary.m_block);
+        std::swap(my_block, temporary.my_block);
         return *this;
     }
 
     template <typename instance_type>
     uint64 copyable_of<instance_type>::data::ref_count() const noexcept
     {
-        return m_block->counter;
+        return my_block->counter;
     }
 
     template <typename instance_type>
     const instance_type& copyable_of<instance_type>::data::get() const noexcept
     {
-        return m_block->instance;
+        return my_block->instance;
     }
 
     template <typename instance_type>
     instance_type& copyable_of<instance_type>::data::ref()
     {
-        if (m_block->counter > 1)
+        if (my_block->counter > 1)
         {
-            memory_block* old_block = m_block;
-            m_block = new memory_block(m_block->instance);
+            memory_block* old_block = my_block;
+            my_block = new memory_block(my_block->instance);
             old_block->dec_counter();
         }
-        return m_block->instance;
+        return my_block->instance;
     }
 
     template <typename instance_type>

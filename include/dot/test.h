@@ -98,7 +98,7 @@ void test_suite_##suite_name::body()
         template <typename exception_type> void expect_exception() const;
 
     private:
-        argument_type&& m_argument;
+        argument_type&& my_argument;
     };
 
 #define DOT_SCOPE(name) trace::scope(name, __FILE__, __LINE__)
@@ -198,7 +198,7 @@ void test_suite_##suite_name::body()
         const char* message();
 
     private:
-        instance* m_instance;
+        instance* my_instance;
 
         bool find_placement(const char* description, const char*& before_end, const char*& after_begin);
         void print_range(const char* range_begin, const char* range_end);
@@ -242,7 +242,7 @@ void test_suite_##suite_name::body()
 
     template <typename fail_type, typename argument_type>
     test::check<fail_type, argument_type>::check(argument_type&& argument)
-        : m_argument(std::forward<argument_type>(argument))
+        : my_argument(std::forward<argument_type>(argument))
     {
     }
 
@@ -251,10 +251,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<bool>(m_argument);
+                return static_cast<bool>(my_argument);
             },
             DOT_TEST_OUTPUT_ANY " is true",
-            std::forward<argument_type>(m_argument)
+            std::forward<argument_type>(my_argument)
         );
     }
 
@@ -263,10 +263,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return !static_cast<bool>(m_argument);
+                return !static_cast<bool>(my_argument);
             },
             DOT_TEST_OUTPUT_ANY " is false",
-            std::forward<argument_type>(m_argument)
+            std::forward<argument_type>(my_argument)
         );
     }
 
@@ -275,10 +275,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<const object&>(m_argument).is_null();
+                return static_cast<const object&>(my_argument).is_null();
             },
             DOT_TEST_OUTPUT_ANY " is null",
-            std::forward<argument_type>(m_argument)
+            std::forward<argument_type>(my_argument)
         );
     }
 
@@ -287,10 +287,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<const object&>(m_argument).is_not_null();
+                return static_cast<const object&>(my_argument).is_not_null();
             },
             DOT_TEST_OUTPUT_ANY " is not null",
-            std::forward<argument_type>(m_argument)
+            std::forward<argument_type>(my_argument)
         );
     }
 
@@ -300,10 +300,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<const hierarchic&>(m_argument).is<another_type>();
+                return static_cast<const hierarchic&>(my_argument).is<another_type>();
             },
             DOT_TEST_OUTPUT_ANY " is " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             another_type::id().name()
         );
     }
@@ -314,10 +314,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return static_cast<const hierarchic&>(m_argument).is_not<another_type>();
+                return static_cast<const hierarchic&>(my_argument).is_not<another_type>();
             },
             DOT_TEST_OUTPUT_ANY " is not " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             another_type::id().name()
         );
     }
@@ -328,10 +328,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return m_argument == another;
+                return my_argument == another;
             },
             DOT_TEST_OUTPUT_ANY " == " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             std::forward<another_type>(another)
         );
     }
@@ -342,10 +342,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return m_argument != another;
+                return my_argument != another;
             },
             DOT_TEST_OUTPUT_ANY " != " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             std::forward<another_type>(another)
         );
     }
@@ -356,10 +356,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return m_argument <= another;
+                return my_argument <= another;
             },
             DOT_TEST_OUTPUT_ANY " <= " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             std::forward<another_type>(another)
         );
     }
@@ -370,10 +370,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return m_argument >= another;
+                return my_argument >= another;
             },
             DOT_TEST_OUTPUT_ANY " >= " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             std::forward<another_type>(another)
         );
     }
@@ -384,10 +384,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return m_argument < another;
+                return my_argument < another;
             },
             DOT_TEST_OUTPUT_ANY " < " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             std::forward<another_type>(another)
         );
     }
@@ -398,10 +398,10 @@ void test_suite_##suite_name::body()
     {
         test::ensure<fail_type>(
             [=]() -> bool {
-                return m_argument > another;
+                return my_argument > another;
             },
             DOT_TEST_OUTPUT_ANY " > " DOT_TEST_OUTPUT_ANY,
-            std::forward<argument_type>(m_argument),
+            std::forward<argument_type>(my_argument),
             std::forward<another_type>(another)
         );
     }
@@ -411,7 +411,7 @@ void test_suite_##suite_name::body()
     {
         try
         {
-            m_argument();
+            my_argument();
         }
         catch (fail::error& unexpected)
         {
@@ -438,7 +438,7 @@ void test_suite_##suite_name::body()
     {
         try
         {
-            m_argument();
+            my_argument();
         }
         catch (exception_type&)
         {

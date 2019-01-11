@@ -11,16 +11,16 @@ namespace dot
     {
     public:
         entry(const char* name, const char* file, int line) noexcept
-            : m_name(name), m_file(file), m_line(line) { }
+            : my_name(name), my_file(file), my_line(line) { }
 
-        const char* get_name() const noexcept { return m_name.c_str(); }
-        const char* get_file() const noexcept { return m_file.c_str(); }
-        int get_line() const noexcept { return m_line; }
+        const char* get_name() const noexcept { return my_name.c_str(); }
+        const char* get_file() const noexcept { return my_file.c_str(); }
+        int get_line() const noexcept { return my_line; }
 
     private:
-        std::string m_name;
-        std::string m_file;
-        int m_line;
+        std::string my_name;
+        std::string my_file;
+        int my_line;
     };
 
     class trace::stack::instance
@@ -40,8 +40,8 @@ namespace dot
 
     private:
         static const entry global;
-        std::stack<entry> m_stack;
-        std::string m_message;
+        std::stack<entry> my_stack;
+        std::string my_message;
 
         const entry& top() const noexcept;
     };
@@ -50,17 +50,17 @@ namespace dot
 
     const trace::stack::entry& trace::stack::instance::top() const noexcept
     {
-        return m_stack.empty() ? global : m_stack.top();
+        return my_stack.empty() ? global : my_stack.top();
     }
 
     void trace::stack::instance::push(const char* name, const char* file, int line) noexcept
     {
-        m_stack.push(entry(name, file, line));
+        my_stack.push(entry(name, file, line));
     }
 
     void trace::stack::instance::pop() noexcept
     {
-        m_stack.pop();
+        my_stack.pop();
     }
 
     const char* trace::stack::instance::top_name() const noexcept
@@ -80,17 +80,17 @@ namespace dot
 
     bool trace::stack::instance::empty() const noexcept
     {
-        return m_stack.empty();
+        return my_stack.empty();
     }
 
     void trace::stack::instance::set_message(const char* message) noexcept
     {
-        m_message = message ? message : "";
+        my_message = message ? message : "";
     }
 
     const std::string& trace::stack::instance::get_message() const noexcept
     {
-        return m_message;
+        return my_message;
     }
 
     trace::scope::scope(const char* name, const char* file, int line) noexcept
@@ -104,97 +104,97 @@ namespace dot
     }
 
     trace::stack::stack() noexcept
-        : m_instance(new instance())
+        : my_instance(new instance())
     {
     }
 
     trace::stack::~stack() noexcept
     {
-        delete m_instance;
+        delete my_instance;
     }
 
     trace::stack::stack(const trace::stack& another) noexcept
-        : m_instance(new instance(*another.m_instance))
+        : my_instance(new instance(*another.my_instance))
     {
     }
 
     trace::stack& trace::stack::operator = (const trace::stack& another) noexcept
     {
-        *m_instance = *another.m_instance;
+        *my_instance = *another.my_instance;
         return *this;
     }
 
     trace::stack::stack(trace::stack&& temporary) noexcept
-        : m_instance(new instance(std::move(*temporary.m_instance)))
+        : my_instance(new instance(std::move(*temporary.my_instance)))
     {
     }
 
     trace::stack& trace::stack::operator = (trace::stack&& temporary) noexcept
     {
-        *m_instance = std::move(*temporary.m_instance);
+        *my_instance = std::move(*temporary.my_instance);
         return *this;
     }
 
     trace::stack::stack(const trace::stack& another, const char* message) noexcept
-        : m_instance(new instance(*another.m_instance))
+        : my_instance(new instance(*another.my_instance))
     {
         set_message(message);
     }
 
     trace::stack::stack(trace::stack&& temporary, const char* message) noexcept
-        : m_instance(new instance(std::move(*temporary.m_instance)))
+        : my_instance(new instance(std::move(*temporary.my_instance)))
     {
         set_message(message);
     }
 
     void trace::stack::push(const char* name, const char* file, int line) noexcept
     {
-        m_instance->push(name, file, line);
+        my_instance->push(name, file, line);
     }
 
     void trace::stack::pop() noexcept
     {
-        m_instance->pop();
+        my_instance->pop();
     }
 
     const char* trace::stack::top_name() const noexcept
     {
-        return m_instance->top_name();
+        return my_instance->top_name();
     }
 
     const char* trace::stack::top_file() const noexcept
     {
-        return m_instance->top_file();
+        return my_instance->top_file();
     }
 
     int trace::stack::top_line() const noexcept
     {
-        return m_instance->top_line();
+        return my_instance->top_line();
     }
 
     bool trace::stack::empty() const noexcept
     {
-        return m_instance->empty();
+        return my_instance->empty();
     }
 
     bool trace::stack::not_empty() const noexcept
     {
-        return !m_instance->empty();
+        return !my_instance->empty();
     }
 
     void trace::stack::set_message(const char* message) noexcept
     {
-        m_instance->set_message(message);
+        my_instance->set_message(message);
     }
 
     const char* trace::stack::get_message() const noexcept
     {
-        return m_instance->get_message().c_str();
+        return my_instance->get_message().c_str();
     }
 
     bool trace::stack::has_message() const noexcept
     {
-        return !m_instance->get_message().empty();
+        return !my_instance->get_message().empty();
     }
 
     trace::stack& trace::stack::thread_stack() noexcept

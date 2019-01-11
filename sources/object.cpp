@@ -13,7 +13,7 @@ namespace dot
     const char* const object::data::null_string = "null";
 
     object::object() noexcept
-        : m_data(nullptr)
+        : my_data(nullptr)
     {
     }
 
@@ -24,16 +24,16 @@ namespace dot
 
     void object::reset() noexcept
     {
-        if (m_data)
+        if (my_data)
         {
-            m_data->~data();
-            m_data = nullptr;
+            my_data->~data();
+            my_data = nullptr;
         }
     }
 
     bool object::is_null() const noexcept
     {
-        return m_data == nullptr;
+        return my_data == nullptr;
     }
 
     bool object::is_not_null() const noexcept
@@ -42,7 +42,7 @@ namespace dot
     }
 
     object::object(const object& another)
-        : m_data(nullptr)
+        : my_data(nullptr)
     {
         another.assign_to(*this);
     }
@@ -54,7 +54,7 @@ namespace dot
     }
 
     object::object(object&& temporary)
-        : m_data(nullptr)
+        : my_data(nullptr)
     {
         temporary.assign_to(*this);
     }
@@ -68,21 +68,21 @@ namespace dot
     void object::assign_to(object& target) const&
     {
         target.reset();
-        if (m_data)
-            target.m_data = m_data->copy_to(target.m_buffer);
+        if (my_data)
+            target.my_data = my_data->copy_to(target.my_buffer);
     }
 
     void object::assign_to(object& target) &&
     {
         target.reset();
-        if (m_data)
-            target.m_data = m_data->move_to(target.m_buffer);
+        if (my_data)
+            target.my_data = my_data->move_to(target.my_buffer);
     }
 
     bool object::operator == (const object& another) const
     {
-        return m_data == another.m_data ||
-            m_data && another.m_data && m_data->equals(*another.m_data);
+        return my_data == another.my_data ||
+            my_data && another.my_data && my_data->equals(*another.my_data);
     }
 
     bool object::operator != (const object& another) const
@@ -102,8 +102,8 @@ namespace dot
 
     bool object::operator < (const object& another) const
     {
-        return !m_data && another.m_data ||
-            m_data && another.m_data && m_data->less(*another.m_data);
+        return !my_data && another.my_data ||
+            my_data && another.my_data && my_data->less(*another.my_data);
     }
 
     bool object::operator > (const object& another) const
@@ -113,9 +113,9 @@ namespace dot
 
     const object::data& object::get_data() const
     {
-        if (!m_data)
+        if (!my_data)
             throw fail::null_reference("Object has no data but data reference occured.");
-        return *m_data;
+        return *my_data;
     }
 
     const class_id& object::id() noexcept
@@ -126,9 +126,9 @@ namespace dot
 
     std::ostream& operator << (std::ostream& stream, const object& source)
     {
-        if (source.m_data)
+        if (source.my_data)
         {
-            return stream << *source.m_data;
+            return stream << *source.my_data;
         }
         else
         {

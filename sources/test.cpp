@@ -27,18 +27,18 @@ namespace dot
     public:
         std::ostream& stream()
         {
-            return m_stream;
+            return my_stream;
         }
 
         std::string& message()
         {
-            m_message = m_stream.str();
-            return m_message;
+            my_message = my_stream.str();
+            return my_message;
         }
 
     private:
-        std::stringstream m_stream;
-        std::string m_message;
+        std::stringstream my_stream;
+        std::string my_message;
     };
 
     void test::run() noexcept
@@ -195,28 +195,28 @@ namespace dot
     }
 
     test::output::output()
-        : m_instance(new instance())
+        : my_instance(new instance())
     {
     }
 
     test::output::~output()
     {
-        delete m_instance;
+        delete my_instance;
     }
 
     std::ostream& test::output::stream()
     {
-        return m_instance->stream();
+        return my_instance->stream();
     }
 
     void test::output::print(const char* description)
     {
-        m_instance->stream() << description;
+        my_instance->stream() << description;
     }
 
     const char* test::output::message()
     {
-        return m_instance->message().c_str();
+        return my_instance->message().c_str();
     }
 
     bool test::output::find_placement(const char* description, const char*& before_end, const char*& after_begin)
@@ -232,7 +232,7 @@ namespace dot
 
     void test::output::print_range(const char* range_begin, const char* range_end)
     {
-        m_instance->stream() << std::string(range_begin, range_end);
+        my_instance->stream() << std::string(range_begin, range_end);
     }
 }
 

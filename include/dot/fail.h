@@ -31,7 +31,7 @@ namespace dot
         const trace::stack& backtrace() const noexcept;
 
    private:
-        trace::stack m_backtrace;
+        trace::stack my_backtrace;
     };
 
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::info& source);

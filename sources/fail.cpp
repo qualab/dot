@@ -8,23 +8,23 @@
 namespace dot
 {
     fail::info::info(const char* message) noexcept
-        : m_backtrace(trace::stack::thread_stack(), message)
+        : my_backtrace(trace::stack::thread_stack(), message)
     {
     }
 
     fail::info::info(const char* message, const trace::stack& backtrace) noexcept
-        : m_backtrace(backtrace, message)
+        : my_backtrace(backtrace, message)
     {
     }
 
     const char* fail::info::what() const noexcept
     {
-        return m_backtrace.get_message();
+        return my_backtrace.get_message();
     }
 
     const trace::stack& fail::info::backtrace() const noexcept
     {
-        return m_backtrace;
+        return my_backtrace;
     }
 
     std::ostream& operator << (std::ostream& stream, const fail::info& source)

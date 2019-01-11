@@ -54,7 +54,7 @@ namespace dot
         const data& scalar_data() const noexcept;
 
     private:
-        data* m_data;
+        data* my_data;
     };
 
     class DOT_PUBLIC scalar::data : public object::data
@@ -89,7 +89,7 @@ namespace dot
         virtual bool less(const object::data& another) const noexcept override;
 
     private:
-        value_type m_value;
+        value_type my_value;
     };
 
     template <typename value_type>
@@ -100,7 +100,7 @@ namespace dot
 
     template <typename value_type>
     scalar_of<value_type>::scalar_of(const object& another)
-        : m_data(initialize<scalar_of<value_type>::data>(
+        : my_data(initialize<scalar_of<value_type>::data>(
             another.data_as<scalar_of<value_type>::data>()))
     {
     }
@@ -108,26 +108,26 @@ namespace dot
     template <typename value_type>
     template <typename... argument_types>
     scalar_of<value_type>::scalar_of(argument_types... arguments)
-        : m_data(initialize<data>(std::forward<argument_types>(arguments)...))
+        : my_data(initialize<data>(std::forward<argument_types>(arguments)...))
     {
     }
 
     template <typename value_type>
     value_type scalar_of<value_type>::get() const noexcept
     {
-        return m_data->get();
+        return my_data->get();
     }
 
     template <typename value_type>
     const value_type& scalar_of<value_type>::ref() const noexcept
     {
-        return m_data->ref();
+        return my_data->ref();
     }
 
     template <typename value_type>
     value_type& scalar_of<value_type>::ref() noexcept
     {
-        return m_data->ref();
+        return my_data->ref();
     }
 
     template <typename value_type>
@@ -139,7 +139,7 @@ namespace dot
         }
         else
         {
-            return m_data->equals(another.get_data());
+            return my_data->equals(another.get_data());
         }
     }
 
@@ -170,7 +170,7 @@ namespace dot
         }
         else
         {
-            return m_data->less(another.get_data());
+            return my_data->less(another.get_data());
         }
     }
 
@@ -252,38 +252,38 @@ namespace dot
     template <typename value_type>
     const typename scalar_of<value_type>::data& scalar_of<value_type>::scalar_data() const noexcept
     {
-        return *m_data;
+        return *my_data;
     }
 
     template <typename value_type>
     scalar_of<value_type>::data::data(const data& another)
-        : m_value(another.m_value)
+        : my_value(another.my_value)
     {
     }
 
     template <typename value_type>
     template <typename... argument_types>
     scalar_of<value_type>::data::data(argument_types... arguments)
-        : m_value(arguments...)
+        : my_value(arguments...)
     {
     }
 
     template <typename value_type>
     value_type scalar_of<value_type>::data::get() const noexcept
     {
-        return m_value;
+        return my_value;
     }
 
     template <typename value_type>
     const value_type& scalar_of<value_type>::data::ref() const noexcept
     {
-        return m_value;
+        return my_value;
     }
 
     template <typename value_type>
     value_type& scalar_of<value_type>::data::ref() noexcept
     {
-        return m_value;
+        return my_value;
     }
 
     template <typename value_type>
@@ -303,7 +303,7 @@ namespace dot
     {
         if constexpr (is_writable<value_type>)
         {
-            stream << m_value;
+            stream << my_value;
         }
         else
         {
@@ -316,7 +316,7 @@ namespace dot
     {
         if constexpr (is_readable<value_type>)
         {
-            stream >> m_value;
+            stream >> my_value;
         }
         else
         {
