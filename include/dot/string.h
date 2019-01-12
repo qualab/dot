@@ -49,4 +49,4 @@ namespace dot
     template<> DOT_PUBLIC const char32_t* object::get_as() const;
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

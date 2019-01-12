@@ -10,4 +10,4 @@
 #   define DOT_PUBLIC __declspec(dllimport)
 #endif
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

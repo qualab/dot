@@ -472,4 +472,4 @@ void test_suite_##suite_name::body()
     }
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

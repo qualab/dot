@@ -12,4 +12,4 @@ int main()
     return 0;
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

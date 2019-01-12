@@ -194,4 +194,4 @@ namespace dot
     inline constexpr bool is_orderable = orderable_types<test_type, test_type>::value;
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

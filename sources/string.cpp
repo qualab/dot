@@ -84,4 +84,4 @@ namespace dot
     template<> const char32_t* object::get_as() const { return data_as<copyable_of<std::u32string>::data>().get().c_str(); }
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

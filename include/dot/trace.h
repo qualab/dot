@@ -69,4 +69,4 @@ namespace dot
 
 #define DOT_TRACE_CALL trace::scope call_scope(__FUNCTION__, __FILE__, __LINE__);
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

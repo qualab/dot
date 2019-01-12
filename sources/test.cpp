@@ -236,4 +236,4 @@ namespace dot
     }
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

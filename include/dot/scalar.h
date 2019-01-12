@@ -392,4 +392,4 @@ namespace dot
     template<> DOT_PUBLIC const class_id& scalar_of<bool>::data::id() noexcept;
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

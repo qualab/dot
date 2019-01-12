@@ -84,4 +84,4 @@ namespace dot
     template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::data::id() noexcept;
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

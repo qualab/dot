@@ -62,7 +62,7 @@ namespace dot
         DOT_CHECK(n.who() == copyable_of<std::string>::id()).is_false();
         DOT_CHECK(n.who() == object::id()).is_false();
 
-        static const std::string test_utf8 = u8"Здесь был Unicode.";
+        static const std::string test_utf8 = u8"Здесь должен быть Unicode.";
 
         copyable s(test_utf8);
         DOT_CHECK(s).is_not_null();
@@ -280,4 +280,4 @@ namespace dot
     }
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode

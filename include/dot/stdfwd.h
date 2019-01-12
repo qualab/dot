@@ -33,4 +33,4 @@ namespace std
     typedef basic_istream<wchar_t, char_traits<wchar_t>> wistream;
 }
 
-// Unicode signature: Владимир Керимов
+// Здесь должен быть Unicode
