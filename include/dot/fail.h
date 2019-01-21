@@ -1,4 +1,7 @@
-// DOT exception hierarchy
+// dot::fail is common class for base exception classes
+// fail::info contains information about exception
+// fail::error is base class for any exception occured
+// and is copyable_of<fail::info> with const methods only
 
 #pragma once
 
@@ -19,6 +22,8 @@ namespace dot
         class bad_typecast;
         class null_reference;
         class unreadable_data;
+        class non_comparable;
+        class non_orderable;
     };
 
     class DOT_PUBLIC fail::info
@@ -75,6 +80,24 @@ namespace dot
     {
     public:
         explicit unreadable_data(const char* message) noexcept;
+        virtual const char* label() const noexcept override;
+
+        DOT_HIERARCHIC(fail::error);
+    };
+
+    class DOT_PUBLIC fail::non_comparable : public fail::error
+    {
+    public:
+        explicit non_comparable(const char* message) noexcept;
+        virtual const char* label() const noexcept override;
+
+        DOT_HIERARCHIC(fail::error);
+    };
+
+    class DOT_PUBLIC fail::non_orderable : public fail::error
+    {
+    public:
+        explicit non_orderable(const char* message) noexcept;
         virtual const char* label() const noexcept override;
 
         DOT_HIERARCHIC(fail::error);

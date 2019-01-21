@@ -1,4 +1,4 @@
-// STL forward declaration
+// std:: forward declarations without mass includes
 
 #pragma once
 

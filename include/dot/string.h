@@ -1,4 +1,4 @@
-// DOT copy-on-write object
+// dot::copyable_of<std:: strings> with the required includes
 
 #pragma once
 

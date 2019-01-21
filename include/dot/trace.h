@@ -1,4 +1,5 @@
-// DOT trace mechanics to 
+// dot::trace is used to trace trace::scope
+// according their call order stored in trace::stack
 
 #pragma once
 
@@ -7,7 +8,7 @@
 
 namespace dot
 {
-    // mandatory trace namespace
+    // dot::trace is used as the mandatory namespace
     struct trace
     {
         trace() = delete;
@@ -16,7 +17,8 @@ namespace dot
         class stack;
     };
 
-    // push name/file/line into stack while alive and pop on destruction
+    // trace::scope push name/file/line into trace::stack
+    // while it is alive and pop the information on destruction
     class DOT_PUBLIC trace::scope
     {
     public:
@@ -24,7 +26,8 @@ namespace dot
         virtual ~scope() noexcept;
     };
 
-    // trace stack of the scopes inside each other
+    // trace::stack is the stack of the test::scope entries
+    // where one is called inside other and stored due their lifetime
     class DOT_PUBLIC trace::stack
     {
     public:

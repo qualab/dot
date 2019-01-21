@@ -1,4 +1,8 @@
-// DOT copy-on-write object
+// dot::copyable copy-on-write reference object
+// multiple object may refer to single instance
+// any const method must not change common instance
+// any non-const method create its own copy if
+// more than one object refers same instance
 
 #pragma once
 
@@ -8,6 +12,7 @@
 
 namespace dot
 {
+    // base class for any copyable_of<instance_type>
     class DOT_PUBLIC copyable : public object
     {
     public:
@@ -21,6 +26,8 @@ namespace dot
         class data;
     };
 
+    // reference to a copyable instance
+    // with copy own instance on any non-const method call
     template <typename instance_type>
     class copyable_of : public copyable
     {
@@ -47,7 +54,22 @@ namespace dot
         bool unique_ref() const noexcept;
 
         const instance_type& get() const noexcept;
+        const instance_type& ref() const;
         instance_type& ref();
+
+        template <typename another_type> bool operator == (const copyable_of<another_type>& another) const;
+        template <typename another_type> bool operator != (const copyable_of<another_type>& another) const;
+        template <typename another_type> bool operator <= (const copyable_of<another_type>& another) const;
+        template <typename another_type> bool operator >= (const copyable_of<another_type>& another) const;
+        template <typename another_type> bool operator <  (const copyable_of<another_type>& another) const;
+        template <typename another_type> bool operator >  (const copyable_of<another_type>& another) const;
+
+        template <typename another_type> bool operator == (const another_type& another) const;
+        template <typename another_type> bool operator != (const another_type& another) const;
+        template <typename another_type> bool operator <= (const another_type& another) const;
+        template <typename another_type> bool operator >= (const another_type& another) const;
+        template <typename another_type> bool operator <  (const another_type& another) const;
+        template <typename another_type> bool operator >  (const another_type& another) const;
 
         DOT_HIERARCHIC(copyable);
 
@@ -57,12 +79,24 @@ namespace dot
         data* my_data;
     };
 
+    template <typename left_type, typename right_type> bool operator == (const left_type& left, const copyable_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator != (const left_type& left, const copyable_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator <= (const left_type& left, const copyable_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator >= (const left_type& left, const copyable_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator <  (const left_type& left, const copyable_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator >  (const left_type& left, const copyable_of<right_type>& right);
+
+    // base class for any data of copyable_of<instance_type>
     class DOT_PUBLIC copyable::data : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
     };
 
+    // data contains reference to a copyable instance as pointer to memory block
+    // which contain instance and reference counter (standard atomic)
+    // any non-const method on instance when reference count is above one
+    // follows copy own memory block to refer it without change of original
     template <typename instance_type>
     class copyable_of<instance_type>::data : public copyable::data
     {
@@ -120,6 +154,8 @@ namespace dot
 
         memory_block* my_block;
     };
+
+    // -- methods implementation of copyable --
 
     template <typename instance_type>
     copyable::copyable(instance_type&& instance)
@@ -216,10 +252,188 @@ namespace dot
     }
 
     template <typename instance_type>
+    const instance_type& copyable_of<instance_type>::ref() const
+    {
+        return my_data->ref();
+    }
+
+    template <typename instance_type>
     instance_type& copyable_of<instance_type>::ref()
     {
         return my_data->ref();
     }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator == (const copyable_of<another_type>& another) const
+    {
+        if constexpr (are_comparable<instance_type, another_type>)
+        {
+            return get() == another.get();
+        }
+        else
+        {
+            throw fail::non_comparable("Unable to compare copyables of non comparable types.");
+        }
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator != (const copyable_of<another_type>& another) const
+    {
+        return !(*this == another);
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator <= (const copyable_of<another_type>& another) const
+    {
+        return !(another < *this);
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator >= (const copyable_of<another_type>& another) const
+    {
+        return !(*this < another);
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator < (const copyable_of<another_type>& another) const
+    {
+        if constexpr (are_orderable<instance_type, another_type>)
+        {
+            return get() < another.get();
+        }
+        else
+        {
+            throw fail::non_orderable("Unable to order copyables of non orderable types.");
+        }
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator > (const copyable_of<another_type>& another) const
+    {
+        return another < *this;
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator == (const another_type& another) const
+    {
+        if constexpr (are_comparable<instance_type, another_type>)
+        {
+            return get() == another;
+        }
+        else if constexpr (std::is_base_of_v<object, another_type>)
+        {
+            return base::operator == (another);
+        }
+        else
+        {
+            another;
+            throw fail::non_comparable("Unable to compare copyable with non comparable type.");
+        }
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator != (const another_type& another) const
+    {
+        return !(*this == another);
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator <= (const another_type& another) const
+    {
+        return !(another < *this);
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator >= (const another_type& another) const
+    {
+        return !(*this < another);
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator < (const another_type& another) const
+    {
+        if constexpr (are_orderable<instance_type, another_type>)
+        {
+            return get() < another;
+        }
+        else if constexpr (std::is_base_of_v<object, another_type>)
+        {
+            return base::operator < (another);
+        }
+        else
+        {
+            another;
+            throw fail::non_orderable("Unable to order copyable with non orderable type.");
+        }
+    }
+
+    template <typename instance_type>
+    template <typename another_type>
+    bool copyable_of<instance_type>::operator > (const another_type& another) const
+    {
+        if constexpr (are_orderable<another_type, instance_type>)
+        {
+            return another < get();
+        }
+        else if constexpr (std::is_base_of_v<object, another_type>)
+        {
+            return base::operator > (another);
+        }
+        else
+        {
+            another;
+            throw fail::non_orderable("Unable to order copyable with non orderable type.");
+        }
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator == (const left_type& left, const copyable_of<right_type>& right)
+    {
+        return right == left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator != (const left_type& left, const copyable_of<right_type>& right)
+    {
+        return right != left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator <= (const left_type& left, const copyable_of<right_type>& right)
+    {
+        return right >= left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator >= (const left_type& left, const copyable_of<right_type>& right)
+    {
+        return right <= left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator < (const left_type& left, const copyable_of<right_type>& right)
+    {
+        return right > left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator > (const left_type& left, const copyable_of<right_type>& right)
+    {
+        return right < left;
+    }
+
+    // -- methods implementation of copyable data --
 
     template <typename instance_type>
     template <typename... argument_types>

@@ -3,9 +3,9 @@
 #pragma once
 
 #include <dot/public.h>
+#include <dot/stdfwd.h>
 #include <type_traits>
 #include <cstdint>
-#include <iosfwd>
 
 namespace dot
 {

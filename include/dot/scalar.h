@@ -1,4 +1,7 @@
-// DOT scalar data object
+// dot::scalar_of<value_type> contains scalar value
+// which size allows data store it in-place (by value)
+// this is suitable for simple values and small structures
+// scalar_of<value_type>::data is simply contain its value
 
 #pragma once
 
@@ -7,6 +10,7 @@
 
 namespace dot
 {
+    // base class for any scalar_of<value_type>
     class DOT_PUBLIC scalar : public object
     {
     public:
@@ -20,6 +24,7 @@ namespace dot
         class data;
     };
 
+    // contain data with value in-placed
     template <typename value_type>
     class scalar_of : public scalar
     {
@@ -33,12 +38,12 @@ namespace dot
         const value_type& ref() const noexcept;
         value_type& ref() noexcept;
 
-        bool operator == (const scalar_of<value_type>& another) const;
-        bool operator != (const scalar_of<value_type>& another) const;
-        bool operator <= (const scalar_of<value_type>& another) const;
-        bool operator >= (const scalar_of<value_type>& another) const;
-        bool operator <  (const scalar_of<value_type>& another) const;
-        bool operator >  (const scalar_of<value_type>& another) const;
+        template <typename another_type> bool operator == (const scalar_of<another_type>& another) const;
+        template <typename another_type> bool operator != (const scalar_of<another_type>& another) const;
+        template <typename another_type> bool operator <= (const scalar_of<another_type>& another) const;
+        template <typename another_type> bool operator >= (const scalar_of<another_type>& another) const;
+        template <typename another_type> bool operator <  (const scalar_of<another_type>& another) const;
+        template <typename another_type> bool operator >  (const scalar_of<another_type>& another) const;
 
         template <typename another_type> bool operator == (const another_type& another) const;
         template <typename another_type> bool operator != (const another_type& another) const;
@@ -57,12 +62,21 @@ namespace dot
         data* my_data;
     };
 
+    template <typename left_type, typename right_type> bool operator == (const left_type& left, const scalar_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator != (const left_type& left, const scalar_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator <= (const left_type& left, const scalar_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator >= (const left_type& left, const scalar_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator <  (const left_type& left, const scalar_of<right_type>& right);
+    template <typename left_type, typename right_type> bool operator >  (const left_type& left, const scalar_of<right_type>& right);
+
+    // base class for any scalar_of<value_type>::data
     class DOT_PUBLIC scalar::data : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
     };
 
+    // data contains value in-placed as a field
     template <typename value_type>
     class scalar_of<value_type>::data : public scalar::data
     {
@@ -91,6 +105,8 @@ namespace dot
     private:
         value_type my_value;
     };
+
+    // -- implementation of scalar methods --
 
     template <typename value_type>
     scalar::scalar(value_type&& value)
@@ -131,9 +147,10 @@ namespace dot
     }
 
     template <typename value_type>
-    bool scalar_of<value_type>::operator == (const scalar_of<value_type>& another) const
+    template <typename another_type>
+    bool scalar_of<value_type>::operator == (const scalar_of<another_type>& another) const
     {
-        if constexpr (is_comparable<value_type>)
+        if constexpr (are_comparable<value_type, another_type>)
         {
             return get() == another.get();
         }
@@ -144,27 +161,31 @@ namespace dot
     }
 
     template <typename value_type>
-    bool scalar_of<value_type>::operator != (const scalar_of<value_type>& another) const
+    template <typename another_type>
+    bool scalar_of<value_type>::operator != (const scalar_of<another_type>& another) const
     {
         return !(*this == another);
     }
 
     template <typename value_type>
-    bool scalar_of<value_type>::operator <= (const scalar_of<value_type>& another) const
+    template <typename another_type>
+    bool scalar_of<value_type>::operator <= (const scalar_of<another_type>& another) const
     {
-        return !(*this > another);
+        return !(another < *this);
     }
 
     template <typename value_type>
-    bool scalar_of<value_type>::operator >= (const scalar_of<value_type>& another) const
+    template <typename another_type>
+    bool scalar_of<value_type>::operator >= (const scalar_of<another_type>& another) const
     {
         return !(*this < another);
     }
 
     template <typename value_type>
-    bool scalar_of<value_type>::operator < (const scalar_of<value_type>& another) const
+    template <typename another_type>
+    bool scalar_of<value_type>::operator < (const scalar_of<another_type>& another) const
     {
-        if constexpr (is_orderable<value_type>)
+        if constexpr (are_orderable<value_type, another_type>)
         {
             return get() < another.get();
         }
@@ -175,7 +196,8 @@ namespace dot
     }
 
     template <typename value_type>
-    bool scalar_of<value_type>::operator > (const scalar_of<value_type>& another) const
+    template <typename another_type>
+    bool scalar_of<value_type>::operator > (const scalar_of<another_type>& another) const
     {
         return another < *this;
     }
@@ -184,13 +206,18 @@ namespace dot
     template <typename another_type>
     bool scalar_of<value_type>::operator == (const another_type& another) const
     {
-        if (are_comparable<value_type, another_type>)
+        if constexpr (are_comparable<value_type, another_type>)
         {
             return get() == another;
         }
+        else if constexpr (std::is_base_of_v<object, another_type>)
+        {
+            return base::operator == (another);
+        }
         else
         {
-            return object::operator == (object(another));
+            another;
+            throw fail::non_comparable("Unable to compare scalar with non comparable type.");
         }
     }
 
@@ -205,7 +232,7 @@ namespace dot
     template <typename another_type>
     bool scalar_of<value_type>::operator <= (const another_type& another) const
     {
-        return !(another < *this);
+        return !(*this > another);
     }
 
     template <typename value_type>
@@ -223,9 +250,14 @@ namespace dot
         {
             return get() < another;
         }
+        else if (std::is_base_of_v<object, another_type>)
+        {
+            return base::operator < (another);
+        }
         else
         {
-            return object::operator == (object(another));
+            another;
+            throw fail::non_orderable("Unable to order scalar with non orderable type.");
         }
     }
 
@@ -233,21 +265,58 @@ namespace dot
     template <typename another_type>
     bool scalar_of<value_type>::operator > (const another_type& another) const
     {
-        return another < *this;
-    }
-
-    template <typename another_type, typename value_type>
-    bool operator == (another_type&& left, scalar_of<value_type>&& right)
-    {
-        if (are_comparable<another_type, value_type>)
+        if (are_orderable<another_type, value_type>)
         {
-            return left == right.get();
+            return another < get();
+        }
+        else if (std::is_base_of_v<object, another_type>)
+        {
+            return base::operator > (another);
         }
         else
         {
-            return operator == (object(left), right);
+            another;
+            throw fail::non_orderable("Unable to order scalar with non orderable type.");
         }
     }
+
+    template <typename left_type, typename right_type>
+    bool operator == (const left_type& left, const scalar_of<right_type>& right)
+    {
+        return right == left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator != (const left_type& left, const scalar_of<right_type>& right)
+    {
+        return right != left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator <= (const left_type& left, const scalar_of<right_type>& right)
+    {
+        return right >= left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator >= (const left_type& left, const scalar_of<right_type>& right)
+    {
+        return right <= left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator < (const left_type& left, const scalar_of<right_type>& right)
+    {
+        return right > left;
+    }
+
+    template <typename left_type, typename right_type>
+    bool operator > (const left_type& left, const scalar_of<right_type>& right)
+    {
+        return right < left;
+    }
+
+    // -- implementation of scalar data methods --
 
     template <typename value_type>
     const typename scalar_of<value_type>::data& scalar_of<value_type>::scalar_data() const noexcept
@@ -356,6 +425,8 @@ namespace dot
         }
     }
 
+    // -- definition of the identifiers for native types scalars --
+
     template<> DOT_PUBLIC const class_id& scalar_of<long long>::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar_of<long     >::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar_of<int      >::id() noexcept;
@@ -373,6 +444,8 @@ namespace dot
 
     template<> DOT_PUBLIC const class_id& scalar_of<bool>::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar_of<char>::id() noexcept;
+
+    // -- definition of the identifiers for data of native types scalars --
 
     template<> DOT_PUBLIC const class_id& scalar_of<long long>::data::id() noexcept;
     template<> DOT_PUBLIC const class_id& scalar_of<long     >::data::id() noexcept;

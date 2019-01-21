@@ -1,4 +1,7 @@
-// DOT public declaration
+// dot library macro for public declarations
+// for windows only must be defined DOT_EXPORTS
+// in case of build dynamic link library
+// define DOT_STATIC to build static link library
 
 #pragma once
 

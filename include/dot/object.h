@@ -1,4 +1,9 @@
-// DOT object base class
+// dot::object is base class for any other class
+// with dynamic typification by parallel hierarchy
+// of object classes and their data classes
+// object::data is base class for any data class
+// object contains buffer of limited size to contain value
+// stored in data in-place or by-reference depends of size
 
 #pragma once
 

@@ -149,6 +149,38 @@ namespace dot
         return fail_unreadable_data_id;
     }
 
+    fail::non_comparable::non_comparable(const char* message) noexcept
+        : base(message)
+    {
+    }
+
+    const char* fail::non_comparable::label() const noexcept
+    {
+        return "NON COMPARABLE";
+    }
+
+    const class_id& fail::non_comparable::id() noexcept
+    {
+        static class_id fail_non_comparable_id("fail::non_comparable");
+        return fail_non_comparable_id;
+    }
+
+    fail::non_orderable::non_orderable(const char* message) noexcept
+        : base(message)
+    {
+    }
+
+    const char* fail::non_orderable::label() const noexcept
+    {
+        return "NON ORDERABLE";
+    }
+
+    const class_id& fail::non_orderable::id() noexcept
+    {
+        static class_id fail_non_orderable_id("fail::non_orderable");
+        return fail_non_orderable_id;
+    }
+
     template<> const class_id& copyable_of<fail::info>::id() noexcept
     {
         static class_id copyable_fail_info_id("copyable<fail::info>");
