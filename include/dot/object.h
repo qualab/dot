@@ -134,7 +134,7 @@ namespace dot
         friend DOT_PUBLIC std::istream& operator >> (std::istream& stream, object::data& destination);
     };
 
-// -- implmentation --
+    // -- implmentation --
 
     template <typename another_type>
     object::object(another_type&& another)
@@ -160,19 +160,13 @@ namespace dot
     void object::set_as(another_type&& another)
     {
         using source_type = std::remove_const_t<std::remove_reference_t<another_type>>;
-        if constexpr (std::is_base_of_v<object, source_type>)
+        if constexpr (sizeof(source_type) <= data_type_max)
         {
-            another.assign_to(*this);
-        }
-        else if constexpr (sizeof(source_type) <= data_type_max)
-        {
-            using another_data_type = typename scalar_of<source_type>::data;
-            initialize<another_data_type>(std::forward<another_type>(another));
+            initialize<typename scalar_of<source_type>::data>(std::forward<another_type>(another));
         }
         else
         {
-            using another_data_type = typename copyable_of<source_type>::data;
-            initialize<another_data_type>(std::forward<another_type>(another));
+            initialize<typename copyable_of<source_type>::data>(std::forward<another_type>(another));
         }
     }
 
@@ -180,11 +174,7 @@ namespace dot
     another_type object::get_as() const
     {
         using target_type = std::remove_const_t<std::remove_reference_t<another_type>>;
-        if constexpr (std::is_base_of_v<object, target_type>)
-        {
-            return target_type(*this);
-        }
-        else if constexpr (sizeof(target_type) <= data_type_max)
+        if constexpr (sizeof(target_type) <= data_type_max)
         {
             return data_as<typename scalar_of<target_type>::data>().get();
         }

@@ -57,7 +57,7 @@ namespace dot
         static bool of() noexcept
         {
             return derived_type::id() == instance_type::id() ||
-               is_class<derived_type::base>::of<instance_type>();
+               typename is_class<derived_type::base>::template of<instance_type>();
         }
     };
 

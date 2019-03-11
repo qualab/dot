@@ -13,4 +13,15 @@
 #   define DOT_PUBLIC __declspec(dllimport)
 #endif
 
+namespace dot
+{
+    class object;
+
+    class scalar;
+    template <typename value_type> class scalar_of;
+
+    class copyable;
+    template <typename instance_type> class copyable_of;
+}
+
 // Здесь должен быть Unicode
