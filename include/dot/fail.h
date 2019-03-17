@@ -1,7 +1,7 @@
 // dot::fail is common class for base exception classes
 // fail::info contains information about exception
 // fail::error is base class for any exception occured
-// and is copyable_of<fail::info> with const methods only
+// and that is rope<fail::info> with const methods only
 
 #pragma once
 

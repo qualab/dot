@@ -1,4 +1,5 @@
-// DOT copyable data object
+// dot::rope incapsulates Copy-on-Write pattern as rope::cow
+// there are implementation of rope and rope::cow methods
 
 #include <dot/rope.h>
 

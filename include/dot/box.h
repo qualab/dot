@@ -1,7 +1,7 @@
-// dot::scalar_of<slim> contains scalar value
-// which size allows data store it in-place (by value)
+// dot::box<slim> contains value of slim type
+// which size allows ot store it in-place (by value)
 // this is suitable for simple values and small structures
-// scalar_of<slim>::cat is simply contain its value
+// data class box<slim>::cat is simply contain its value
 
 #pragma once
 
@@ -10,7 +10,7 @@
 
 namespace dot
 {
-    // base class for any scalar_of<slim>
+    // base class for any other box
     class DOT_PUBLIC boxes : public object
     {
     public:
@@ -24,7 +24,8 @@ namespace dot
         class cats;
     };
 
-    // contain data with value in-placed
+    // box contains slim cat which is liquid enough
+    // to be suitable for internal object's buffer
     template <class slim>
     class box : public boxes
     {
@@ -34,7 +35,7 @@ namespace dot
         template <class... arguments>
         explicit box(arguments... args);
 
-        slim look() const noexcept;
+        const slim& look() const noexcept;
         slim& touch() noexcept;
 
         template <class other> bool operator == (const box<other>& another) const;
@@ -66,7 +67,7 @@ namespace dot
     template <typename left, typename right> bool operator <  (const left& x, const box<right>& y);
     template <typename left, typename right> bool operator >  (const left& x, const box<right>& y);
 
-    // base class for any scalar_of<slim>::cat
+    // base class for any cat in the box
     class DOT_PUBLIC boxes::cats : public object::data
     {
     public:
@@ -83,7 +84,7 @@ namespace dot
         template <class... arguments>
         cat(arguments... args);
 
-        slim look() const noexcept;
+        const slim& look() const noexcept;
         slim& touch() noexcept;
 
         DOT_HIERARCHIC(boxes::cats);
@@ -102,7 +103,7 @@ namespace dot
         slim my_value;
     };
 
-    // -- implementation of scalar methods --
+    // -- implementation of the box methods --
 
     template <class slim>
     boxes::boxes(slim&& value)
@@ -125,7 +126,7 @@ namespace dot
     }
 
     template <class slim>
-    slim box<slim>::look() const noexcept
+    const slim& box<slim>::look() const noexcept
     {
         return my_cat->look();
     }
@@ -306,7 +307,7 @@ namespace dot
         return y < x;
     }
 
-    // -- implementation of scalar data methods --
+    // -- implementation of the cat in the box methods --
 
     template <class slim>
     box<slim>::cat::cat(const cat& another)
@@ -322,7 +323,7 @@ namespace dot
     }
 
     template <class slim>
-    slim box<slim>::cat::look() const noexcept
+    const slim& box<slim>::cat::look() const noexcept
     {
         return my_value;
     }
@@ -403,7 +404,7 @@ namespace dot
         }
     }
 
-    // -- definition of the identifiers for native types scalars --
+    // -- definition of the identifiers for the boxes of native types --
 
     template<> DOT_PUBLIC const class_id& box<long long>::id() noexcept;
     template<> DOT_PUBLIC const class_id& box<long     >::id() noexcept;
@@ -423,7 +424,7 @@ namespace dot
     template<> DOT_PUBLIC const class_id& box<bool>::id() noexcept;
     template<> DOT_PUBLIC const class_id& box<char>::id() noexcept;
 
-    // -- definition of the identifiers for data of native types scalars --
+    // -- definition of the identifiers for the cats in the box of native types --
 
     template<> DOT_PUBLIC const class_id& box<long long>::cat::id() noexcept;
     template<> DOT_PUBLIC const class_id& box<long     >::cat::id() noexcept;

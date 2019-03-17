@@ -33,24 +33,24 @@ namespace dot
         object& operator = (object&& temporary);
 
         // create object by value of another type explicitely
-        template <typename another_type>
-        explicit object(another_type&& another);
+        template <class other>
+        explicit object(other&& another);
 
         // assign value of another type to object
-        template <typename another_type>
-        object& operator = (another_type&& another);
+        template <class other>
+        object& operator = (other&& another);
 
         // cast object to another type
-        template <typename another_type>
-        explicit operator another_type() const;
+        template <class other>
+        explicit operator other() const;
 
-        // set object by scalar value
-        template <typename another_type>
-        void set_as(another_type&& another);
+        // set object by value of any other type
+        template <class other>
+        void set_as(other&& another);
 
         // get object as derived type reference
-        template <typename another_type>
-        another_type get_as() const;
+        template <class other>
+        other get_as() const;
 
         bool operator == (const object& another) const;
         bool operator != (const object& another) const;
@@ -136,44 +136,44 @@ namespace dot
 
     // -- implmentation --
 
-    template <typename another_type>
-    object::object(another_type&& another)
+    template <class other>
+    object::object(other&& another)
         : my_data(nullptr)
     {
-        set_as(std::forward<another_type>(another));
+        set_as(std::forward<other>(another));
     }
 
-    template <typename another_type>
-    object& object::operator = (another_type&& another)
+    template <class other>
+    object& object::operator = (other&& another)
     {
-        set_as(std::forward<another_type>(another));
+        set_as(std::forward<other>(another));
         return *this;
     }
 
-    template <typename another_type>
-    object::operator another_type() const
+    template <class other>
+    object::operator other() const
     {
-        return get_as<another_type>();
+        return get_as<other>();
     }
 
-    template <typename another_type>
-    void object::set_as(another_type&& another)
+    template <class other>
+    void object::set_as(other&& another)
     {
-        using source_type = std::remove_const_t<std::remove_reference_t<another_type>>;
+        using source_type = std::remove_const_t<std::remove_reference_t<other>>;
         if constexpr (sizeof(source_type) <= data_type_max)
         {
-            initialize<typename box<source_type>::cat>(std::forward<another_type>(another));
+            initialize<typename box<source_type>::cat>(std::forward<other>(another));
         }
         else
         {
-            initialize<typename rope<source_type>::cow>(std::forward<another_type>(another));
+            initialize<typename rope<source_type>::cow>(std::forward<other>(another));
         }
     }
 
-    template <typename another_type>
-    another_type object::get_as() const
+    template <class other>
+    other object::get_as() const
     {
-        using target_type = std::remove_const_t<std::remove_reference_t<another_type>>;
+        using target_type = std::remove_const_t<std::remove_reference_t<other>>;
         if constexpr (sizeof(target_type) <= data_type_max)
         {
             return data_as<typename box<target_type>::cat>().look();

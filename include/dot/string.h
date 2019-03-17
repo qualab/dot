@@ -1,4 +1,4 @@
-// dot::copyable_of<std:: strings> with the required includes
+// Copy-on-Write pattern for literal string types
 
 #pragma once
 

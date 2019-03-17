@@ -1,8 +1,8 @@
-// dot::copyable copy-on-write reference object
-// multiple object may refer to single fat
-// any const method must not change common fat
-// any non-const method create its own copy if
-// more than one object refers same fat
+// dot::rope implements copy-on-write reference
+// multiple object may refer to single fat cow
+// any const method must not change common cow
+// any non-const method create its own clone
+// if more than one rope refers to the same cow
 
 #pragma once
 
@@ -91,17 +91,17 @@ namespace dot
     template <typename left, typename right> bool operator <  (const left& x, const rope<right>& y);
     template <typename left, typename right> bool operator >  (const left& x, const rope<right>& y);
 
-    // base class for any data of copyable_of<fat>
+    // base class for any cow which implements copy-on-write pattern
     class DOT_PUBLIC ropes::cows : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
     };
 
-    // data contains reference to a copyable fat as pointer to memory block
-    // which contain fat and reference counter (standard atomic)
-    // any non-const method on fat when reference count is above one
-    // follows copy own memory block to refer it without change of original
+    // Copy-on-Write pattern or another words C-o-W
+    // contains fat type value and reference counter
+    // any non-const method when more than one rope is bound
+    // follows clone of the cow with copy of fat type value
     template <class fat>
     class rope<fat>::cow : public ropes::cows
     {
@@ -135,6 +135,9 @@ namespace dot
         virtual bool less(const object::data& another) const noexcept override;
 
     private:
+        // cow's neck is the place where bound multiple ropes
+        // the moment when no rope is bound to the cow's neck
+        // cow runs out and goes to be deleted from system memory
         struct neck
         {
             std::atomic<uint64> bound;
@@ -163,7 +166,7 @@ namespace dot
         neck* my_neck;
     };
 
-    // -- methods implementation of copyable --
+    // -- implementation of the rope methods --
 
     template <class fat>
     ropes::ropes(fat&& inst)
@@ -275,7 +278,7 @@ namespace dot
         }
         else
         {
-            throw fail::non_comparable("Unable to compare copyables of non comparable types.");
+            throw fail::non_comparable("Unable to compare ropes of non comparable types.");
         }
     }
 
@@ -310,7 +313,7 @@ namespace dot
         }
         else
         {
-            throw fail::non_orderable("Unable to order copyables of non orderable types.");
+            throw fail::non_orderable("Unable to order ropes of non orderable types.");
         }
     }
 
@@ -435,7 +438,7 @@ namespace dot
         return y < x;
     }
 
-    // -- methods implementation of copyable data --
+    // -- implementation of the cow bound by the rope methods --
 
     template <class fat>
     template <class... arguments>

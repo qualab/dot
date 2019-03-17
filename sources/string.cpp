@@ -1,4 +1,5 @@
-// DOT scalar data object
+// dot::rope which are bound to the literal cows
+// implementation for the copy-on-write strings
 
 #include <dot/string.h>
 
@@ -6,26 +7,26 @@ namespace dot
 {
     template<> const class_id& rope<std::string>::id() noexcept
     {
-        static const class_id copyable_of_string_id("rope<string>");
-        return copyable_of_string_id;
+        static const class_id rope_string_id("rope<string>");
+        return rope_string_id;
     }
 
     template<> const class_id& rope<std::wstring>::id() noexcept
     {
-        static const class_id copyable_of_wstring_id("rope<wstring>");
-        return copyable_of_wstring_id;
+        static const class_id rope_wstring_id("rope<wstring>");
+        return rope_wstring_id;
     }
 
     template<> const class_id& rope<std::u16string>::id() noexcept
     {
-        static const class_id copyable_of_u16string_id("rope<u16string>");
-        return copyable_of_u16string_id;
+        static const class_id rope_u16string_id("rope<u16string>");
+        return rope_u16string_id;
     }
 
     template<> const class_id& rope<std::u32string>::id() noexcept
     {
-        static const class_id copyable_of_u32string_id("rope<u32string>");
-        return copyable_of_u32string_id;
+        static const class_id rope_u32string_id("rope<u32string>");
+        return rope_u32string_id;
     }
 
     template<> const class_id& rope<std::string>::cow::id() noexcept
