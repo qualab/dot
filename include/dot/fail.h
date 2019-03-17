@@ -6,7 +6,7 @@
 #pragma once
 
 #include <dot/trace.h>
-#include <dot/copyable.h>
+#include <dot/rope.h>
 #include <exception>
 
 namespace dot
@@ -42,7 +42,7 @@ namespace dot
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::info& source);
     DOT_PUBLIC std::istream& operator >> (std::istream& stream, fail::info& destination);
 
-    class DOT_PUBLIC fail::error : public copyable_of<fail::info>, public std::exception
+    class DOT_PUBLIC fail::error : public rope<fail::info>, public std::exception
     {
     public:
         explicit error(const char* message) noexcept;
@@ -52,7 +52,7 @@ namespace dot
         virtual const trace::stack& backtrace() const noexcept;
         virtual const char* label() const noexcept;
 
-        DOT_HIERARCHIC(copyable_of<fail::info>);
+        DOT_HIERARCHIC(rope<fail::info>);
     };
 
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::error& source);
@@ -103,8 +103,8 @@ namespace dot
         DOT_HIERARCHIC(fail::error);
     };
 
-    template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<fail::info>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<fail::info>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<fail::info>::cow::id() noexcept;
 }
 
 // Здесь должен быть Unicode

@@ -2,20 +2,20 @@
 
 #pragma once
 
-#include <dot/copyable.h>
+#include <dot/rope.h>
 #include <string>
 
 namespace dot
 {
-    template<> DOT_PUBLIC const class_id& copyable_of<std::string>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<std::wstring>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<std::u16string>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<std::u32string>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::string>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::wstring>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::u16string>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::u32string>::id() noexcept;
 
-    template<> DOT_PUBLIC const class_id& copyable_of<std::string>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<std::wstring>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<std::u16string>::data::id() noexcept;
-    template<> DOT_PUBLIC const class_id& copyable_of<std::u32string>::data::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::string>::cow::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::wstring>::cow::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::u16string>::cow::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<std::u32string>::cow::id() noexcept;
 
     template<> DOT_PUBLIC void object::set_as(const char* const& value);
     template<> DOT_PUBLIC void object::set_as(const std::string& value);

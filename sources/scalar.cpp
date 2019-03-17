@@ -4,175 +4,175 @@
 
 namespace dot
 {
-    scalar::scalar()
+    boxes::boxes()
     {
     }
 
-    const class_id& scalar::id() noexcept
+    const class_id& boxes::id() noexcept
     {
-        static const class_id scalar_id("scalar");
+        static const class_id scalar_id("boxes");
         return scalar_id;
     }
 
-    const class_id& scalar::data::id() noexcept
+    const class_id& boxes::data::id() noexcept
     {
-        static const class_id scalar_data_id("scalar::data");
+        static const class_id scalar_data_id("boxes::data");
         return scalar_data_id;
     }
 
-    template<> const class_id& scalar_of<long long>::id() noexcept
+    template<> const class_id& box<long long>::id() noexcept
     {
-        static const class_id scalar_long_long_id("scalar_of<long long>");
+        static const class_id scalar_long_long_id("box<long long>");
         return scalar_long_long_id;
     }
 
-    template<> const class_id& scalar_of<long>::id() noexcept
+    template<> const class_id& box<long>::id() noexcept
     {
-        static const class_id scalar_long_id("scalar_of<long>");
+        static const class_id scalar_long_id("box<long>");
         return scalar_long_id;
     }
 
-    template<> const class_id& scalar_of<int>::id() noexcept
+    template<> const class_id& box<int>::id() noexcept
     {
-        static const class_id scalar_int_id("scalar_of<int>");
+        static const class_id scalar_int_id("box<int>");
         return scalar_int_id;
     }
 
-    template<> const class_id& scalar_of<short>::id() noexcept
+    template<> const class_id& box<short>::id() noexcept
     {
-        static const class_id scalar_short_id("scalar_of<short>");
+        static const class_id scalar_short_id("box<short>");
         return scalar_short_id;
     }
 
-    template<> const class_id& scalar_of<char>::id() noexcept
+    template<> const class_id& box<char>::id() noexcept
     {
-        static const class_id scalar_char_id("scalar_of<char>");
+        static const class_id scalar_char_id("box<char>");
         return scalar_char_id;
     }
 
-    template<> const class_id& scalar_of<unsigned long long>::id() noexcept
+    template<> const class_id& box<unsigned long long>::id() noexcept
     {
-        static const class_id scalar_unsigned_long_long_id("scalar_of<unsigned long long>");
+        static const class_id scalar_unsigned_long_long_id("box<unsigned long long>");
         return scalar_unsigned_long_long_id;
     }
 
-    template<> const class_id& scalar_of<unsigned long>::id() noexcept
+    template<> const class_id& box<unsigned long>::id() noexcept
     {
-        static const class_id scalar_unsigned_long_id("scalar_of<unsigned long>");
+        static const class_id scalar_unsigned_long_id("box<unsigned long>");
         return scalar_unsigned_long_id;
     }
 
-    template<> const class_id& scalar_of<unsigned int>::id() noexcept
+    template<> const class_id& box<unsigned int>::id() noexcept
     {
-        static const class_id scalar_unsigned_int_id("scalar_of<unsigned int>");
+        static const class_id scalar_unsigned_int_id("box<unsigned int>");
         return scalar_unsigned_int_id;
     }
 
-    template<> const class_id& scalar_of<unsigned short>::id() noexcept
+    template<> const class_id& box<unsigned short>::id() noexcept
     {
-        static const class_id scalar_unsigned_short_id("scalar_of<unsigned short>");
+        static const class_id scalar_unsigned_short_id("box<unsigned short>");
         return scalar_unsigned_short_id;
     }
 
-    template<> const class_id& scalar_of<unsigned char>::id() noexcept
+    template<> const class_id& box<unsigned char>::id() noexcept
     {
-        static const class_id scalar_unsigned_char_id("scalar_of<unsigned char>");
+        static const class_id scalar_unsigned_char_id("box<unsigned char>");
         return scalar_unsigned_char_id;
     }
 
-    template<> const class_id& scalar_of<double>::id() noexcept
+    template<> const class_id& box<double>::id() noexcept
     {
-        static const class_id scalar_double_id("scalar_of<double>");
+        static const class_id scalar_double_id("box<double>");
         return scalar_double_id;
     }
 
-    template<> const class_id& scalar_of<float >::id() noexcept
+    template<> const class_id& box<float >::id() noexcept
     {
-        static const class_id scalar_float_id("scalar_of<float>");
+        static const class_id scalar_float_id("box<float>");
         return scalar_float_id;
     }
 
-    template<> const class_id& scalar_of<bool>::id() noexcept
+    template<> const class_id& box<bool>::id() noexcept
     {
-        static const class_id scalar_bool_id("scalar_of<bool>");
+        static const class_id scalar_bool_id("box<bool>");
         return scalar_bool_id;
     }
 
-    template<> const class_id& scalar_of<long long>::data::id() noexcept
+    template<> const class_id& box<long long>::data::id() noexcept
     {
-        static const class_id scalar_long_long_data_id("scalar_of<long long>::data");
+        static const class_id scalar_long_long_data_id("box<long long>::data");
         return scalar_long_long_data_id;
     }
 
-    template<> const class_id& scalar_of<long>::data::id() noexcept
+    template<> const class_id& box<long>::data::id() noexcept
     {
-        static const class_id scalar_long_data_id("scalar_of<long>::data");
+        static const class_id scalar_long_data_id("box<long>::data");
         return scalar_long_data_id;
     }
 
-    template<> const class_id& scalar_of<int>::data::id() noexcept
+    template<> const class_id& box<int>::data::id() noexcept
     {
-        static const class_id scalar_int_data_id("scalar_of<int>::data");
+        static const class_id scalar_int_data_id("box<int>::data");
         return scalar_int_data_id;
     }
 
-    template<> const class_id& scalar_of<short>::data::id() noexcept
+    template<> const class_id& box<short>::data::id() noexcept
     {
-        static const class_id scalar_short_data_id("scalar_of<short>::data");
+        static const class_id scalar_short_data_id("box<short>::data");
         return scalar_short_data_id;
     }
 
-    template<> const class_id& scalar_of<char>::data::id() noexcept
+    template<> const class_id& box<char>::data::id() noexcept
     {
-        static const class_id scalar_char_data_id("scalar_of<char>::data");
+        static const class_id scalar_char_data_id("box<char>::data");
         return scalar_char_data_id;
     }
 
-    template<> const class_id& scalar_of<unsigned long long>::data::id() noexcept
+    template<> const class_id& box<unsigned long long>::data::id() noexcept
     {
-        static const class_id scalar_unsigned_long_long_data_id("scalar_of<unsigned long long>::data");
+        static const class_id scalar_unsigned_long_long_data_id("box<unsigned long long>::data");
         return scalar_unsigned_long_long_data_id;
     }
 
-    template<> const class_id& scalar_of<unsigned long>::data::id() noexcept
+    template<> const class_id& box<unsigned long>::data::id() noexcept
     {
-        static const class_id scalar_unsigned_long_data_id("scalar_of<unsigned long>::data");
+        static const class_id scalar_unsigned_long_data_id("box<unsigned long>::data");
         return scalar_unsigned_long_data_id;
     }
 
-    template<> const class_id& scalar_of<unsigned int>::data::id() noexcept
+    template<> const class_id& box<unsigned int>::data::id() noexcept
     {
-        static const class_id scalar_unsigned_int_data_id("scalar_of<unsigned int>::data");
+        static const class_id scalar_unsigned_int_data_id("box<unsigned int>::data");
         return scalar_unsigned_int_data_id;
     }
 
-    template<> const class_id& scalar_of<unsigned short>::data::id() noexcept
+    template<> const class_id& box<unsigned short>::data::id() noexcept
     {
-        static const class_id scalar_unsigned_short_data_id("scalar_of<unsigned short>::data");
+        static const class_id scalar_unsigned_short_data_id("box<unsigned short>::data");
         return scalar_unsigned_short_data_id;
     }
 
-    template<> const class_id& scalar_of<unsigned char>::data::id() noexcept
+    template<> const class_id& box<unsigned char>::data::id() noexcept
     {
-        static const class_id scalar_unsigned_char_data_id("scalar_of<unsigned char>::data");
+        static const class_id scalar_unsigned_char_data_id("box<unsigned char>::data");
         return scalar_unsigned_char_data_id;
     }
 
-    template<> const class_id& scalar_of<double>::data::id() noexcept
+    template<> const class_id& box<double>::data::id() noexcept
     {
-        static const class_id scalar_double_data_id("scalar_of<double>::data");
+        static const class_id scalar_double_data_id("box<double>::data");
         return scalar_double_data_id;
     }
 
-    template<> const class_id& scalar_of<float>::data::id() noexcept
+    template<> const class_id& box<float>::data::id() noexcept
     {
-        static const class_id scalar_float_data_id("scalar_of<float>::data");
+        static const class_id scalar_float_data_id("box<float>::data");
         return scalar_float_data_id;
     }
 
-    template<> const class_id& scalar_of<bool>::data::id() noexcept
+    template<> const class_id& box<bool>::data::id() noexcept
     {
-        static const class_id scalar_bool_data_id("scalar_of<bool>::data");
+        static const class_id scalar_bool_data_id("box<bool>::data");
         return scalar_bool_data_id;
     }
 }

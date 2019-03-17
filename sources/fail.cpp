@@ -181,16 +181,16 @@ namespace dot
         return fail_non_orderable_id;
     }
 
-    template<> const class_id& copyable_of<fail::info>::id() noexcept
+    template<> const class_id& rope<fail::info>::id() noexcept
     {
-        static class_id copyable_fail_info_id("copyable<fail::info>");
-        return copyable_fail_info_id;
+        static class_id rope_fail_info_id("rope<fail::info>");
+        return rope_fail_info_id;
     }
 
-    template<> const class_id& copyable_of<fail::info>::data::id() noexcept
+    template<> const class_id& rope<fail::info>::cow::id() noexcept
     {
-        static class_id copyable_fail_info_data_id("copyable<fail::info>::data");
-        return copyable_fail_info_data_id;
+        static class_id rope_fail_info_cow_id("rope<fail::info>::cow");
+        return rope_fail_info_cow_id;
     }
 }
 

@@ -15,13 +15,22 @@
 
 namespace dot
 {
+    // base type for any high-level class
     class object;
 
-    class scalar;
-    template <typename value_type> class scalar_of;
+    // base class for any box for cat of any shape
+    class boxes;
 
-    class copyable;
-    template <typename instance_type> class copyable_of;
+    // each box contains liquid cat of proper shape
+    template <class shape>
+    class box;
+
+    // base class for any rope bound to cow
+    class ropes;
+
+    // each rope is bound to some cow to copy-on-write
+    template <class instance>
+    class rope;
 }
 
 // Здесь должен быть Unicode

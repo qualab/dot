@@ -4,84 +4,84 @@
 
 namespace dot
 {
-    template<> const class_id& copyable_of<std::string>::id() noexcept
+    template<> const class_id& rope<std::string>::id() noexcept
     {
-        static const class_id copyable_of_string_id("copyable_of<string>");
+        static const class_id copyable_of_string_id("rope<string>");
         return copyable_of_string_id;
     }
 
-    template<> const class_id& copyable_of<std::wstring>::id() noexcept
+    template<> const class_id& rope<std::wstring>::id() noexcept
     {
-        static const class_id copyable_of_wstring_id("copyable_of<wstring>");
+        static const class_id copyable_of_wstring_id("rope<wstring>");
         return copyable_of_wstring_id;
     }
 
-    template<> const class_id& copyable_of<std::u16string>::id() noexcept
+    template<> const class_id& rope<std::u16string>::id() noexcept
     {
-        static const class_id copyable_of_u16string_id("copyable_of<u16string>");
+        static const class_id copyable_of_u16string_id("rope<u16string>");
         return copyable_of_u16string_id;
     }
 
-    template<> const class_id& copyable_of<std::u32string>::id() noexcept
+    template<> const class_id& rope<std::u32string>::id() noexcept
     {
-        static const class_id copyable_of_u32string_id("copyable_of<u32string>");
+        static const class_id copyable_of_u32string_id("rope<u32string>");
         return copyable_of_u32string_id;
     }
 
-    template<> const class_id& copyable_of<std::string>::data::id() noexcept
+    template<> const class_id& rope<std::string>::cow::id() noexcept
     {
-        static const class_id copyable_of_string_data_id("copyable_of<string>::data");
-        return copyable_of_string_data_id;
+        static const class_id rope_string_cow_id("rope<string>::cow");
+        return rope_string_cow_id;
     }
 
-    template<> const class_id& copyable_of<std::wstring>::data::id() noexcept
+    template<> const class_id& rope<std::wstring>::cow::id() noexcept
     {
-        static const class_id copyable_of_wstring_data_id("copyable_of<wstring>::data");
-        return copyable_of_wstring_data_id;
+        static const class_id rope_wstring_cow_id("rope<wstring>::cow");
+        return rope_wstring_cow_id;
     }
 
-    template<> const class_id& copyable_of<std::u16string>::data::id() noexcept
+    template<> const class_id& rope<std::u16string>::cow::id() noexcept
     {
-        static const class_id copyable_of_u16string_data_id("copyable_of<u16string>::data");
-        return copyable_of_u16string_data_id;
+        static const class_id rope_u16string_cow_id("rope<u16string>::cow");
+        return rope_u16string_cow_id;
     }
 
-    template<> const class_id& copyable_of<std::u32string>::data::id() noexcept
+    template<> const class_id& rope<std::u32string>::cow::id() noexcept
     {
-        static const class_id copyable_of_u32string_data_id("copyable_of<u32string>::data");
-        return copyable_of_u32string_data_id;
+        static const class_id rope_u32string_cow_id("rope<u32string>::cow");
+        return rope_u32string_cow_id;
     }
 
-    template<> void object::set_as(const char* const& value) { initialize<copyable_of<std::string>::data>(std::string(value)); }
-    template<> void object::set_as(const std::string& value) { initialize<copyable_of<std::string>::data>(value); }
-    template<> void object::set_as(std::string&& value) { initialize<copyable_of<std::string>::data>(std::move(value)); }
+    template<> void object::set_as(const char* const& value) { initialize<rope<std::string>::cow>(std::string(value)); }
+    template<> void object::set_as(const std::string& value) { initialize<rope<std::string>::cow>(value); }
+    template<> void object::set_as(std::string&& value) { initialize<rope<std::string>::cow>(std::move(value)); }
 
-    template<> void object::set_as(const wchar_t* const& value) { initialize<copyable_of<std::wstring>::data>(std::wstring(value)); }
-    template<> void object::set_as(const std::wstring& value) { initialize<copyable_of<std::wstring>::data>(value); }
-    template<> void object::set_as(std::wstring&& value) { initialize<copyable_of<std::wstring>::data>(std::move(value)); }
+    template<> void object::set_as(const wchar_t* const& value) { initialize<rope<std::wstring>::cow>(std::wstring(value)); }
+    template<> void object::set_as(const std::wstring& value) { initialize<rope<std::wstring>::cow>(value); }
+    template<> void object::set_as(std::wstring&& value) { initialize<rope<std::wstring>::cow>(std::move(value)); }
 
-    template<> void object::set_as(const char16_t* const& value) { initialize<copyable_of<std::u16string>::data>(std::u16string(value)); }
-    template<> void object::set_as(const std::u16string& value) { initialize<copyable_of<std::u16string>::data>(value); }
-    template<> void object::set_as(std::u16string&& value) { initialize<copyable_of<std::u16string>::data>(std::move(value)); }
+    template<> void object::set_as(const char16_t* const& value) { initialize<rope<std::u16string>::cow>(std::u16string(value)); }
+    template<> void object::set_as(const std::u16string& value) { initialize<rope<std::u16string>::cow>(value); }
+    template<> void object::set_as(std::u16string&& value) { initialize<rope<std::u16string>::cow>(std::move(value)); }
 
-    template<> void object::set_as(const char32_t* const& value) { initialize<copyable_of<std::u32string>::data>(std::u32string(value)); }
-    template<> void object::set_as(const std::u32string& value) { initialize<copyable_of<std::u32string>::data>(value); }
-    template<> void object::set_as(std::u32string&& value) { initialize<copyable_of<std::u32string>::data>(std::move(value)); }
+    template<> void object::set_as(const char32_t* const& value) { initialize<rope<std::u32string>::cow>(std::u32string(value)); }
+    template<> void object::set_as(const std::u32string& value) { initialize<rope<std::u32string>::cow>(value); }
+    template<> void object::set_as(std::u32string&& value) { initialize<rope<std::u32string>::cow>(std::move(value)); }
 
-    template<> std::string    object::get_as() const { return data_as<copyable_of<std::string>::data>().get(); }
-    template<> std::wstring   object::get_as() const { return data_as<copyable_of<std::wstring>::data>().get(); }
-    template<> std::u16string object::get_as() const { return data_as<copyable_of<std::u16string>::data>().get(); }
-    template<> std::u32string object::get_as() const { return data_as<copyable_of<std::u32string>::data>().get(); }
+    template<> std::string    object::get_as() const { return data_as<rope<std::string>::cow>().look(); }
+    template<> std::wstring   object::get_as() const { return data_as<rope<std::wstring>::cow>().look(); }
+    template<> std::u16string object::get_as() const { return data_as<rope<std::u16string>::cow>().look(); }
+    template<> std::u32string object::get_as() const { return data_as<rope<std::u32string>::cow>().look(); }
 
-    template<> const std::string&    object::get_as() const { return data_as<copyable_of<std::string>::data>().get(); }
-    template<> const std::wstring&   object::get_as() const { return data_as<copyable_of<std::wstring>::data>().get(); }
-    template<> const std::u16string& object::get_as() const { return data_as<copyable_of<std::u16string>::data>().get(); }
-    template<> const std::u32string& object::get_as() const { return data_as<copyable_of<std::u32string>::data>().get(); }
+    template<> const std::string&    object::get_as() const { return data_as<rope<std::string>::cow>().look(); }
+    template<> const std::wstring&   object::get_as() const { return data_as<rope<std::wstring>::cow>().look(); }
+    template<> const std::u16string& object::get_as() const { return data_as<rope<std::u16string>::cow>().look(); }
+    template<> const std::u32string& object::get_as() const { return data_as<rope<std::u32string>::cow>().look(); }
 
-    template<> const char*     object::get_as() const { return data_as<copyable_of<std::string>::data>().get().c_str(); }
-    template<> const wchar_t*  object::get_as() const { return data_as<copyable_of<std::wstring>::data>().get().c_str(); }
-    template<> const char16_t* object::get_as() const { return data_as<copyable_of<std::u16string>::data>().get().c_str(); }
-    template<> const char32_t* object::get_as() const { return data_as<copyable_of<std::u32string>::data>().get().c_str(); }
+    template<> const char*     object::get_as() const { return data_as<rope<std::string>::cow>().look().c_str(); }
+    template<> const wchar_t*  object::get_as() const { return data_as<rope<std::wstring>::cow>().look().c_str(); }
+    template<> const char16_t* object::get_as() const { return data_as<rope<std::u16string>::cow>().look().c_str(); }
+    template<> const char32_t* object::get_as() const { return data_as<rope<std::u32string>::cow>().look().c_str(); }
 }
 
 // Здесь должен быть Unicode

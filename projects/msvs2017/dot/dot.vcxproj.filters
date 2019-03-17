@@ -24,13 +24,7 @@
     <ClInclude Include="..\..\..\include\dot\trace.h">
       <Filter>include\dot</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\dot\copyable.h">
-      <Filter>include\dot</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\dot\test.h">
-      <Filter>include\dot</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\include\dot\scalar.h">
       <Filter>include\dot</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\dot\stdfwd.h">
@@ -40,6 +34,12 @@
       <Filter>include\dot</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\include\dot\string.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\box.h">
+      <Filter>include\dot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\include\dot\rope.h">
       <Filter>include\dot</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,13 +59,13 @@
     <ClCompile Include="..\..\..\sources\fail.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\sources\scalar.cpp">
-      <Filter>sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\sources\string.cpp">
       <Filter>sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\sources\copyable.cpp">
+    <ClCompile Include="..\..\..\sources\box.cpp">
+      <Filter>sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\sources\rope.cpp">
       <Filter>sources</Filter>
     </ClCompile>
   </ItemGroup>

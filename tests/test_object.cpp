@@ -2,7 +2,7 @@
 
 #include <dot/test.h>
 #include <dot/object.h>
-#include <dot/scalar.h>
+#include <dot/box.h>
 #include <iostream>
 
 namespace dot

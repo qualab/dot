@@ -1,8 +1,8 @@
 // DOT public declaration
 
 #include <dot/object.h>
-#include <dot/scalar.h>
-#include <dot/copyable.h>
+#include <dot/box.h>
+#include <dot/rope.h>
 #include <dot/fail.h>
 #include <iostream>
 #include <utility>

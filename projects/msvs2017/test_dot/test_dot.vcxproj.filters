@@ -12,10 +12,10 @@
     <ClCompile Include="..\..\..\tests\test_object.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tests\test_copyable.cpp">
+    <ClCompile Include="..\..\..\tests\test_rope.cpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\tests\test_scalar.cpp">
+    <ClCompile Include="..\..\..\tests\test_box.cpp">
       <Filter>tests</Filter>
     </ClCompile>
   </ItemGroup>

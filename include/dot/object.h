@@ -76,8 +76,8 @@ namespace dot
 
     protected:
         // initialize internal object data by derived data type
-        template <typename derived_data, typename... argument_types>
-        derived_data* initialize(argument_types&&... arguments);
+        template <class derived, class... arguments>
+        derived* initialize(arguments&&... args);
 
         void assign_to(object& target) const&;
         void assign_to(object& target) &&;
@@ -162,11 +162,11 @@ namespace dot
         using source_type = std::remove_const_t<std::remove_reference_t<another_type>>;
         if constexpr (sizeof(source_type) <= data_type_max)
         {
-            initialize<typename scalar_of<source_type>::data>(std::forward<another_type>(another));
+            initialize<typename box<source_type>::cat>(std::forward<another_type>(another));
         }
         else
         {
-            initialize<typename copyable_of<source_type>::data>(std::forward<another_type>(another));
+            initialize<typename rope<source_type>::cow>(std::forward<another_type>(another));
         }
     }
 
@@ -176,11 +176,11 @@ namespace dot
         using target_type = std::remove_const_t<std::remove_reference_t<another_type>>;
         if constexpr (sizeof(target_type) <= data_type_max)
         {
-            return data_as<typename scalar_of<target_type>::data>().get();
+            return data_as<typename box<target_type>::cat>().look();
         }
         else
         {
-            return data_as<typename copyable_of<target_type>::data>().get();
+            return data_as<typename rope<target_type>::cow>().look();
         }
     }
 
@@ -190,14 +190,14 @@ namespace dot
         return get_data().as<data_type>();
     }
 
-    template <typename derived_data, typename... argument_types>
-    derived_data* object::initialize(argument_types&&... arguments)
+    template <typename derived, typename... arguments>
+    derived* object::initialize(arguments&&... args)
     {
-        static_assert(sizeof(derived_data) <= data_buffer_size,
+        static_assert(sizeof(derived) <= data_buffer_size,
             "Size of derived data type is too big for object data internal buffer.");
-        derived_data* result = nullptr;
+        derived* result = nullptr;
         reset();
-        my_data = result = new(my_buffer) derived_data(std::forward<argument_types>(arguments)...);
+        my_data = result = new(my_buffer) derived(std::forward<arguments>(args)...);
         return result;
     }
 }
