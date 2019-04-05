@@ -11,23 +11,23 @@
 namespace dot
 {
     // base class for any other box
-    class DOT_PUBLIC boxes : public object
+    class DOT_PUBLIC box_based : public object
     {
     public:
-        boxes();
+        box_based();
 
         template <class slim>
-        explicit boxes(slim&& value);
+        explicit box_based(slim&& value);
 
         DOT_HIERARCHIC(object);
 
-        class cats;
+        class cat_based;
     };
 
     // box contains slim cat which is liquid enough
     // to be suitable for internal object's buffer
     template <class slim>
-    class box : public boxes
+    class box : public box_based
     {
     public:
         box(const object& another);
@@ -52,7 +52,7 @@ namespace dot
         template <class other> bool operator <  (const other& another) const;
         template <class other> bool operator >  (const other& another) const;
 
-        DOT_HIERARCHIC(boxes);
+        DOT_HIERARCHIC(box_based);
 
         class cat;
 
@@ -68,7 +68,7 @@ namespace dot
     template <typename left, typename right> bool operator >  (const left& x, const box<right>& y);
 
     // base class for any cat in the box
-    class DOT_PUBLIC boxes::cats : public object::data
+    class DOT_PUBLIC box_based::cat_based : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
@@ -76,7 +76,7 @@ namespace dot
 
     // data contains value in-placed as a field
     template <class slim>
-    class box<slim>::cat : public boxes::cats
+    class box<slim>::cat : public box_based::cat_based
     {
     public:
         cat(const cat& another);
@@ -87,7 +87,7 @@ namespace dot
         const slim& look() const noexcept;
         slim& touch() noexcept;
 
-        DOT_HIERARCHIC(boxes::cats);
+        DOT_HIERARCHIC(box_based::cat_based);
 
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;
@@ -106,7 +106,7 @@ namespace dot
     // -- implementation of the box methods --
 
     template <class slim>
-    boxes::boxes(slim&& value)
+    box_based::box_based(slim&& value)
         : base(std::forward<slim>(value))
     {
     }
@@ -208,7 +208,7 @@ namespace dot
         else
         {
             another;
-            throw fail::non_comparable("Unable to compare boxes with non comparable type.");
+            throw fail::non_comparable("Unable to compare box_based with non comparable type.");
         }
     }
 
@@ -248,7 +248,7 @@ namespace dot
         else
         {
             another;
-            throw fail::non_orderable("Unable to order boxes with non orderable type.");
+            throw fail::non_orderable("Unable to order box_based with non orderable type.");
         }
     }
 
@@ -267,7 +267,7 @@ namespace dot
         else
         {
             another;
-            throw fail::non_orderable("Unable to order boxes with non orderable type.");
+            throw fail::non_orderable("Unable to order box_based with non orderable type.");
         }
     }
 

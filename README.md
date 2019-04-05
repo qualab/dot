@@ -8,17 +8,17 @@ Using dot:: types is the new way of solutions for such cases. All you need is ob
 ### The hierarchy of classes
 
 - object
-	- boxes
+	- box\_based
 		- box<slim\>
-	- ropes
+	- rope\_based
 		- rope<fat\>
 
 ### The hierarchy of data classes is the same
 
 - object::data
-	- boxes::cats
+	- box\_based::cat\_based
 		- box<slim\>::cat
-	- ropes::cows
+	- rope\_based::cow\_based
 		- rope<fat\>::cow
 
 ## dot::object
@@ -49,18 +49,22 @@ Use of `box` means that you know the type of data stored, so you can freely call
 
 `coef.touch() *= 1.1f; return num.look();`
 
-Any `box<type>` is derived from intermediate class `dot::boxes` as well as any `box<type>::cat` is derived from class `dot::boxes::cats`. That is helpful node of hierarchy to determine is the box class o instance derived from object in case when you received an object but do not know the type. Simply check is as follows:
+Any `box<type>` is derived from intermediate class `dot::box_based` as well as any `box<type>::cat` is derived from class `dot::box_based::cat_based`. That is helpful node of hierarchy to determine is the box class o instance derived from object in case when you received an object but do not know the type. Simply check is as follows:
 
-`object result = remote::call(argument); if (result.is<boxes>()) { ... }`
+`object result = remote::call(argument); if (result.is<box_based>()) { ... }`
 
 ## dot::rope
-Instead of `box` class `rope` refers the huge data that cannot be in-placed into the internal buffer of `object`. Class called `rope` because of data of this class implements Copy-on-Write pattern or C-o-W. To this is reference to `cow` called `rope`. Copy-on-Write pattern means many reference of `rope` may be bound to one `cow` and call any const method but first call of non-const method from any `rope` will follow the clone creation to change it own copy without corruption of shared `cow`. All methods of stored value type are calling via `operator ->` which determine const and non-const method calling: 
+Instead of `box` class `rope` refers to the huge data that cannot be in-placed into the internal buffer of `object`. Class called `rope` because of data of this class implements Copy-on-Write pattern or C-o-W. So this is the reference to `cow` which is called `rope`. Copy-on-Write pattern means many reference of `rope` may be bound to one `cow` and call any const method but first call of non-const method from any `rope` will follow the clone operation to change it own copy without corruption of shared `cow`. All methods of stored value type may be called via `operator ->` which determine const and non-const method calling:
 
 `rope<matrix3x3> matrix = rotation(angles); return matrix->det();`
 
 Copy-on-Write pattern implemented to all C++ lexical string types. So any object instantiated from `std::string` or `const wchar_t*` contains the `rope::cow` of proper type. 
 
 `rope<string> name = u8"Маруся"; rope<u32string> address = U"деревня Гадюкино";`
+
+As well as `dot::box` any `dot::rope` template instance have base class called `dot::rope_based`. Also any `rope::cow` is derived from `rope_based::cow_based`. So there is easy way to check is that a rope or box based storage:
+
+`object result = request.response(); if (result.is<rope_based>()) { ... }`
 
 ## Description
 Any class hierarchy provide the way to check is class derived from another and check is instance implements any class form this hierarchy. It works as well even when RTTI is switched off. Any hierarchy tree provides the identification for any class inside that hierarchy and any instance of such class may tell what class it implements without dynamic_cast or typeid usage with simplest additional object per class.

@@ -8,61 +8,61 @@ namespace dot
 {
     DOT_TEST_SUITE(box_class_hierarchy)
     {
-        DOT_CHECK(is_class<boxes>::of<object>()).is_true();
+        DOT_CHECK(is_class<box_based>::of<object>()).is_true();
         DOT_CHECK(is_class<box<int>>::of<object>()).is_true();
-        DOT_CHECK(is_class<box<int>>::of<boxes>()).is_true();
+        DOT_CHECK(is_class<box<int>>::of<box_based>()).is_true();
         DOT_CHECK(is_class<box<uint>>::of<object>()).is_true();
-        DOT_CHECK(is_class<box<uint>>::of<boxes>()).is_true();
+        DOT_CHECK(is_class<box<uint>>::of<box_based>()).is_true();
         DOT_CHECK(is_class<box<int>>::of<box<uint>>()).is_false();
         DOT_CHECK(is_class<box<uint>>::of<box<int>>()).is_false();
         DOT_CHECK(is_class<object>::of<box<int>>()).is_false();
         DOT_CHECK(is_class<object>::of<box<uint>>()).is_false();
-        DOT_CHECK(is_class<boxes>::of<box<int>>()).is_false();
-        DOT_CHECK(is_class<boxes>::of<box<uint>>()).is_false();
-        DOT_CHECK(is_class<object>::of<boxes>()).is_false();
-        DOT_CHECK(is_class<boxes>::of<boxes>()).is_true();
+        DOT_CHECK(is_class<box_based>::of<box<int>>()).is_false();
+        DOT_CHECK(is_class<box_based>::of<box<uint>>()).is_false();
+        DOT_CHECK(is_class<object>::of<box_based>()).is_false();
+        DOT_CHECK(is_class<box_based>::of<box_based>()).is_true();
         DOT_CHECK(is_class<box<int>>::of<box<int>>()).is_true();
         DOT_CHECK(is_class<box<uint>>::of<box<uint>>()).is_true();
 
-        DOT_CHECK(is_class<boxes::cats>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<box_based::cat_based>::of<object::data>()).is_true();
         DOT_CHECK(is_class<box<int>::cat>::of<object::data>()).is_true();
-        DOT_CHECK(is_class<box<int>::cat>::of<boxes::cats>()).is_true();
+        DOT_CHECK(is_class<box<int>::cat>::of<box_based::cat_based>()).is_true();
         DOT_CHECK(is_class<box<uint>::cat>::of<object::data>()).is_true();
-        DOT_CHECK(is_class<box<uint>::cat>::of<boxes::cats>()).is_true();
+        DOT_CHECK(is_class<box<uint>::cat>::of<box_based::cat_based>()).is_true();
         DOT_CHECK(is_class<box<int>::cat>::of<box<uint>::cat>()).is_false();
         DOT_CHECK(is_class<box<uint>::cat>::of<box<int>::cat>()).is_false();
         DOT_CHECK(is_class<object::data>::of<box<int>::cat>()).is_false();
         DOT_CHECK(is_class<object::data>::of<box<uint>::cat>()).is_false();
-        DOT_CHECK(is_class<boxes::cats>::of<box<int>::cat>()).is_false();
-        DOT_CHECK(is_class<boxes::cats>::of<box<uint>::cat>()).is_false();
-        DOT_CHECK(is_class<object::data>::of<boxes::cats>()).is_false();
-        DOT_CHECK(is_class<boxes::cats>::of<boxes::cats>()).is_true();
+        DOT_CHECK(is_class<box_based::cat_based>::of<box<int>::cat>()).is_false();
+        DOT_CHECK(is_class<box_based::cat_based>::of<box<uint>::cat>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<box_based::cat_based>()).is_false();
+        DOT_CHECK(is_class<box_based::cat_based>::of<box_based::cat_based>()).is_true();
         DOT_CHECK(is_class<box<int>::cat>::of<box<int>::cat>()).is_true();
         DOT_CHECK(is_class<box<uint>::cat>::of<box<uint>::cat>()).is_true();
     }
 
     DOT_TEST_SUITE(box_instance_hierarchy)
     {
-        boxes n;
+        box_based n;
         DOT_CHECK(n).is_null();
-        DOT_CHECK(n).is<boxes>();
+        DOT_CHECK(n).is<box_based>();
         DOT_CHECK(n).is<object>();
         DOT_CHECK(n).is_not<box<int>>();
-        DOT_CHECK(n.who() == boxes::id()).is_true();
+        DOT_CHECK(n.who() == box_based::id()).is_true();
         DOT_CHECK(n.who() == box<int>::id()).is_false();
         DOT_CHECK(n.who() == object::id()).is_false();
 
-        boxes i(-1);
+        box_based i(-1);
         DOT_CHECK(i).is_not_null();
         DOT_CHECK(box<int>(i)) == -1;
-        DOT_CHECK(i).is<boxes>();
+        DOT_CHECK(i).is<box_based>();
         DOT_CHECK(i).is<object>();
         DOT_CHECK(i).is_not<box<int>>();
         DOT_CHECK(i.get_data()).is<box<int>::cat>();
-        DOT_CHECK(i.get_data()).is<boxes::cats>();
+        DOT_CHECK(i.get_data()).is<box_based::cat_based>();
         DOT_CHECK(i.get_data()).is_not<box<uint>::cat>();
         DOT_CHECK(i.get_data()).is<object::data>();
-        DOT_CHECK(i.who() == boxes::id()).is_true();
+        DOT_CHECK(i.who() == box_based::id()).is_true();
         DOT_CHECK(i.who() == box<int>::id()).is_false();
         DOT_CHECK(i.who() == object::id()).is_false();
 
@@ -71,10 +71,10 @@ namespace dot
         DOT_CHECK(u) == 0x1dea0fu;
         DOT_CHECK(u).is<box<uint>>();
         DOT_CHECK(u).is_not<box<int>>();
-        DOT_CHECK(u).is<boxes>();
+        DOT_CHECK(u).is<box_based>();
         DOT_CHECK(u).is<object>();
         DOT_CHECK(u.get_data()).is<box<uint>::cat>();
-        DOT_CHECK(u.get_data()).is<boxes::cats>();
+        DOT_CHECK(u.get_data()).is<box_based::cat_based>();
         DOT_CHECK(u.get_data()).is_not<box<int>::cat>();
         DOT_CHECK(u.get_data()).is<object::data>();
 
@@ -83,10 +83,10 @@ namespace dot
         DOT_CHECK(t) == 1234567890;
         DOT_CHECK(t).is<box<int>>();
         DOT_CHECK(t).is_not<box<uint>>();
-        DOT_CHECK(t).is<boxes>();
+        DOT_CHECK(t).is<box_based>();
         DOT_CHECK(t).is<object>();
         DOT_CHECK(t.get_data()).is<box<int>::cat>();
-        DOT_CHECK(t.get_data()).is<boxes::cats>();
+        DOT_CHECK(t.get_data()).is<box_based::cat_based>();
         DOT_CHECK(t.get_data()).is_not<box<uint>::cat>();
         DOT_CHECK(t.get_data()).is<object::data>();
     }

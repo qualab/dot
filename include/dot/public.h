@@ -19,14 +19,14 @@ namespace dot
     class object;
 
     // base class for any box for cat of any shape
-    class boxes;
+    class box_based;
 
     // each box contains liquid cat of proper shape
     template <class shape>
     class box;
 
     // base class for any rope bound to cow
-    class ropes;
+    class rope_based;
 
     // each rope is bound to some cow to copy-on-write
     template <class instance>

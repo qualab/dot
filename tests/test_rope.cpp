@@ -18,59 +18,59 @@ namespace dot
 {
     DOT_TEST_SUITE(rope_class_hierarchy)
     {
-        DOT_CHECK(is_class<ropes>::of<object>()).is_true();
+        DOT_CHECK(is_class<rope_based>::of<object>()).is_true();
         DOT_CHECK(is_class<rope<string>>::of<object>()).is_true();
-        DOT_CHECK(is_class<rope<string>>::of<ropes>()).is_true();
+        DOT_CHECK(is_class<rope<string>>::of<rope_based>()).is_true();
         DOT_CHECK(is_class<rope<wstring>>::of<object>()).is_true();
-        DOT_CHECK(is_class<rope<wstring>>::of<ropes>()).is_true();
+        DOT_CHECK(is_class<rope<wstring>>::of<rope_based>()).is_true();
         DOT_CHECK(is_class<rope<string>>::of<rope<wstring>>()).is_false();
         DOT_CHECK(is_class<rope<wstring>>::of<rope<string>>()).is_false();
         DOT_CHECK(is_class<object>::of<rope<wstring>>()).is_false();
         DOT_CHECK(is_class<object>::of<rope<string>>()).is_false();
-        DOT_CHECK(is_class<ropes>::of<rope<wstring>>()).is_false();
-        DOT_CHECK(is_class<ropes>::of<rope<string>>()).is_false();
-        DOT_CHECK(is_class<object>::of<ropes>()).is_false();
-        DOT_CHECK(is_class<ropes>::of<ropes>()).is_true();
+        DOT_CHECK(is_class<rope_based>::of<rope<wstring>>()).is_false();
+        DOT_CHECK(is_class<rope_based>::of<rope<string>>()).is_false();
+        DOT_CHECK(is_class<object>::of<rope_based>()).is_false();
+        DOT_CHECK(is_class<rope_based>::of<rope_based>()).is_true();
         DOT_CHECK(is_class<rope<string>>::of<rope<string>>()).is_true();
         DOT_CHECK(is_class<rope<wstring>>::of<rope<wstring>>()).is_true();
 
-        DOT_CHECK(is_class<ropes::cows>::of<object::data>()).is_true();
+        DOT_CHECK(is_class<rope_based::cow_based>::of<object::data>()).is_true();
         DOT_CHECK(is_class<rope<string>::cow>::of<object::data>()).is_true();
-        DOT_CHECK(is_class<rope<string>::cow>::of<ropes::cows>()).is_true();
+        DOT_CHECK(is_class<rope<string>::cow>::of<rope_based::cow_based>()).is_true();
         DOT_CHECK(is_class<rope<wstring>::cow>::of<object::data>()).is_true();
-        DOT_CHECK(is_class<rope<wstring>::cow>::of<ropes::cows>()).is_true();
+        DOT_CHECK(is_class<rope<wstring>::cow>::of<rope_based::cow_based>()).is_true();
         DOT_CHECK(is_class<rope<string>::cow>::of<rope<wstring>::cow>()).is_false();
         DOT_CHECK(is_class<rope<wstring>::cow>::of<rope<string>::cow>()).is_false();
         DOT_CHECK(is_class<object::data>::of<rope<wstring>::cow>()).is_false();
         DOT_CHECK(is_class<object::data>::of<rope<string>::cow>()).is_false();
-        DOT_CHECK(is_class<ropes::cows>::of<rope<wstring>::cow>()).is_false();
-        DOT_CHECK(is_class<ropes::cows>::of<rope<string>::cow>()).is_false();
-        DOT_CHECK(is_class<object::data>::of<ropes::cows>()).is_false();
-        DOT_CHECK(is_class<ropes::cows>::of<ropes::cows>()).is_true();
+        DOT_CHECK(is_class<rope_based::cow_based>::of<rope<wstring>::cow>()).is_false();
+        DOT_CHECK(is_class<rope_based::cow_based>::of<rope<string>::cow>()).is_false();
+        DOT_CHECK(is_class<object::data>::of<rope_based::cow_based>()).is_false();
+        DOT_CHECK(is_class<rope_based::cow_based>::of<rope_based::cow_based>()).is_true();
         DOT_CHECK(is_class<rope<string>::cow>::of<rope<string>::cow>()).is_true();
         DOT_CHECK(is_class<rope<wstring>::cow>::of<rope<wstring>::cow>()).is_true();
     }
 
     DOT_TEST_SUITE(rope_instance_hierarchy)
     {
-        ropes n;
+        rope_based n;
         DOT_CHECK(n).is_null();
-        DOT_CHECK(n).is<ropes>();
+        DOT_CHECK(n).is<rope_based>();
         DOT_CHECK(n).is<object>();
         DOT_CHECK(n).is_not<rope<string>>();
-        DOT_CHECK(n.who() == ropes::id()).is_true();
+        DOT_CHECK(n.who() == rope_based::id()).is_true();
         DOT_CHECK(n.who() == rope<std::string>::id()).is_false();
         DOT_CHECK(n.who() == object::id()).is_false();
 
         static const std::string test_utf8 = u8"Здесь должен быть Unicode.";
 
-        ropes s(test_utf8);
+        rope_based s(test_utf8);
         DOT_CHECK(s).is_not_null();
-        DOT_CHECK(s).is<ropes>();
+        DOT_CHECK(s).is<rope_based>();
         DOT_CHECK(s).is<object>();
         DOT_CHECK(s).is_not<rope<std::string>>();
         DOT_CHECK(s.get_data()).is<rope<std::string>::cow>();
-        DOT_CHECK(s.get_data()).is<ropes::cows>();
+        DOT_CHECK(s.get_data()).is<rope_based::cow_based>();
         DOT_CHECK(s.get_data()).is<object::data>();
         DOT_CHECK(s.get_data()).is_not<rope<std::wstring>::cow>();
 
@@ -78,12 +78,12 @@ namespace dot
 
         rope<std::wstring> w(test_wide);
         DOT_CHECK(w).is_not_null();
-        DOT_CHECK(w).is<ropes>();
+        DOT_CHECK(w).is<rope_based>();
         DOT_CHECK(w).is<object>();
         DOT_CHECK(w).is<rope<std::wstring>>();
         DOT_CHECK(w).is_not<rope<std::string>>();
         DOT_CHECK(w.get_data()).is<rope<std::wstring>::cow>();
-        DOT_CHECK(s.get_data()).is<ropes::cows>();
+        DOT_CHECK(s.get_data()).is<rope_based::cow_based>();
         DOT_CHECK(w.get_data()).is<object::data>();
         DOT_CHECK(w.get_data()).is_not<rope<std::string>::cow>();
 
@@ -91,12 +91,12 @@ namespace dot
 
         rope<std::string> a(test_ascii);
         DOT_CHECK(a).is_not_null();
-        DOT_CHECK(a).is<ropes>();
+        DOT_CHECK(a).is<rope_based>();
         DOT_CHECK(a).is<object>();
         DOT_CHECK(a).is<rope<std::string>>();
         DOT_CHECK(a).is_not<rope<std::wstring>>();
         DOT_CHECK(a.get_data()).is<rope<std::string>::cow>();
-        DOT_CHECK(s.get_data()).is<ropes::cows>();
+        DOT_CHECK(s.get_data()).is<rope_based::cow_based>();
         DOT_CHECK(a.get_data()).is<object::data>();
         DOT_CHECK(a.get_data()).is_not<rope<std::wstring>::cow>();
     }

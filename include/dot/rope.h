@@ -13,17 +13,17 @@
 namespace dot
 {
     // base class for any rope which is bound to the cow
-    class DOT_PUBLIC ropes : public object
+    class DOT_PUBLIC rope_based : public object
     {
     public:
-        ropes();
+        rope_based();
 
         template <class fat>
-        ropes(fat&& inst);
+        rope_based(fat&& inst);
 
         DOT_HIERARCHIC(object);
 
-        class cows;
+        class cow_based;
     };
 
     // rope is bound to some cow
@@ -32,7 +32,7 @@ namespace dot
     // to make any edit operation on its own cow
     // Copy-on-Write pattern is CoW another words
     template <class fat>
-    class rope : public ropes
+    class rope : public rope_based
     {
     public:
         template <class... arguments>
@@ -76,7 +76,7 @@ namespace dot
         template <typename other> bool operator <  (const other& another) const;
         template <typename other> bool operator >  (const other& another) const;
 
-        DOT_HIERARCHIC(ropes);
+        DOT_HIERARCHIC(rope_based);
 
         class cow;
 
@@ -92,7 +92,7 @@ namespace dot
     template <typename left, typename right> bool operator >  (const left& x, const rope<right>& y);
 
     // base class for any cow which implements copy-on-write pattern
-    class DOT_PUBLIC ropes::cows : public object::data
+    class DOT_PUBLIC rope_based::cow_based : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
@@ -103,7 +103,7 @@ namespace dot
     // any non-const method when more than one rope is bound
     // follows clone of the cow with copy of fat type value
     template <class fat>
-    class rope<fat>::cow : public ropes::cows
+    class rope<fat>::cow : public rope_based::cow_based
     {
     public:
         template <class... arguments>
@@ -122,7 +122,7 @@ namespace dot
         const fat& look() const noexcept;
         fat& touch();
 
-        DOT_HIERARCHIC(ropes::cows);
+        DOT_HIERARCHIC(rope_based::cow_based);
 
     protected:
         virtual object::data* copy_to(void* buffer) const noexcept override;
@@ -169,7 +169,7 @@ namespace dot
     // -- implementation of the rope methods --
 
     template <class fat>
-    ropes::ropes(fat&& inst)
+    rope_based::rope_based(fat&& inst)
         : base(std::forward<fat>(inst))
     {
     }
@@ -278,7 +278,7 @@ namespace dot
         }
         else
         {
-            throw fail::non_comparable("Unable to compare ropes of non comparable types.");
+            throw fail::non_comparable("Unable to compare rope_based of non comparable types.");
         }
     }
 
@@ -313,7 +313,7 @@ namespace dot
         }
         else
         {
-            throw fail::non_orderable("Unable to order ropes of non orderable types.");
+            throw fail::non_orderable("Unable to order rope_based of non orderable types.");
         }
     }
 
@@ -339,7 +339,7 @@ namespace dot
         else
         {
             another;
-            throw fail::non_comparable("Unable to compare ropes with non comparable type.");
+            throw fail::non_comparable("Unable to compare rope_based with non comparable type.");
         }
     }
 
@@ -379,7 +379,7 @@ namespace dot
         else
         {
             another;
-            throw fail::non_orderable("Unable to order ropes with non orderable type.");
+            throw fail::non_orderable("Unable to order rope_based with non orderable type.");
         }
     }
 
@@ -398,7 +398,7 @@ namespace dot
         else
         {
             another;
-            throw fail::non_orderable("Unable to order ropes with non orderable type.");
+            throw fail::non_orderable("Unable to order rope_based with non orderable type.");
         }
     }
 

@@ -4,19 +4,19 @@
 
 namespace dot
 {
-    boxes::boxes()
+    box_based::box_based()
     {
     }
 
-    const class_id& boxes::id() noexcept
+    const class_id& box_based::id() noexcept
     {
-        static const class_id boxes_id("boxes");
+        static const class_id boxes_id("box_based");
         return boxes_id;
     }
 
-    const class_id& boxes::cats::id() noexcept
+    const class_id& box_based::cat_based::id() noexcept
     {
-        static const class_id boxes_cats_id("boxes::cats");
+        static const class_id boxes_cats_id("box_based::cat_based");
         return boxes_cats_id;
     }
 
