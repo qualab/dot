@@ -10,6 +10,10 @@
 
 namespace dot
 {
+    DOT_CLASS_ID(test::check_fail)
+    DOT_CLASS_ID(test::suite_fail)
+    DOT_CLASS_ID(test::run_fail)
+
     namespace
     {
         std::deque<test::suite*> run_suites;
@@ -134,12 +138,6 @@ namespace dot
         register_fail<check_fail>(*this);
     }
 
-    const class_id& test::check_fail::id() noexcept
-    {
-        static const class_id check_fail_id("test::check_fail");
-        return check_fail_id;
-    }
-
     test::suite_fail::suite_fail(const char* message) noexcept
         : base(message)
     {
@@ -161,12 +159,6 @@ namespace dot
         throw *this;
     }
 
-    const class_id& test::suite_fail::id() noexcept
-    {
-        static const class_id suite_fail_id("test::suite_fail");
-        return suite_fail_id;
-    }
-
     test::run_fail::run_fail(const char* message) noexcept
         : base(message)
     {
@@ -186,12 +178,6 @@ namespace dot
     {
         register_fail<run_fail>(*this);
         throw *this;
-    }
-
-    const class_id& test::run_fail::id() noexcept
-    {
-        static const class_id run_fail_id("test::run_fail");
-        return run_fail_id;
     }
 
     test::output::output()

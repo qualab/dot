@@ -47,6 +47,8 @@ namespace dot
         const uint64 my_index;
     };
 
+    DOT_PUBLIC std::ostream& operator << (std::ostream& output, const class_id& identifier);
+
     // -- to avoid case when no RTTI allowed --
 
     // is class derived from another check
@@ -130,6 +132,13 @@ namespace dot
         return id(); \
     } \
     static const class_id& id() noexcept
+
+#define DOT_CLASS_ID(class_name) \
+    const class_id& class_name::id() noexcept \
+    { \
+        static const class_id identifier(#class_name); \
+        return identifier; \
+    }
 
     // check is the type able to be written into output byte stream
     template <typename test_type, typename meta_type = void>

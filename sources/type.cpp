@@ -2,6 +2,7 @@
 
 #include <dot/type.h>
 #include <dot/fail.h>
+#include <iostream>
 #include <atomic>
 
 namespace dot
@@ -34,6 +35,11 @@ namespace dot
     bool class_id::operator != (const class_id& another) const noexcept
     {
         return my_index != another.my_index;
+    }
+
+    std::ostream& operator << (std::ostream& output, const class_id& identifier)
+    {
+        return output << identifier.name();
     }
 
     void invalid_typecast(const char* to_class_name, const char* from_class_name)

@@ -9,17 +9,8 @@ namespace dot
     {
     }
 
-    const class_id& rope_based::id() noexcept
-    {
-        static const class_id ropes_id("rope_based");
-        return ropes_id;
-    }
-
-    const class_id& rope_based::cow_based::id() noexcept
-    {
-        static const class_id ropes_cows_id("rope_based::cow_based");
-        return ropes_cows_id;
-    }
+    DOT_CLASS_ID(rope_based)
+    DOT_CLASS_ID(rope_based::cow_based)
 }
 
 // Здесь должен быть Unicode

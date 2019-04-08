@@ -7,6 +7,18 @@
 
 namespace dot
 {
+    using std::exception;
+
+    DOT_CLASS_ID(fail::error)
+    DOT_CLASS_ID(fail::bad_typecast)
+    DOT_CLASS_ID(fail::unreadable_data)
+    DOT_CLASS_ID(fail::null_reference)
+    DOT_CLASS_ID(fail::non_comparable)
+    DOT_CLASS_ID(fail::non_orderable)
+
+    template<> DOT_CLASS_ID(rope<fail::info>)
+    template<> DOT_CLASS_ID(rope<fail::info>::cow)
+
     fail::info::info(const char* message) noexcept
         : my_backtrace(trace::stack::thread_stack(), message)
     {
@@ -49,12 +61,12 @@ namespace dot
     }
 
     fail::error::error(const char* message) noexcept
-        : base(message), std::exception(message)
+        : base(message), exception(message)
     {
     }
 
     fail::error::error(const char* message, const trace::stack& backtrace) noexcept
-        : base(message, backtrace), std::exception(message)
+        : base(message, backtrace), exception(message)
     {
     }
 
@@ -71,12 +83,6 @@ namespace dot
     const char* fail::error::label() const noexcept
     {
         return "ERROR";
-    }
-
-    const class_id& fail::error::id() noexcept
-    {
-        static const class_id fail_error_id("fail::error");
-        return fail_error_id;
     }
 
     std::ostream& operator << (std::ostream& stream, const fail::error& source)
@@ -111,12 +117,6 @@ namespace dot
         return "BAD TYPECAST";
     }
 
-    const class_id& fail::bad_typecast::id() noexcept
-    {
-        static const class_id fail_bad_typecast_id("fail::bad_typecast");
-        return fail_bad_typecast_id;
-    }
-
     fail::null_reference::null_reference(const char* message) noexcept
         : base(message)
     {
@@ -125,12 +125,6 @@ namespace dot
     const char* fail::null_reference::label() const noexcept
     {
         return "NULL REFERENCE";
-    }
-
-    const class_id& fail::null_reference::id() noexcept
-    {
-        static class_id fail_null_reference_id("fail::null_reference");
-        return fail_null_reference_id;
     }
 
     fail::unreadable_data::unreadable_data(const char* message) noexcept
@@ -143,12 +137,6 @@ namespace dot
         return "UNREADABLE DATA";
     }
 
-    const class_id& fail::unreadable_data::id() noexcept
-    {
-        static class_id fail_unreadable_data_id("fail::unreadable_data");
-        return fail_unreadable_data_id;
-    }
-
     fail::non_comparable::non_comparable(const char* message) noexcept
         : base(message)
     {
@@ -159,12 +147,6 @@ namespace dot
         return "NON COMPARABLE";
     }
 
-    const class_id& fail::non_comparable::id() noexcept
-    {
-        static class_id fail_non_comparable_id("fail::non_comparable");
-        return fail_non_comparable_id;
-    }
-
     fail::non_orderable::non_orderable(const char* message) noexcept
         : base(message)
     {
@@ -173,24 +155,6 @@ namespace dot
     const char* fail::non_orderable::label() const noexcept
     {
         return "NON ORDERABLE";
-    }
-
-    const class_id& fail::non_orderable::id() noexcept
-    {
-        static class_id fail_non_orderable_id("fail::non_orderable");
-        return fail_non_orderable_id;
-    }
-
-    template<> const class_id& rope<fail::info>::id() noexcept
-    {
-        static class_id rope_fail_info_id("rope<fail::info>");
-        return rope_fail_info_id;
-    }
-
-    template<> const class_id& rope<fail::info>::cow::id() noexcept
-    {
-        static class_id rope_fail_info_cow_id("rope<fail::info>::cow");
-        return rope_fail_info_cow_id;
     }
 }
 
