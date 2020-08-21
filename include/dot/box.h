@@ -207,8 +207,7 @@ namespace dot
         }
         else
         {
-            another;
-            throw fail::non_comparable("Unable to compare box_based with non comparable type.");
+            static_assert(false, "Unable to compare box_based with non comparable type.");
         }
     }
 
@@ -247,8 +246,7 @@ namespace dot
         }
         else
         {
-            another;
-            throw fail::non_orderable("Unable to order box_based with non orderable type.");
+            static_assert(false, "Unable to order box_based with non orderable type.");
         }
     }
 
@@ -266,8 +264,7 @@ namespace dot
         }
         else
         {
-            another;
-            throw fail::non_orderable("Unable to order box_based with non orderable type.");
+            static_assert(false, "Unable to order box_based with non orderable type.");
         }
     }
 

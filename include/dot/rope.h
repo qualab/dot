@@ -145,7 +145,7 @@ namespace dot
 
             template <typename... arguments>
             neck(arguments... args)
-              : bound(1),
+                : bound(1),
                 value(std::forward<arguments>(args)...)
             {
             }
@@ -166,7 +166,7 @@ namespace dot
         neck* my_neck;
     };
 
-    // -- implementation of the rope methods --
+// -- implementation of the rope methods --
 
     template <class fat>
     rope_based::rope_based(fat&& inst)
@@ -278,7 +278,7 @@ namespace dot
         }
         else
         {
-            throw fail::non_comparable("Unable to compare rope_based of non comparable types.");
+            static_assert(false, "Unable to compare rope_based of non comparable types.");
         }
     }
 
@@ -313,7 +313,7 @@ namespace dot
         }
         else
         {
-            throw fail::non_orderable("Unable to order rope_based of non orderable types.");
+            static_assert(false, "Unable to order rope_based of non orderable types.");
         }
     }
 
@@ -338,8 +338,7 @@ namespace dot
         }
         else
         {
-            another;
-            throw fail::non_comparable("Unable to compare rope_based with non comparable type.");
+            static_assert(false, "Unable to compare rope_based with non comparable type.");
         }
     }
 
@@ -378,8 +377,7 @@ namespace dot
         }
         else
         {
-            another;
-            throw fail::non_orderable("Unable to order rope_based with non orderable type.");
+            static_assert(false, "Unable to order rope_based with non orderable type.");
         }
     }
 
@@ -397,8 +395,7 @@ namespace dot
         }
         else
         {
-            another;
-            throw fail::non_orderable("Unable to order rope_based with non orderable type.");
+            static_assert(false, "Unable to order rope_based with non orderable type.");
         }
     }
 

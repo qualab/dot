@@ -2,6 +2,7 @@
 // implementation for the copy-on-write strings
 
 #include <dot/string.h>
+#include <iostream>
 
 namespace dot
 {

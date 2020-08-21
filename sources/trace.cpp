@@ -1,6 +1,7 @@
 // DOT public declaration
 
 #include <dot/trace.h>
+#include <iostream>
 #include <utility>
 #include <string>
 #include <stack>
