@@ -153,7 +153,7 @@ namespace dot
     void object::data::write(std::ostream& stream) const
     {
         // unknown data output by default
-        stream << "<data: " << who().name() << ">";
+        stream << "<data: " << my_id().name() << ">";
     }
 
     void object::data::read(std::istream&)

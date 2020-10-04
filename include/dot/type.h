@@ -72,7 +72,7 @@ namespace dot
     public:
         virtual ~hierarchic() noexcept { }
 
-        virtual const class_id& who() const noexcept = 0;
+        virtual const class_id& my_id() const noexcept = 0;
 
         // hierarchy base class ends instance hierarchy search
         template <typename instance_type>
@@ -97,7 +97,7 @@ namespace dot
         const derived_type& as() const
         {
             if (!is<derived_type>())
-                invalid_typecast(derived_type::id().name(), who().name());
+                invalid_typecast(derived_type::id().name(), my_id().name());
             return static_cast<const derived_type&>(*this);
         }
 
@@ -127,7 +127,7 @@ namespace dot
         return base_id == id() || \
                base::is_base_id(base_id); \
     } \
-    virtual const class_id& who() const noexcept override \
+    virtual const class_id& my_id() const noexcept override \
     { \
         return id(); \
     } \

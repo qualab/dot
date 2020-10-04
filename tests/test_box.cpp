@@ -48,9 +48,9 @@ namespace dot
         DOT_CHECK(n).is<box_based>();
         DOT_CHECK(n).is<object>();
         DOT_CHECK(n).is_not<box<int>>();
-        DOT_CHECK(n.who() == box_based::id()).is_true();
-        DOT_CHECK(n.who() == box<int>::id()).is_false();
-        DOT_CHECK(n.who() == object::id()).is_false();
+        DOT_CHECK(n.my_id() == box_based::id()).is_true();
+        DOT_CHECK(n.my_id() == box<int>::id()).is_false();
+        DOT_CHECK(n.my_id() == object::id()).is_false();
 
         box_based i(-1);
         DOT_CHECK(i).is_not_null();
@@ -62,9 +62,9 @@ namespace dot
         DOT_CHECK(i.get_data()).is<box_based::cat_based>();
         DOT_CHECK(i.get_data()).is_not<box<uint>::cat>();
         DOT_CHECK(i.get_data()).is<object::data>();
-        DOT_CHECK(i.who() == box_based::id()).is_true();
-        DOT_CHECK(i.who() == box<int>::id()).is_false();
-        DOT_CHECK(i.who() == object::id()).is_false();
+        DOT_CHECK(i.my_id() == box_based::id()).is_true();
+        DOT_CHECK(i.my_id() == box<int>::id()).is_false();
+        DOT_CHECK(i.my_id() == object::id()).is_false();
 
         box<uint> u(0x1dea0fu);
         DOT_CHECK(u).is_not_null();

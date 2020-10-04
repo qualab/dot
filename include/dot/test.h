@@ -580,7 +580,7 @@ void test_suite_##suite_name::body()
         {
             test::output out;
             out.print("Expected exception " DOT_TEST_OUTPUT_ANY " but caught exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
-                exception_type::id().name(), unexpected.who().name(), unexpected.what());
+                exception_type::id().name(), unexpected.my_id().name(), unexpected.what());
             handle_fail<fail_type>(out.message());
         }
         catch (std::exception& unexpected)

@@ -58,9 +58,9 @@ namespace dot
         DOT_CHECK(n).is<rope_based>();
         DOT_CHECK(n).is<object>();
         DOT_CHECK(n).is_not<rope<string>>();
-        DOT_CHECK(n.who() == rope_based::id()).is_true();
-        DOT_CHECK(n.who() == rope<std::string>::id()).is_false();
-        DOT_CHECK(n.who() == object::id()).is_false();
+        DOT_CHECK(n.my_id() == rope_based::id()).is_true();
+        DOT_CHECK(n.my_id() == rope<std::string>::id()).is_false();
+        DOT_CHECK(n.my_id() == object::id()).is_false();
 
         static const std::string test_utf8 = u8"Здесь должен быть Unicode.";
 
