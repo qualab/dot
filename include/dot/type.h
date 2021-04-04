@@ -34,7 +34,7 @@ namespace dot
     class DOT_PUBLIC class_id
     {
     public:
-        class_id(const char* const name) noexcept;
+        explicit class_id(const char* const name) noexcept;
 
         const char* const name() const noexcept;
         const uint64 index() const noexcept;

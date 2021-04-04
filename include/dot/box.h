@@ -7,6 +7,7 @@
 
 #include <dot/object.h>
 #include <utility>
+#include <new>
 
 namespace dot
 {
