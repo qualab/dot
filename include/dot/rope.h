@@ -114,7 +114,7 @@ namespace dot
         cow(const cow& another);
         cow& operator = (const cow& another);
 
-        cow(cow&& temp);
+        cow(cow&& temp) noexcept;
         cow& operator = (cow&& temp);
 
         uint64 bound() const noexcept;
@@ -506,7 +506,7 @@ namespace dot
     }
 
     template <class fat>
-    rope<fat>::cow::cow(cow&& temp)
+    rope<fat>::cow::cow(cow&& temp) noexcept
         : my_neck(temp.my_neck->add_rope())
     {
         // to avoid unitialized or nullptr temp.m_block instead

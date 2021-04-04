@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_definitions(-DDOT_EXPORTS)
+add_compile_definitions(DOT_EXPORTS)
 add_library(dot SHARED sources/type.cpp sources/object.cpp sources/box.cpp sources/rope.cpp sources/string.cpp sources/trace.cpp sources/fail.cpp sources/test.cpp)
 
 remove_definitions(-DDOT_EXPORTS)

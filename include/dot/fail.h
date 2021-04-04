@@ -42,6 +42,9 @@ namespace dot
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::info& source);
     DOT_PUBLIC std::istream& operator >> (std::istream& stream, fail::info& destination);
 
+#pragma warning(push)
+#pragma warning(disable:4275)
+
     class DOT_PUBLIC fail::error : public rope<fail::info>, public std::exception
     {
     public:
@@ -54,6 +57,8 @@ namespace dot
 
         DOT_HIERARCHIC(rope<fail::info>);
     };
+
+#pragma warning(pop)
 
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::error& source);
     DOT_PUBLIC std::istream& operator >> (std::istream& stream, fail::error& destination);

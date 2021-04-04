@@ -5,8 +5,19 @@
 
 #pragma once
 
+// fixes CMake bug
+#ifdef dot_STATIC
+#define DOT_STATIC
+#endif
+
+// fixes CMake bug
+#ifdef dot_EXPORTS
+#define DOT_EXPORTS
+#endif
+
+// public declarations marked as DOT_PUBLIC
 #if !defined(_WIN32) || defined(DOT_STATIC)
-#   define DYN_PUBLIC
+#   define DOT_PUBLIC
 #elif defined(DOT_EXPORTS)
 #   define DOT_PUBLIC __declspec(dllexport)
 #else
