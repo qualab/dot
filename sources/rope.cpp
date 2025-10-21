@@ -5,7 +5,8 @@
 
 namespace dot
 {
-    rope_based::rope_based()
+    rope_based::rope_based(rope_based& another)
+        : base(static_cast<const rope_based&>(another))
     {
     }
 

@@ -16,7 +16,10 @@ namespace dot
     class DOT_PUBLIC rope_based : public object
     {
     public:
-        rope_based();
+        rope_based() = default;
+        rope_based(const rope_based&) = default;
+        rope_based(rope_based&&) = default;
+        rope_based(rope_based&);
 
         template <class fat>
         rope_based(fat&& inst);
