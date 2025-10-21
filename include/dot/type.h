@@ -49,20 +49,6 @@ namespace dot
 
     DOT_PUBLIC std::ostream& operator << (std::ostream& output, const class_id& identifier);
 
-    // -- to avoid case when no RTTI allowed --
-
-    // is class derived from another check
-    template <typename derived_type>
-    struct is_class
-    {
-        template <typename instance_type>
-        static bool of() noexcept
-        {
-            return derived_type::id() == instance_type::id() ||
-               typename is_class<derived_type::base>::template of<instance_type>();
-        }
-    };
-
     // invalid_typecast() throws invalid type cast exception by implementation
     DOT_PUBLIC void invalid_typecast(const char* to_class, const char* from_class);
 
@@ -109,6 +95,11 @@ namespace dot
         }
     };
 
+    // -- to avoid case when no RTTI allowed --
+
+    template <typename derived_type>
+    struct is_class;
+
     // hierarchicy base class ends class hierarchy search
     template<>
     struct is_class<hierarchic>
@@ -117,6 +108,18 @@ namespace dot
         static bool of()
         {
             return false;
+        }
+    };
+
+    // is class derived from another check
+    template <typename derived_type>
+    struct is_class
+    {
+        template <typename instance_type>
+        static bool of() noexcept
+        {
+            return derived_type::id() == instance_type::id() ||
+               is_class<typename derived_type::base>::template of<instance_type>();
         }
     };
 

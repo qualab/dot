@@ -11,6 +11,9 @@ namespace dot
 
     DOT_CLASS_ID(rope_based)
     DOT_CLASS_ID(rope_based::cow_based)
+
+    DOT_CLASS_ID(rope<rope_based>)
+    DOT_CLASS_ID(rope<rope_based>::cow)
 }
 
 // Здесь должен быть Unicode
