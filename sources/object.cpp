@@ -39,35 +39,35 @@ namespace dot
     object::object(const object& another)
         : my_data(nullptr)
     {
-        another.assign_to(*this);
+        another.copy_to(*this);
     }
 
     object& object::operator = (const object& another)
     {
-        another.assign_to(*this);
+        another.copy_to(*this);
         return *this;
     }
 
-    object::object(object&& temporary)
+    object::object(object&& temporary) noexcept
         : my_data(nullptr)
     {
-        temporary.assign_to(*this);
+        std::move(temporary).move_to(*this);
     }
 
-    object& object::operator = (object&& temporary)
+    object& object::operator = (object&& temporary) noexcept
     {
-        temporary.assign_to(*this);
+        std::move(temporary).move_to(*this);
         return *this;
     }
 
-    void object::assign_to(object& target) const&
+    void object::copy_to(object& target) const&
     {
         target.reset();
         if (my_data)
             target.my_data = my_data->copy_to(target.my_buffer);
     }
 
-    void object::assign_to(object& target) &&
+    void object::move_to(object& target) &&
     {
         target.reset();
         if (my_data)

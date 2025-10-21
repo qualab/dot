@@ -29,8 +29,8 @@ namespace dot
         object& operator = (const object& another);
 
         // move object override
-        object(object&& temporary);
-        object& operator = (object&& temporary);
+        object(object&& temporary) noexcept;
+        object& operator = (object&& temporary) noexcept;
 
         // create object by value of another type explicitely
         template <class other>
@@ -79,8 +79,8 @@ namespace dot
         template <class derived, class... arguments>
         derived* initialize(arguments&&... args);
 
-        void assign_to(object& target) const&;
-        void assign_to(object& target) &&;
+        void copy_to(object& target) const&;
+        void move_to(object& target) &&;
 
     private:
         // internal object data
