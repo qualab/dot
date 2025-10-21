@@ -16,7 +16,7 @@ namespace dot
     class DOT_PUBLIC object : public hierarchic
     {
     public:
-        object() noexcept;
+        object() = default;
         virtual ~object() noexcept;
 
         // work with null object
@@ -84,10 +84,10 @@ namespace dot
 
     private:
         // internal object data
-        data* my_data;
+        data* my_data = nullptr;
 
         // internal object buffer to place data
-        byte my_buffer[data_buffer_size];
+        byte my_buffer[data_buffer_size] = {};
 
         // object output and input using byte characters
         friend DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const object& source);

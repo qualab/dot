@@ -17,9 +17,8 @@ namespace dot
     {
     public:
         rope_based() = default;
-        rope_based(const rope_based&) = default;
-        rope_based(rope_based&&) = default;
-        rope_based(rope_based&);
+        rope_based(const rope_based& another) noexcept;
+        rope_based(rope_based& another) noexcept;
 
         template <class fat>
         rope_based(fat&& inst);
@@ -581,6 +580,11 @@ namespace dot
             return base::less(another);
         }
     }
+
+    // -- definition of the identifiers for the boxes of native types --
+
+    template<> DOT_PUBLIC const class_id& rope<rope_based>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& rope<rope_based>::cow::id() noexcept;
 }
 
 // Здесь должен быть Unicode

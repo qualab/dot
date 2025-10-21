@@ -12,11 +12,6 @@ namespace dot
 {
     const char* const object::data::null_string = "null";
 
-    object::object() noexcept
-        : my_data(nullptr)
-    {
-    }
-
     object::~object() noexcept
     {
         reset();
