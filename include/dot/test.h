@@ -196,7 +196,7 @@ void test_suite_##suite_name::body()
 // use it to check anything not breaking test pass for example as follows
 // DOT_CHECK(x) == y;
 // DOT_CHECK(z).is<object>();
-#define DOT_CHECK(argument) DOT_SCOPE("check"), test::make_check<test::check_fail>(argument)
+#define DOT_CHECK(argument) DOT_SCOPE("ПРОВЕРКА"), test::make_check<test::check_fail>(argument)
 
 // DOT_CHECK_NO_EXCEPTION stores single check failure if any exception occurs
 // due executing the operation specified as the argument of the macro
@@ -217,12 +217,12 @@ void test_suite_##suite_name::body()
 #define DOT_CHECK_EXPECT_EXCEPTION(exception_class, operation) DOT_CHECK([&]() { operation; }).expect_exception<exception_class>()
 
 // DOT_ENSURE is same macros as DOT_CHECK but interrupts the test suite if it fails
-#define DOT_ENSURE(argument) DOT_SCOPE("ensure"), test::make_check<test::suite_fail>(argument)
+#define DOT_ENSURE(argument) DOT_SCOPE("БЛОКИРУЮЩЕЕ УСЛОВИЕ"), test::make_check<test::suite_fail>(argument)
 #define DOT_ENSURE_NO_EXCEPTION(operation) DOT_ENSURE([&]() { operation; }).no_exception()
 #define DOT_ENSURE_EXPECT_EXCEPTION(exception_class, operation) DOT_ENSURE([&]() { operation; }).expect_exception<exception_class>()
 
 // DOT_ASSERT is same macros as DOT_CHECK but interrupts whole test run if it fails
-#define DOT_ASSERT(argument) DOT_SCOPE("assert"), test::make_check<test::run_fail>(argument)
+#define DOT_ASSERT(argument) DOT_SCOPE("ОШИБКА ВЫПОЛНЕНИЯ"), test::make_check<test::run_fail>(argument)
 #define DOT_ASSERT_NO_EXCEPTION(operation) DOT_ASSERT([&]() { operation; }).no_exception()
 #define DOT_ASSERT_EXPECT_EXCEPTION(exception_class, operation) DOT_ASSERT([&]() { operation; }).expect_exception<exception_class>()
 

@@ -6,6 +6,12 @@
 #include <string>
 #include <stack>
 
+#ifdef _WIN32
+#define DOT_TESTS_PATH "\\dot\\tests\\"
+#else
+#define DOT_TESTS_PATH "/dot/tests/"
+#endif
+
 namespace dot
 {
     class trace::stack::entry
@@ -96,7 +102,10 @@ namespace dot
 
     trace::scope::scope(const char* name, const char* file, int line) noexcept
     {
-        stack::thread_stack().push(name, file, line);
+        const char* entry = strstr(file, DOT_TESTS_PATH);
+        if (!entry)
+            entry = file;
+        stack::thread_stack().push(name, entry, line);
     }
 
     trace::scope::~scope() noexcept
@@ -217,7 +226,7 @@ namespace dot
                               backtrace.pop())
             {
                 stream << " >>-> "
-                    << backtrace.top_name() << " at "
+                    << backtrace.top_name() << " в "
                     << backtrace.top_file() << '('
                     << backtrace.top_line() << ")\n";
             }

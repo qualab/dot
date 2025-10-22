@@ -47,7 +47,7 @@ namespace dot
                           backtrace.pop())
         {
             stream << " ! -> "
-                << backtrace.top_name() << " at "
+                << backtrace.top_name() << " в "
                 << backtrace.top_file() << '('
                 << backtrace.top_line() << ")\n";
         }
