@@ -52,17 +52,17 @@ namespace dot
         DOT_CHECK(n.my_id() == box<int>::id()).is_false();
         DOT_CHECK(n.my_id() == object::id()).is_false();
 
-        box_based i(-1);
+        box<int16> i(int16(-1));
         DOT_CHECK(i).is_not_null();
-        DOT_CHECK(box<int>(i)) == -1;
+        DOT_CHECK(static_cast<int16>(i)) == -1;
         DOT_CHECK(i).is<box_based>();
         DOT_CHECK(i).is<object>();
         DOT_CHECK(i).is_not<box<int>>();
-        DOT_CHECK(i.get_data()).is<box<int>::cat>();
+        DOT_CHECK(i.get_data()).is<box<int16>::cat>();
         DOT_CHECK(i.get_data()).is<box_based::cat_based>();
-        DOT_CHECK(i.get_data()).is_not<box<uint>::cat>();
+        DOT_CHECK(i.get_data()).is_not<box<uint16>::cat>();
         DOT_CHECK(i.get_data()).is<object::data>();
-        DOT_CHECK(i.my_id() == box_based::id()).is_true();
+        DOT_CHECK(i.my_id() == box<int16>::id()).is_true();
         DOT_CHECK(i.my_id() == box<int>::id()).is_false();
         DOT_CHECK(i.my_id() == object::id()).is_false();
 

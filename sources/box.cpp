@@ -4,10 +4,6 @@
 
 namespace dot
 {
-    box_based::box_based()
-    {
-    }
-
     DOT_CLASS_ID(box_based)
     DOT_CLASS_ID(box_based::cat_based)
 

@@ -16,18 +16,11 @@ namespace dot
     class DOT_PUBLIC rope_based : public object
     {
     public:
-        rope_based() = default;
-        rope_based(const rope_based& another) noexcept;
-        rope_based(rope_based& another) noexcept;
-
-        template <class fat>
-        rope_based(fat&& inst);
-
         DOT_HIERARCHIC(object);
 
         class cow_based;
     };
-
+    
     // rope is bound to some cow
     // such link may be not unique for cow
     // any non-constant operation will copy the bound cow
@@ -169,12 +162,6 @@ namespace dot
     };
 
 // -- implementation of the rope methods --
-
-    template <class fat>
-    rope_based::rope_based(fat&& inst)
-        : base(std::forward<fat>(inst))
-    {
-    }
 
     template <class fat>
     template <class... arguments>

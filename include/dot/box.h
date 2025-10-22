@@ -15,11 +15,6 @@ namespace dot
     class DOT_PUBLIC box_based : public object
     {
     public:
-        box_based();
-
-        template <class slim>
-        explicit box_based(slim&& value);
-
         DOT_HIERARCHIC(object);
 
         class cat_based;
@@ -105,12 +100,6 @@ namespace dot
     };
 
     // -- implementation of the box methods --
-
-    template <class slim>
-    box_based::box_based(slim&& value)
-        : base(std::forward<slim>(value))
-    {
-    }
 
     template <class slim>
     box<slim>::box(const object& another)

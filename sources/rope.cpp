@@ -5,21 +5,8 @@
 
 namespace dot
 {
-    rope_based::rope_based(const rope_based& another) noexcept
-        : base(static_cast<const base&>(another))
-    {
-    }
-
-    rope_based::rope_based(rope_based& another) noexcept
-        : base(static_cast<const base&>(another))
-    {
-    }
-
     DOT_CLASS_ID(rope_based)
     DOT_CLASS_ID(rope_based::cow_based)
-
-    template<> DOT_CLASS_ID(rope<rope_based>)
-    template<> DOT_CLASS_ID(rope<rope_based>::cow)
 }
 
 // Здесь должен быть Unicode

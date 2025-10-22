@@ -62,7 +62,7 @@ namespace dot
         DOT_CHECK(n.my_id() == rope<std::string>::id()).is_false();
         DOT_CHECK(n.my_id() == object::id()).is_false();
 
-        rope_based m(n); // copy by ref
+        rope_based m(n);
         DOT_CHECK(m).is_null();
         DOT_CHECK(m).is<rope_based>();
         DOT_CHECK(m).is<object>();
@@ -71,43 +71,43 @@ namespace dot
         DOT_CHECK(m.my_id() == rope<std::string>::id()).is_false();
         DOT_CHECK(m.my_id() == object::id()).is_false();
 
-        static const std::string test_utf8 = u8"Здесь должен быть Unicode.";
+        static const string test_utf8 = u8"Здесь должен быть Unicode.";
 
-        rope_based s(test_utf8);
+        rope<string> s(test_utf8);
         DOT_CHECK(s).is_not_null();
         DOT_CHECK(s).is<rope_based>();
         DOT_CHECK(s).is<object>();
-        DOT_CHECK(s).is_not<rope<std::string>>();
-        DOT_CHECK(s.get_data()).is<rope<std::string>::cow>();
+        DOT_CHECK(s).is<rope<string>>();
+        DOT_CHECK(s.get_data()).is<rope<string>::cow>();
         DOT_CHECK(s.get_data()).is<rope_based::cow_based>();
         DOT_CHECK(s.get_data()).is<object::data>();
         DOT_CHECK(s.get_data()).is_not<rope<std::wstring>::cow>();
 
         static const std::wstring test_wide = L"Толще Unicode - больше Unicode.";
 
-        rope<std::wstring> w(test_wide);
+        rope<wstring> w(test_wide);
         DOT_CHECK(w).is_not_null();
         DOT_CHECK(w).is<rope_based>();
         DOT_CHECK(w).is<object>();
-        DOT_CHECK(w).is<rope<std::wstring>>();
-        DOT_CHECK(w).is_not<rope<std::string>>();
-        DOT_CHECK(w.get_data()).is<rope<std::wstring>::cow>();
+        DOT_CHECK(w).is<rope<wstring>>();
+        DOT_CHECK(w).is_not<rope<string>>();
+        DOT_CHECK(w.get_data()).is<rope<wstring>::cow>();
         DOT_CHECK(s.get_data()).is<rope_based::cow_based>();
         DOT_CHECK(w.get_data()).is<object::data>();
         DOT_CHECK(w.get_data()).is_not<rope<std::string>::cow>();
 
-        static const std::string test_ascii = "Nobody likes ASCII jail!";
+        static const string test_ascii = "Nobody likes ASCII jail!";
 
-        rope<std::string> a(test_ascii);
+        rope<string> a(test_ascii);
         DOT_CHECK(a).is_not_null();
         DOT_CHECK(a).is<rope_based>();
         DOT_CHECK(a).is<object>();
-        DOT_CHECK(a).is<rope<std::string>>();
-        DOT_CHECK(a).is_not<rope<std::wstring>>();
-        DOT_CHECK(a.get_data()).is<rope<std::string>::cow>();
+        DOT_CHECK(a).is<rope<string>>();
+        DOT_CHECK(a).is_not<rope<wstring>>();
+        DOT_CHECK(a.get_data()).is<rope<string>::cow>();
         DOT_CHECK(s.get_data()).is<rope_based::cow_based>();
         DOT_CHECK(a.get_data()).is<object::data>();
-        DOT_CHECK(a.get_data()).is_not<rope<std::wstring>::cow>();
+        DOT_CHECK(a.get_data()).is_not<rope<wstring>::cow>();
     }
 
     DOT_TEST_SUITE(rope_of_string)

@@ -37,7 +37,6 @@ namespace dot
     }
 
     object::object(const object& another)
-        : my_data(nullptr)
     {
         another.copy_to(*this);
     }
@@ -49,7 +48,6 @@ namespace dot
     }
 
     object::object(object&& temporary) noexcept
-        : my_data(nullptr)
     {
         std::move(temporary).move_to(*this);
     }
