@@ -348,19 +348,19 @@ void test_suite_##suite_name::body()
         catch (fail::error& unhandled)
         {
             output out;
-            out.print("Unhandled exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+            out.print("Необработанная ошибка " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
                 unhandled.label(), unhandled.what());
             handle_fail<suite_fail>(out.message());
         }
         catch (std::exception& unhandled)
         {
             output out;
-            out.print("Unhandled exception: " DOT_TEST_OUTPUT_ANY, unhandled.what());
+            out.print("Необработанное исключение: " DOT_TEST_OUTPUT_ANY, unhandled.what());
             handle_fail<suite_fail>(out.message());
         }
         catch (...)
         {
-            handle_fail<suite_fail>("Unhandled non-standard exception.");
+            handle_fail<suite_fail>("Необработанное нестандартное исключение.");
         }
         if (!success)
         {

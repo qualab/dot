@@ -47,7 +47,7 @@ namespace dot
 
     void test::run() noexcept
     {
-        std::cout << "Dynamic Object Typification test run...\n" << std::endl;
+        std::cout << "Запуск всех тестов...\n" << std::endl;
         size_t suite_number = run_suites.size();
         size_t suite_passed = 0;
         size_t suite_failed = 0;
@@ -57,7 +57,7 @@ namespace dot
                 bool interrupt = false;
                 try
                 {
-                    std::cout << " -> Run test suite \"" << test_suite->name() << "\" ... ";
+                    std::cout << " -> Запуск набора тестов \"" << test_suite->name() << "\" ... ";
                     test_suite->run();
                 }
                 catch (test::run_fail&)
@@ -70,26 +70,26 @@ namespace dot
                 catch (fail::error& unhandled)
                 {
                     output out;
-                    out.print("Interrupted by exception " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
+                    out.print("Прервано ошибкой " DOT_TEST_OUTPUT_ANY ": " DOT_TEST_OUTPUT_ANY,
                         unhandled.label(), unhandled.what());
                     register_fail<test::suite_fail>(out.message(), unhandled.backtrace());
                 }
                 catch (std::exception& unhandled)
                 {
                     output out;
-                    out.print("Interrupted by exception: " DOT_TEST_OUTPUT_ANY,
+                    out.print("Прервано исключением: " DOT_TEST_OUTPUT_ANY,
                         unhandled.what());
                     register_fail<test::suite_fail>(out.message());
                 }
                 catch (...)
                 {
                     register_fail<test::suite_fail>(
-                        "Interrupred by non-standard exception.");
+                        "Прервано нестандартным исключением.");
                 }
                 if (test_fails.empty())
                 {
                     ++suite_passed;
-                    std::cout << "OK" << std::endl;
+                    std::cout << "Успешно!" << std::endl;
                 }
                 else
                 {
@@ -106,10 +106,10 @@ namespace dot
                 return interrupt;
             }
         );
-        std::cout << "\n -- Test run is " << (suite_failed ? "FAILED" : "OK");
-        std::cout << " (Total: " << suite_number
-            << "; Passed: " << suite_passed
-            << "; Failed: " << suite_failed
+        std::cout << "\n -- Запуск тестов " << (suite_failed ? "провален!" : "успешен.");
+        std::cout << " (Всего: " << suite_number
+            << "; Успешно: "     << suite_passed
+            << "; Провалено: "   << suite_failed
             << ")" << std::endl;
     }
 
@@ -130,7 +130,7 @@ namespace dot
 
     const char* test::check_fail::label() const noexcept
     {
-        return "CHECK FAIL";
+        return "СБОЙ ПРОВЕРКИ";
     }
 
     void test::check_fail::handle()
@@ -150,7 +150,7 @@ namespace dot
 
     const char* test::suite_fail::label() const noexcept
     {
-        return "SUITE FAIL";
+        return "СБОЙ НАБОРА ТЕСТОВ";
     }
 
     void test::suite_fail::handle()
@@ -171,7 +171,7 @@ namespace dot
 
     const char* test::run_fail::label() const noexcept
     {
-        return "RUN FAIL";
+        return "СБОЙ ЗАПУСКА ТЕСТОВ";
     }
 
     void test::run_fail::handle()
