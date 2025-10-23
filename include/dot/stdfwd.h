@@ -1,4 +1,5 @@
-// std:: forward declarations without mass includes
+// Объявления основных типов стандартной библиотеки
+// используемых без include в файлах-заголовках
 
 #pragma once
 

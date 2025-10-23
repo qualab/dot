@@ -1,4 +1,4 @@
-// DOT test main
+// Запуск всех написанных наборов тестов
 
 #include <dot/test.h>
 #include <iostream>
@@ -17,7 +17,6 @@ int main()
     dot::test::run();
 
     std::cout << "\n < Нажмите любую клавишу > ... ";
-
     getch();
 
     return 0;

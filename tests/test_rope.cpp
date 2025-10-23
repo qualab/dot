@@ -1,4 +1,4 @@
-// DOT test main
+// Тестирование коров и верёвок к ним привязанных
 
 #include <dot/test.h>
 #include <dot/rope.h>

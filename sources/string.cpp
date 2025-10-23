@@ -1,5 +1,6 @@
-// dot::rope which are bound to the literal cows
-// implementation for the copy-on-write strings
+// Работа со стандартными строками по общей ссылке
+// внутри объекта передающегося по значению
+// не создающего новую копию строки при чтении
 
 #include <dot/string.h>
 #include <iostream>

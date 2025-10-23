@@ -1,4 +1,4 @@
-// DOT exception base class
+// Основные исключения при работе с библиотекой
 
 #include <dot/fail.h>
 #include <utility>
@@ -82,12 +82,12 @@ namespace dot
 
     const char* fail::error::label() const noexcept
     {
-        return "ERROR";
+        return "Ошибка";
     }
 
     std::ostream& operator << (std::ostream& stream, const fail::error& source)
     {
-        stream << " !!>> " << source.label() << ": " << *source;
+        stream << " ! >> " << source.label() << ": " << *source;
         return stream;
     }
 
@@ -102,7 +102,7 @@ namespace dot
         std::string generate_typecast_exception_message(const char* to_type_name, const char* from_type_name)
         {
             std::stringstream message_stream;
-            message_stream << "Unable to cast type '" << from_type_name << "' to type '" << to_type_name << "'.";
+            message_stream << "Невозможно привести тип '" << from_type_name << "' к типу '" << to_type_name << "'.";
             return message_stream.str();
         }
     }
@@ -114,7 +114,7 @@ namespace dot
 
     const char* fail::bad_typecast::label() const noexcept
     {
-        return "BAD TYPECAST";
+        return "Ошибка приведения типа";
     }
 
     fail::null_reference::null_reference(const char* message) noexcept
@@ -124,7 +124,7 @@ namespace dot
 
     const char* fail::null_reference::label() const noexcept
     {
-        return "NULL REFERENCE";
+        return "Ссылка на отсутсвующие данные";
     }
 
     fail::unreadable_data::unreadable_data(const char* message) noexcept
@@ -134,7 +134,7 @@ namespace dot
 
     const char* fail::unreadable_data::label() const noexcept
     {
-        return "UNREADABLE DATA";
+        return "Данные нельзя прочесть";
     }
 
     fail::non_comparable::non_comparable(const char* message) noexcept
@@ -144,7 +144,7 @@ namespace dot
 
     const char* fail::non_comparable::label() const noexcept
     {
-        return "NON COMPARABLE";
+        return "Данные нельзя сравнить";
     }
 
     fail::non_orderable::non_orderable(const char* message) noexcept
@@ -154,7 +154,7 @@ namespace dot
 
     const char* fail::non_orderable::label() const noexcept
     {
-        return "NON ORDERABLE";
+        return "Данные невозможно сортировать";
     }
 }
 

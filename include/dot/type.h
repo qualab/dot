@@ -1,4 +1,6 @@
-// DOT public declaration
+// Основные типы использующиеся всей библиотекой
+// идентификатор классов для динамической типизации
+// классы приведения типов вверх по иерархии классов
 
 #pragma once
 
@@ -9,36 +11,38 @@
 
 namespace dot
 {
-    // signed integers
+    // знаковые целые
     typedef std::int64_t int64;
     typedef std::int32_t int32;
     typedef std::int16_t int16;
     typedef std::int8_t  int8;
 
-    // unsigned integers
+    // беззнаковые целые
     typedef std::uint64_t uint64;
     typedef std::uint32_t uint32;
     typedef std::uint16_t uint16;
     typedef std::uint8_t  uint8;
 
-    // unsigned integers
+    // беззнаковые целые без указания бит
     typedef unsigned int   uint;
     typedef unsigned short ushort;
     typedef unsigned long  ulong;
 
-    // byte types
+    // байт и знаковый байт
     typedef uint8 byte;
     typedef int8 sbyte;
 
-    // class identificator type
+    // класс для идентификации иерархического типа
     class DOT_PUBLIC class_id
     {
     public:
         explicit class_id(const char* const name) noexcept;
 
+        // имя и уникальный индекс класса
         const char* const name() const noexcept;
         const uint64 index() const noexcept;
 
+        // сравнение двух идентификаторов
         bool operator == (const class_id& another) const noexcept;
         bool operator != (const class_id& another) const noexcept;
 
@@ -47,12 +51,13 @@ namespace dot
         const uint64 my_index;
     };
 
+    // запись идентификатора в поток вывода
     DOT_PUBLIC std::ostream& operator << (std::ostream& output, const class_id& identifier);
 
-    // invalid_typecast() throws invalid type cast exception by implementation
+    // invalid_typecast() генерирует исключение приведения типов
     DOT_PUBLIC void invalid_typecast(const char* to_class, const char* from_class);
 
-    // base class for any hierarchy with runtime up-casts
+    // базовый класс для иерархии объектов и данных
     class DOT_PUBLIC hierarchic
     {
     public:
@@ -60,25 +65,29 @@ namespace dot
 
         virtual const class_id& my_id() const noexcept = 0;
 
-        // hierarchy base class ends instance hierarchy search
+        // окончание рекурсивного поиска идентификатора в иерархии через шаблон
         template <typename instance_type>
         bool is() const noexcept
         {
             return is_base_id(instance_type::id());
         }
 
+        // проверка что тип не является наследником указанного класса
         template <typename derived_type>
         bool is_not() const noexcept
         {
             return !is<derived_type>();
         }
 
-        // hierarchicy base class ends instance hierarchy search
+        // окончание поиска идентификатора в иерархии через виртуальный метод
         virtual bool is_base_id(const class_id&) const noexcept
         {
             return false;
         }
 
+        // приведение к типу с проверкой что данный экземпляр
+        // является экземпляром либо потомком указанного класса
+        // иначе генерируется исключение ошибки приведения типов
         template <typename derived_type>
         const derived_type& as() const
         {
@@ -95,12 +104,12 @@ namespace dot
         }
     };
 
-    // -- to avoid case when no RTTI allowed --
+    // -- проверка наследования не зависящая от RTTI --
 
     template <typename derived_type>
     struct is_class;
 
-    // hierarchicy base class ends class hierarchy search
+    // окончание рекурсии поиска предка шаблоном
     template<>
     struct is_class<hierarchic>
     {
@@ -111,7 +120,7 @@ namespace dot
         }
     };
 
-    // is class derived from another check
+    // проверка есть ли среди предков типа указаный тип
     template <typename derived_type>
     struct is_class
     {
@@ -123,6 +132,7 @@ namespace dot
         }
     };
 
+// генерация объявления основных полей и методов класса в иерархии
 #define DOT_HIERARCHIC(base_class) \
     typedef base_class base; \
     virtual bool is_base_id(const class_id& base_id) const noexcept override \
@@ -136,6 +146,7 @@ namespace dot
     } \
     static const class_id& id() noexcept
 
+// генерация тела метода идентификатора класса в иерархии
 #define DOT_CLASS_ID(class_name) \
     const class_id& class_name::id() noexcept \
     { \
@@ -143,7 +154,7 @@ namespace dot
         return identifier; \
     }
 
-    // check is the type able to be written into output byte stream
+    // шаблон для проверки можно ли тип записывать в поток вывода
     template <typename test_type, typename meta_type = void>
     struct writable_type : std::false_type { };
 
@@ -157,7 +168,7 @@ namespace dot
     template <typename test_type>
     inline constexpr bool is_writable = writable_type<test_type>::value;
 
-    // check is the type able to be read from input byte stream
+    // шаблон для проверки можно ли тип считать из потока ввода
     template <typename test_type, typename meta_type = void>
     struct readable_type : std::false_type { };
 
@@ -171,7 +182,7 @@ namespace dot
     template <typename test_type>
     inline constexpr bool is_readable = readable_type<test_type>::value;
 
-    // check is the type support the operation of comparison
+    // шаблон для проверки поддерживают ли типы операцию сравнения
     template <typename left_type, typename right_type, typename meta_type = void>
     struct comparable_types : std::false_type { };
 
@@ -188,7 +199,7 @@ namespace dot
     template <typename test_type>
     inline constexpr bool is_comparable = comparable_types<test_type, test_type>::value;
 
-    // check is the type supports the operation of ordering
+    // шаблон для проверки поддерживают ли типы операцию упорядочивания
     template <typename left_type, typename right_type, typename meta_type = void>
     struct orderable_types : std::false_type { };
 

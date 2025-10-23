@@ -1,4 +1,4 @@
-// DOT public declaration
+// Трассировка по вложенным скоупам для бэктрейса ошибок
 
 #include <dot/trace.h>
 #include <iostream>

@@ -1,7 +1,4 @@
-// dot::fail is common class for base exception classes
-// fail::info contains information about exception
-// fail::error is base class for any exception occured
-// and that is rope<fail::info> with const methods only
+// Основные исключения при работе с библиотекой
 
 #pragma once
 
@@ -11,6 +8,7 @@
 
 namespace dot
 {
+    // класс содержащий все исключения библиотеки
     class DOT_PUBLIC fail
     {
     public:
@@ -26,11 +24,12 @@ namespace dot
         class non_orderable;
     };
 
+    // информация об исключении и бэктрейс
     class DOT_PUBLIC fail::info
     {
     public:
         explicit info(const char* message) noexcept;
-        explicit info(const char* message, const trace::stack& backtrace) noexcept;
+        info(const char* message, const trace::stack& backtrace) noexcept;
 
         virtual const char* what() const noexcept;
         const trace::stack& backtrace() const noexcept;
@@ -45,6 +44,7 @@ namespace dot
 #pragma warning(push)
 #pragma warning(disable:4275)
 
+    // базовый тип для всех исключений библиотеки
     class DOT_PUBLIC fail::error : public rope<fail::info>, public std::exception
     {
     public:
@@ -63,6 +63,7 @@ namespace dot
     DOT_PUBLIC std::ostream& operator << (std::ostream& stream, const fail::error& source);
     DOT_PUBLIC std::istream& operator >> (std::istream& stream, fail::error& destination);
 
+    // ошибка приведения типа данных объекта к определённому типу
     class DOT_PUBLIC fail::bad_typecast : public fail::error
     {
     public:
@@ -72,6 +73,7 @@ namespace dot
         DOT_HIERARCHIC(fail::error);
     };
 
+    // ссылка на данные объекта не содержащего данные
     class DOT_PUBLIC fail::null_reference : public fail::error
     {
     public:
@@ -81,6 +83,7 @@ namespace dot
         DOT_HIERARCHIC(fail::error);
     };
 
+    // данные объекта невозможно прочитать
     class DOT_PUBLIC fail::unreadable_data : public fail::error
     {
     public:
@@ -90,6 +93,7 @@ namespace dot
         DOT_HIERARCHIC(fail::error);
     };
 
+    // данные объекта невозможно сравнивать
     class DOT_PUBLIC fail::non_comparable : public fail::error
     {
     public:
@@ -99,6 +103,7 @@ namespace dot
         DOT_HIERARCHIC(fail::error);
     };
 
+    // данные объекта невозможно сортировать
     class DOT_PUBLIC fail::non_orderable : public fail::error
     {
     public:
@@ -108,6 +113,7 @@ namespace dot
         DOT_HIERARCHIC(fail::error);
     };
 
+    // идентификаторы данных об исключении
     template<> DOT_PUBLIC const class_id& rope<fail::info>::id() noexcept;
     template<> DOT_PUBLIC const class_id& rope<fail::info>::cow::id() noexcept;
 }

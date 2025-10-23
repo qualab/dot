@@ -1,5 +1,4 @@
-// dot::trace is used to trace trace::scope
-// according their call order stored in trace::stack
+// Трассировка по вложенным скоупам для бэктрейса ошибок
 
 #pragma once
 
@@ -8,7 +7,7 @@
 
 namespace dot
 {
-    // dot::trace is used as the mandatory namespace
+    // dot::trace класс-неймспейс для стека и скоупа
     struct trace
     {
         trace() = delete;
@@ -17,8 +16,8 @@ namespace dot
         class stack;
     };
 
-    // trace::scope push name/file/line into trace::stack
-    // while it is alive and pop the information on destruction
+    // trace::scope запоминает имя/файл/строку в trace::stack
+    // на время жизни объекта и удаляет их при удалении скоупа
     class DOT_PUBLIC trace::scope
     {
     public:
@@ -26,8 +25,8 @@ namespace dot
         virtual ~scope() noexcept;
     };
 
-    // trace::stack is the stack of the test::scope entries
-    // where one is called inside other and stored due their lifetime
+    // trace::stack представляет собой стек из объектов test::scope
+    // чтобы в каждый момент времени мы могли получить бэктрейс ошибки
     class DOT_PUBLIC trace::stack
     {
     public:

@@ -1,8 +1,7 @@
-// dot::rope implements copy-on-write reference
-// multiple object may refer to single fat cow
-// any const method must not change common cow
-// any non-const method create its own clone
-// if more than one rope refers to the same cow
+// Данные объектов слишком велики для внутреннего буфера
+// в буфере расположена ссылка на данные объекта
+// копирование которого происходит только при попытке
+// изменять значения в данных неконстантным доступом
 
 #pragma once
 
@@ -12,7 +11,7 @@
 
 namespace dot
 {
-    // base class for any rope which is bound to the cow
+    // базовый класс для всех объектов-"верёвок"
     class DOT_PUBLIC rope_based : public object
     {
     public:
@@ -21,42 +20,52 @@ namespace dot
         class cow_based;
     };
     
-    // rope is bound to some cow
-    // such link may be not unique for cow
-    // any non-constant operation will copy the bound cow
-    // to make any edit operation on its own cow
-    // Copy-on-Write pattern is CoW another words
+    // объектом-"верёвкой" мы привязываем "толстые" данные-"корову"
     template <class fat>
     class rope : public rope_based
     {
     public:
+        // создание новых данных по произвольному набору аргументов
         template <class... arguments>
         rope(arguments... args);
 
+        // создаём новую ссылку на существующие данные без копирования
         rope(const rope& another);
         rope& operator = (const rope& another);
 
+        // забираем ссылку на существующие данные не меняя счётчик ссылок
         rope(rope&& temp);
         rope& operator = (rope&& temp);
 
+        // инициализируем данные по данным произвольного объекта
         rope(const object& another);
         rope& operator = (const object& another);
 
+        // доступ к методам "толстого" типа значения без копирования
         const fat* operator -> () const noexcept;
+
+        // доступ к методам значения с созданием своего экземпляра
         fat* operator -> ();
 
+        // ссылка на "толстый" тип значения без копирования
         const fat& operator * () const noexcept;
+
+        // ссылка на значение с созданием своего экземпляра
         fat& operator * ();
 
-        // number of ropes bound to the same cow
+        // счётчик ссылок-"верёвок" для общих данных
         uint64 bound() const noexcept;
 
-        // is the bound cow has unique rope
+        // проверка уникальная ли ссылка на данные которые можно менять
         bool unique() const noexcept;
 
+        // константный доступ к значению внутри данных
         const fat& look() const noexcept;
+
+        // неконстантный доступ приведёт к созданию своего экземпляра
         fat& touch();
 
+        // сравнения с другими типами объектов-"верёвок"
         template <typename other> bool operator == (const rope<other>& another) const;
         template <typename other> bool operator != (const rope<other>& another) const;
         template <typename other> bool operator <= (const rope<other>& another) const;
@@ -64,6 +73,7 @@ namespace dot
         template <typename other> bool operator <  (const rope<other>& another) const;
         template <typename other> bool operator >  (const rope<other>& another) const;
 
+        // сравнения с произвольными типами
         template <typename other> bool operator == (const other& another) const;
         template <typename other> bool operator != (const other& another) const;
         template <typename other> bool operator <= (const other& another) const;
@@ -79,6 +89,7 @@ namespace dot
         cow* my_cow;
     };
 
+    // сравнения произвольных типов слева с объектами-"верёвками"
     template <typename left, typename right> bool operator == (const left& x, const rope<right>& y);
     template <typename left, typename right> bool operator != (const left& x, const rope<right>& y);
     template <typename left, typename right> bool operator <= (const left& x, const rope<right>& y);
@@ -86,71 +97,86 @@ namespace dot
     template <typename left, typename right> bool operator <  (const left& x, const rope<right>& y);
     template <typename left, typename right> bool operator >  (const left& x, const rope<right>& y);
 
-    // base class for any cow which implements copy-on-write pattern
+    // базовый тип для всех данных-"коров"
     class DOT_PUBLIC rope_based::cow_based : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
     };
 
-    // Copy-on-Write pattern or another words C-o-W
-    // contains fat type value and reference counter
-    // any non-const method when more than one rope is bound
-    // follows clone of the cow with copy of fat type value
+    // данные-"коровы" хранящие "толстые" значения
+    // по ссылке в динамически выделенной памяти
+    // создают свой уникальный экземпляр при изменении
     template <class fat>
     class rope<fat>::cow : public rope_based::cow_based
     {
     public:
+        // создания нового значения в динамической памяти
+        // по аргументам конструктора "толстого" типа
         template <class... arguments>
         cow(arguments... args);
 
+        // удаление ссылки на данные-"корову"
+        // удаление данных если ссылка была последней
         virtual ~cow() noexcept;
 
+        // новая ссылка на существующую "корову"
         cow(const cow& another);
         cow& operator = (const cow& another);
 
+        // перенос ссылки в новые данные
         cow(cow&& temp) noexcept;
         cow& operator = (cow&& temp);
 
+        // счётчик ссылок на общие данные
         uint64 bound() const noexcept;
 
+        // доступ к значению "толстого" типа без копирования
         const fat& look() const noexcept;
+
+        // доступ для изменения ведёт к созданию своего экземпляра
         fat& touch();
 
         DOT_HIERARCHIC(rope_based::cow_based);
 
     protected:
+        // копирование и перенос ссылки в буфер другого объекта
         virtual object::data* copy_to(void* buffer) const noexcept override;
         virtual object::data* move_to(void* buffer) noexcept override;
 
+        // работа со стандартными потоками ввода и вывода
         virtual void write(std::ostream& stream) const override;
         virtual void read(std::istream& stream) override;
 
+        // сравнения с данными других классов
         virtual bool equals(const object::data& another) const noexcept override;
         virtual bool less(const object::data& another) const noexcept override;
 
     private:
-        // cow's neck is the place where bound multiple ropes
-        // the moment when no rope is bound to the cow's neck
-        // cow runs out and goes to be deleted from system memory
+        // вспомогательная структура "шея" "коровы"
+        // хранит счётчик ссылок и значение толстого типа
+        // именно к "шее" привязаны объекты-"верёвки"
         struct neck
         {
             std::atomic<uint64> bound;
             fat value;
 
+            // создание уникального значения
             template <typename... arguments>
             neck(arguments... args)
                 : bound(1),
-                value(std::forward<arguments>(args)...)
+                  value(std::forward<arguments>(args)...)
             {
             }
 
+            // привязать к "шее" новую ссылку-"верёвку"
             neck* add_rope()
             {
                 ++bound;
                 return this;
             }
 
+            // отвязать от "шеи" одну ссылку-"верёвку"
             void remove_rope()
             {
                 if (!--bound)
@@ -161,7 +187,7 @@ namespace dot
         neck* my_neck;
     };
 
-// -- implementation of the rope methods --
+// -- шаблонные методы --
 
     template <class fat>
     template <class... arguments>
@@ -424,7 +450,7 @@ namespace dot
         return y < x;
     }
 
-    // -- implementation of the cow bound by the rope methods --
+// -- шаблонные методы данных --
 
     template <class fat>
     template <class... arguments>
@@ -498,9 +524,7 @@ namespace dot
     rope<fat>::cow::cow(cow&& temp) noexcept
         : my_neck(temp.my_neck->add_rope())
     {
-        // to avoid unitialized or nullptr temp.m_block instead
-        // atomic increment and decrement are very light operations
-        // instead of heavy comparisons to nullptr for each method
+        // во избежание нулевых или неинициализированных данных
     }
 
     template <class fat>
@@ -567,11 +591,6 @@ namespace dot
             return base::less(another);
         }
     }
-
-    // -- definition of the identifiers for the boxes of native types --
-
-    template<> DOT_PUBLIC const class_id& rope<rope_based>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& rope<rope_based>::cow::id() noexcept;
 }
 
 // Здесь должен быть Unicode

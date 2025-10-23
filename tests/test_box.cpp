@@ -1,4 +1,4 @@
-// DOT test main
+// Тестируем кошек в коробках
 
 #include <dot/test.h>
 #include <dot/box.h>

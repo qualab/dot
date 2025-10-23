@@ -1,7 +1,6 @@
-// dot::box<slim> contains value of slim type
-// which size allows ot store it in-place (by value)
-// this is suitable for simple values and small structures
-// data class box<slim>::cat is simply contain its value
+// Данные объекта помещаются во внутренний буфер
+// такие объекты называем коробками (boxing)
+// данные таких объектов зовём кошками (в коробке)
 
 #pragma once
 
@@ -11,7 +10,7 @@
 
 namespace dot
 {
-    // base class for any other box
+    // базовый класс для любого box<T>
     class DOT_PUBLIC box_based : public object
     {
     public:
@@ -20,8 +19,7 @@ namespace dot
         class cat_based;
     };
 
-    // box contains slim cat which is liquid enough
-    // to be suitable for internal object's buffer
+    // шаблон типа объекта для "тощих" типов
     template <class slim>
     class box : public box_based
     {
@@ -31,9 +29,11 @@ namespace dot
         template <class... arguments>
         explicit box(arguments... args);
 
+        // доступ к значению внутри буфера данных
         const slim& look() const noexcept;
         slim& touch() noexcept;
 
+        // сравнение с другими "коробками" с данными
         template <class other> bool operator == (const box<other>& another) const;
         template <class other> bool operator != (const box<other>& another) const;
         template <class other> bool operator <= (const box<other>& another) const;
@@ -41,6 +41,7 @@ namespace dot
         template <class other> bool operator <  (const box<other>& another) const;
         template <class other> bool operator >  (const box<other>& another) const;
 
+        // сравнение с произвольными типами
         template <class other> bool operator == (const other& another) const;
         template <class other> bool operator != (const other& another) const;
         template <class other> bool operator <= (const other& another) const;
@@ -56,6 +57,7 @@ namespace dot
         cat* my_cat;
     };
 
+    // сравнение произвольного типа слева с объектами-"коробками"
     template <typename left, typename right> bool operator == (const left& x, const box<right>& y);
     template <typename left, typename right> bool operator != (const left& x, const box<right>& y);
     template <typename left, typename right> bool operator <= (const left& x, const box<right>& y);
@@ -63,14 +65,14 @@ namespace dot
     template <typename left, typename right> bool operator <  (const left& x, const box<right>& y);
     template <typename left, typename right> bool operator >  (const left& x, const box<right>& y);
 
-    // base class for any cat in the box
+    // базовый класс для любых данных-"кошек" в "коробках"
     class DOT_PUBLIC box_based::cat_based : public object::data
     {
     public:
         DOT_HIERARCHIC(object::data);
     };
 
-    // data contains value in-placed as a field
+    // данные-"кошка" любого объекта-"коробки"
     template <class slim>
     class box<slim>::cat : public box_based::cat_based
     {
@@ -80,18 +82,22 @@ namespace dot
         template <class... arguments>
         cat(arguments... args);
 
+        // доступ к значению внутри буфера данных
         const slim& look() const noexcept;
         slim& touch() noexcept;
 
         DOT_HIERARCHIC(box_based::cat_based);
 
     protected:
+        // копирование и перемещение значения в буфер другого объекта
         virtual object::data* copy_to(void* buffer) const noexcept override;
         virtual object::data* move_to(void* buffer) noexcept override;
 
+        // запись и чтение значения из потока
         virtual void write(std::ostream& stream) const override;
         virtual void read(std::istream& stream) override;
 
+        // сравнение с произвольными данными другого объекта
         virtual bool equals(const object::data& another) const noexcept override;
         virtual bool less(const object::data& another) const noexcept override;
 
@@ -99,7 +105,7 @@ namespace dot
         slim my_value;
     };
 
-    // -- implementation of the box methods --
+    // -- шаблонные методы --
 
     template <class slim>
     box<slim>::box(const object& another)
@@ -391,19 +397,19 @@ namespace dot
         }
     }
 
-    // -- definition of the identifiers for the boxes of native types --
+    // -- идентификаторы встроенных типов внутри объектов-"коробок" --
 
     template<> DOT_PUBLIC const class_id& box<long long>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<long     >::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<int      >::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<short    >::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<char     >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<long >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<int  >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<short>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<char >::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& box<unsigned long long>::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned long     >::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned int      >::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned short    >::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned char     >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned long >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned int  >::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned short>::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned char >::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& box<double>::id() noexcept;
     template<> DOT_PUBLIC const class_id& box<float >::id() noexcept;
@@ -411,19 +417,19 @@ namespace dot
     template<> DOT_PUBLIC const class_id& box<bool>::id() noexcept;
     template<> DOT_PUBLIC const class_id& box<char>::id() noexcept;
 
-    // -- definition of the identifiers for the cats in the box of native types --
+    // -- идентификаторы встроенных типов внутри даных-"кошек" --
 
     template<> DOT_PUBLIC const class_id& box<long long>::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<long     >::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<int      >::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<short    >::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<char     >::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<long >::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<int  >::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<short>::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<char >::cat::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& box<unsigned long long>::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned long     >::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned int      >::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned short    >::cat::id() noexcept;
-    template<> DOT_PUBLIC const class_id& box<unsigned char     >::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned long >::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned int  >::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned short>::cat::id() noexcept;
+    template<> DOT_PUBLIC const class_id& box<unsigned char >::cat::id() noexcept;
 
     template<> DOT_PUBLIC const class_id& box<double>::cat::id() noexcept;
     template<> DOT_PUBLIC const class_id& box<float >::cat::id() noexcept;

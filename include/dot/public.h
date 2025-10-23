@@ -1,21 +1,18 @@
-// dot library macro for public declarations
-// for windows only must be defined DOT_EXPORTS
-// in case of build dynamic link library
-// define DOT_STATIC to build static link library
+// Необходимые макросы для доступа к типам
+// и объявления базовых типов объектов
 
 #pragma once
 
-// fixes CMake bug
+// для CMake генерации
 #ifdef dot_STATIC
 #define DOT_STATIC
 #endif
 
-// fixes CMake bug
 #ifdef dot_EXPORTS
 #define DOT_EXPORTS
 #endif
 
-// public declarations marked as DOT_PUBLIC
+// доступ к типам для Windows сборки .dll
 #if !defined(_WIN32) || defined(DOT_STATIC)
 #   define DOT_PUBLIC
 #elif defined(DOT_EXPORTS)
@@ -26,20 +23,20 @@
 
 namespace dot
 {
-    // base type for any high-level class
+    // базовый объект
     class object;
 
-    // base class for any box for cat of any shape
+    // базовый класс для всех box
     class box_based;
 
-    // each box contains liquid cat of proper shape
+    // данные класcа помещаются в буфер
     template <class shape>
     class box;
 
-    // base class for any rope bound to cow
+    // базовый класс для всех rope
     class rope_based;
 
-    // each rope is bound to some cow to copy-on-write
+    // данные класса доступны по ссылке
     template <class instance>
     class rope;
 }

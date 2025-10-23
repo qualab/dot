@@ -1,4 +1,6 @@
-// DOT public declaration
+// Базовый объект для любого класса в иерархии типов
+// может принимать любой тип данных, всё что нужно
+// это унаследоваться от объекта и создать свои данные
 
 #include <dot/object.h>
 #include <dot/box.h>
@@ -14,6 +16,7 @@ namespace dot
 
     object::~object() noexcept
     {
+        // очистка перед удалением
         reset();
     }
 
@@ -21,6 +24,7 @@ namespace dot
     {
         if (my_data)
         {
+            // явный вызов деструктора после placement new
             my_data->~data();
             my_data = nullptr;
         }
@@ -107,7 +111,7 @@ namespace dot
     const object::data& object::get_data() const
     {
         if (!my_data)
-            throw fail::null_reference("Object has no data but data reference occured.");
+            throw fail::null_reference("Попытка доступа к несуществующим данным.");
         return *my_data;
     }
 
@@ -133,10 +137,6 @@ namespace dot
     {
         // TODO: initialize data by incoming byte stream
         return stream;
-    }
-
-    object::data::data() noexcept
-    {
     }
 
     object::data::~data() noexcept

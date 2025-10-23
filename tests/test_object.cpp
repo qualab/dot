@@ -1,4 +1,4 @@
-// DOT test main
+// Тестирование базового объекта и его данных
 
 #include <dot/test.h>
 #include <dot/object.h>

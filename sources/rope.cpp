@@ -1,5 +1,7 @@
-// dot::rope incapsulates Copy-on-Write pattern as rope::cow
-// there are implementation of rope and rope::cow methods
+// Данные объектов слишком велики для внутреннего буфера
+// в буфере расположена ссылка на данные объекта
+// копирование которого происходит только при попытке
+// изменять значения в данных неконстантным доступом
 
 #include <dot/rope.h>
 
